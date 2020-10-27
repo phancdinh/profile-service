@@ -5,7 +5,7 @@
 server:
   port: 443
   ssl:
-    key-store: ssl-server.jks
+    key-store: classpath:ssl-server.jks
     key-store-password: changeit
     keyStoreType: JKS
     keyAlias: selfsigned_localhost_sslserver
