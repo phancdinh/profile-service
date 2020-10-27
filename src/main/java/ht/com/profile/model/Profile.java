@@ -12,4 +12,5 @@ import lombok.Setter;
 public class Profile {
     private String name;
     private String phoneNumber;
+    private String otherInfo;
 }

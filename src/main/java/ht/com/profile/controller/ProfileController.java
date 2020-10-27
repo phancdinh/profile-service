@@ -14,13 +14,7 @@ public class ProfileController {
 
     @GetMapping(value = "/{id}")
     public Profile findOne(@PathVariable Long id) {
-        return new Profile("Dinh Phan", "0123456778");
-    }
-
-    @PostMapping(value = "/")
-    public Profile createUser(@RequestBody Profile profile) {
-
-        return new Profile("Dinh Phan", "0123456778");
+        return new Profile("Dinh Phan", "0123456778", "other info of user");
     }
 
 }
