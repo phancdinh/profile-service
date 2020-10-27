@@ -14,6 +14,7 @@ public class JWTSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests(authz -> authz
 //                        .antMatchers(HttpMethod.GET, "/foos/**").hasAuthority("SCOPE_read")
 //                        .antMatchers(HttpMethod.POST, "/foos").hasAuthority("SCOPE_write")
+                        .antMatchers("/home").permitAll()
                         .anyRequest().authenticated()).cors().and()
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt());
     }
