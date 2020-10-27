@@ -7,4 +7,4 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: https://localhost:9443/oauth2/token
+          issuer-uri: https://htid.hungthinhcorp.com.vn/oauth2/token
