@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProfileController {
 
     @GetMapping(value = "/{id}")
-    public Profile findOne(@PathVariable String id) {
+    public Profile findOne(@PathVariable String id, Authentication authentication) {
         return new Profile(id, "Dinh Phan", "0123456778", "other info of user");
     }
 

@@ -1,19 +1,10 @@
 server:
   port: 8082
-  
-#server:
-#  port: 443
-#  ssl:
-#    key-store: classpath:ssl-server.jks
-#    key-store-password: changeit
-#    keyStoreType: JKS
-#    keyAlias: selfsigned_localhost_sslserver
 security:
   oauth2:
     resource:
       jwk:
         key-set-uri: https://localhost:9443/oauth2/jwks
-      user-info-uri: https://localhost:9443/oauth2/userinfo
 
 spring:
   security:
@@ -21,29 +12,6 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: https://localhost:9443/oauth2/jwks
-#          introspectionUri: https://localhost:9443/oauth2/introspectspring
-
-#spring:
-#  security:
-#    oauth2:
-#      resourceserver:
-#        opaque:
-#          introspection-uri: https://localhost:9443/oauth2/introspect
-#          client-id: C_zIVXSGq45CBnX7jdqUhQHqouga
-#          client-secret: imgfXmJ7IvfJrwpTNDPbgegXoHIa
-      #          issuer-uri: https://htid.hungthinhcorp.com.vn/oauth2/token
-      #  data:
-#    mongodb:
-#      host: localhost
-#      port: 27017
-#      database: profile_db
-  
-  #spring:
-#  security:
-#    oauth2:
-#      resourceserver:
-#        jwt:
-#          issuer-uri: https://htid.hungthinhcorp.com.vn/oauth2/token
 logging:
   level:
     org:
