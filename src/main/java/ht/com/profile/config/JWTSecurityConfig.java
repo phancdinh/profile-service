@@ -4,6 +4,7 @@ package ht.com.profile.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -16,10 +17,10 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static ht.com.profile.constant.RoleConstants.ROLE_PROFILE_ACCESS;
 
 
 @Configuration
+@EnableMongoAuditing
 public class JWTSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
@@ -31,7 +32,7 @@ public class JWTSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeRequests(authz -> authz
                         .antMatchers("/home").permitAll()
-                        .antMatchers("/api/profile/**").hasRole(ROLE_PROFILE_ACCESS)
+                        .antMatchers("/api/profiles/**").permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt()
                         .jwtAuthenticationConverter(jwtAuthenticationConverter())

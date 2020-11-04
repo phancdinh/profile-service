@@ -7,6 +7,13 @@ security:
         key-set-uri: https://localhost:9443/oauth2/jwks
 
 spring:
+  data:
+    mongodb:
+      host: localhost
+      database: profile_db
+      port: 27017
+      username: user
+      password: user
   security:
     oauth2:
       resourceserver:
