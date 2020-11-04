@@ -5,15 +5,14 @@ security:
     resource:
       jwk:
         key-set-uri: https://localhost:9443/oauth2/jwks
-
 spring:
   data:
     mongodb:
       host: localhost
       database: profile_db
       port: 27017
-      username: user
-      password: user
+      username: htuser
+      password: hungthinh123
   security:
     oauth2:
       resourceserver:
