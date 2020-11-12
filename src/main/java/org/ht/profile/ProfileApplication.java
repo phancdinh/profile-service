@@ -10,7 +10,7 @@ import org.springframework.context.annotation.ComponentScan;
 import java.util.Arrays;
 
 @SpringBootApplication
-@ComponentScan("ht.com")
+@ComponentScan("org.ht")
 public class ProfileApplication {
     public static void main(String[] args) {
         SpringApplication.run(ProfileApplication.class, args);
