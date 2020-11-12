@@ -1,0 +1,11 @@
+security:
+  oauth2:
+    resource:
+      jwk:
+        key-set-uri: https://htid.hungthinhcorp.com.vn/oauth2/jwks
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: https://htid.hungthinhcorp.com.vn/oauth2/jwks
