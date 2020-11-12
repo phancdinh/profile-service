@@ -1,0 +1,26 @@
+version: "3"
+services:
+  mongodb:
+    image: mongo:4.2
+    container_name: 'profile_db'
+    environment:
+      - MONGO_INITDB_DATABASE=profile_db
+      - MONGO_INITDB_ROOT_USERNAME=mongo
+      - MONGO_INITDB_ROOT_PASSWORD=mongo
+    volumes:
+      - ./database/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - ./mongo-volumn:/data/db
+    ports:
+      - 27017:27017
+  backend-service:
+    depends_on:
+      - mongodb
+    build: ./
+    ports:
+      - 8080:8080
+    volumes:
+      - ./:/app/
+      - ~/.m2/:/root/.m2/
+    
+volumes:
+  db-data:

@@ -1,0 +1,36 @@
+server:
+  port: 8080
+  error:
+    include-stacktrace: on_trace_param
+security:
+  oauth2:
+    resource:
+      jwk:
+        key-set-uri: https://htid.hungthinhcorp.com.vn/oauth2/jwks
+spring:
+  data:
+    mongodb:
+      auto-index-creation: true
+      host: mongodb
+      database: profile_db
+      port: 27017
+      username: htuser
+      password: hungthinh123
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: https://htid.hungthinhcorp.com.vn/oauth2/jwks
+logging:
+  level:
+    root: INFO
+    web: DEBUG
+    org:
+      springframework:
+        web: DEBUG
+        security: DEBUG
+springdoc:
+  swagger-ui:
+    path: /swagger.html
+  api-docs:
+    path: /api-docs
