@@ -13,6 +13,7 @@ services:
     ports:
       - 27017:27017
   backend-service:
+    env_file: .env
     depends_on:
       - mongodb
     build: ./
