@@ -1,0 +1,78 @@
+# Deploy to Azure Kubernetes Service   
+# Build and push image to Azure Container Registry;
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+trigger:
+  branches:
+    include:
+    - main
+    - staging
+    - develop
+
+resources:
+  - repo: self
+
+variables:
+  # Container registry service connection established during pipeline creation
+  containerRegistry: 'acr-httech'
+  dockerfilePath: '**/Dockerfile'
+  imageName: $(Build.DefinitionName) | grep -o '[^.]*$'
+  gitCommit: $(Build.SourceVersion)
+  imageRepository: $(Build.SourceBranchName)-$(Build.DefinitionName)
+  isDevelop: $[eq(variables['Build.SourceBranchName'], 'develop')]
+  isStaging: $[eq(variables['Build.SourceBranchName'], 'staging')]
+  isProduction: $[eq(variables['Build.SourceBranchName'], 'main')]
+  # Agent VM image name    
+  vmImageName: 'ubuntu-latest'
+
+stages:
+  - stage: TestStage
+    displayName: Test
+    jobs:
+      - job: Test
+        pool:
+          vmImage: $(vmImageName)
+        steps:
+          - script: |
+              echo $(Build.DefinitionName) | grep -o '[^.]*$'
+              echo $(imageName)
+              echo $imageName
+
+          - task: Maven@3
+            displayName: mvn test
+            inputs:
+              mavenPomFile: 'pom.xml'
+              publishJUnitResults: true
+              testResultsFiles: '**/surefire-reports/TEST-*.xml'
+              javaHomeOption: 'JDKVersion'
+              mavenVersionOption: 'Default'
+              mavenAuthenticateFeed: false
+              effectivePomSkip: false
+              sonarQubeRunAnalysis: false
+
+  - stage: BuildStage
+    displayName: Build
+    condition: or(eq(variables.isDevelop, true), eq(variables.isStaging, true), eq(variables.isProduction, true))
+    jobs:
+    - job: Build
+      pool:
+        vmImage: $(vmImageName)
+      steps:
+      - task: Docker@2
+        inputs:
+          containerRegistry: $(containerRegistry)
+          command: 'login'
+
+      - task: Docker@2
+        displayName: Build & Push to ACR
+        inputs:
+          command: buildAndPush
+          repository: $(Build.SourceBranchName)-htid-profile-service
+          dockerfile: $(dockerfilePath)
+          containerRegistry: $(containerRegistry)
+          tags: |
+            $(gitCommit)
+            
+      - task: Docker@2
+        inputs:
+          containerRegistry: $(containerRegistry)
+          command: 'logout'
