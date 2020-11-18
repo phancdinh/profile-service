@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.bson.types.ObjectId;
+import org.ht.profile.model.internal.Address;
+import org.ht.profile.model.internal.HierarchyDate;
+import org.ht.profile.model.internal.UserName;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -13,18 +16,33 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "profile")
-public class Profile {
+@Document(collection = "basic_info")
+public class BasicInfo {
     @Id
     private ObjectId id;
 
-    @Indexed
-    private String htId;
+    @Indexed(unique = true)
+    private ObjectId profileId;
+
+    private String gender;
+
+    private UserName userName;
+
+    private List<String> nationalities;
+
+    private HierarchyDate dob;
+
+    private Address pob;
+
+    private Address hometown;
+
+    private Address permanentAddress;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @CreatedDate
@@ -33,5 +51,4 @@ public class Profile {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @LastModifiedDate
     private Date lastModifiedDate;
-
 }

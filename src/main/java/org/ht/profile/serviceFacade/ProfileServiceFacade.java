@@ -1,22 +1,12 @@
 package org.ht.profile.serviceFacade;
 
-import org.ht.profile.dto.ProfileResponse;
-import org.ht.profile.dto.request.ProfileCreateRequest;
-import org.ht.profile.dto.request.ProfileUpdateRequest;
-
-import java.util.List;
+import org.ht.profile.dto.request.BasicInfoCreateRequest;
+import org.ht.profile.dto.response.BasicInfoResponse;
 
 
 public interface ProfileServiceFacade {
-    ProfileResponse create(ProfileCreateRequest p);
 
-    ProfileResponse findById(String id);
+    BasicInfoResponse create(BasicInfoCreateRequest p);
 
-    List<ProfileResponse> findAll();
-
-    ProfileResponse update(String hiId, ProfileUpdateRequest p);
-
-    void delete(String htId);
-
-    ProfileResponse find(String htId);
+    BasicInfoResponse find(String htId);
 }

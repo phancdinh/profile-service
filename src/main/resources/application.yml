@@ -10,6 +10,7 @@ security:
 spring:
   data:
     mongodb:
+      field-naming-strategy: org.springframework.data.mapping.model.SnakeCaseFieldNamingStrategy
       auto-index-creation: true
       uri: ${DATABASE_CONNECTION_URI}
   security:
