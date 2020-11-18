@@ -5,4 +5,9 @@ public class Role {
         public static final String MANAGE = "hasRole('PROFILE_MANAGE')";
         public static final String VIEW = "hasAnyRole('PROFILE_ACCESS', 'PROFILE_MANAGE')";
     }
+
+    public class DemoGraphics{
+        public static final String MANAGE = "hasRole('PROFILE_MANAGE')";
+        public static final String VIEW = "hasAnyRole('PROFILE_ACCESS', 'PROFILE_MANAGE')";
+    }
 }
