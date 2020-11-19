@@ -1,6 +1,7 @@
 package org.ht.profile.dto.request;
 
-
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,14 +16,20 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProfileUpdateRequest {
-    private String userName;
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+public class BasicInfoUpdateRequest {
     private String gender;
+
     private List<String> nationalities;
-    @DateTimeFormat(pattern = DateTime.BIRTHDAY_PATTERN)
+
+    @DateTimeFormat(pattern = DateTime.DATE_PATTERN)
     private Date dob;
+
     private String fullName;
+
     private String pob;
+
     private String hometown;
+
     private String permanentAddress;
 }
