@@ -1,10 +1,10 @@
 package org.ht.profile.serviceFacade.impl;
 
 import org.bson.types.ObjectId;
-import org.ht.profile.converter.DemoGraphicsInfoConverter;
 import org.ht.profile.dto.response.DemoGraphicsInfoResponse;
 import org.ht.profile.dto.request.DemoGraphicsInfoCreateRequest;
 import org.ht.profile.dto.request.DemoGraphicsInfoUpdateRequest;
+import org.ht.profile.helper.ProfileConverterHelper;
 import org.ht.profile.model.DemoGraphicsInfo;
 import org.ht.profile.constants.DemoGraphicsInfoAttribute;
 import org.ht.profile.model.Profile;
@@ -15,12 +15,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class DemoGraphicsInfoServiceFacadeImpl implements DemoGraphicsInfoServiceFacade {
-    private final DemoGraphicsInfoConverter demoGraphicsInfoConverter;
     private final DemoGraphicsInfoService demoGraphicsInfoService;
     private final ProfileService profileService;
 
-    public DemoGraphicsInfoServiceFacadeImpl(DemoGraphicsInfoService demoGraphicsInfoService, DemoGraphicsInfoConverter demoGraphicsInfoConverter, ProfileService profileService) {
-        this.demoGraphicsInfoConverter = demoGraphicsInfoConverter;
+    public DemoGraphicsInfoServiceFacadeImpl(DemoGraphicsInfoService demoGraphicsInfoService, ProfileService profileService) {
         this.demoGraphicsInfoService = demoGraphicsInfoService;
         this.profileService = profileService;
     }
@@ -31,7 +29,7 @@ public class DemoGraphicsInfoServiceFacadeImpl implements DemoGraphicsInfoServic
         ObjectId profileId = existingProfile.getId();
 
         DemoGraphicsInfo data = demoGraphicsInfoService.create(profileId, demoGraphicsInfoAttribute, demoGraphicsInfoCreateRequest);
-        DemoGraphicsInfoResponse dataResponse = demoGraphicsInfoConverter.convert(data);
+        DemoGraphicsInfoResponse dataResponse = ProfileConverterHelper.convert(data);
         dataResponse.setHtId(htId);
 
         return dataResponse;
@@ -43,7 +41,7 @@ public class DemoGraphicsInfoServiceFacadeImpl implements DemoGraphicsInfoServic
         ObjectId profileId = existingProfile.getId();
 
         DemoGraphicsInfo data = demoGraphicsInfoService.findByHtIdAndAttribute(profileId, demoGraphicsInfoAttribute);
-        DemoGraphicsInfoResponse dataResponse = demoGraphicsInfoConverter.convert(data);
+        DemoGraphicsInfoResponse dataResponse = ProfileConverterHelper.convert(data);
         dataResponse.setHtId(htId);
 
         return dataResponse;
@@ -55,7 +53,7 @@ public class DemoGraphicsInfoServiceFacadeImpl implements DemoGraphicsInfoServic
         ObjectId profileId = existingProfile.getId();
 
         DemoGraphicsInfo data = demoGraphicsInfoService.update(profileId, demoGraphicsInfoAttribute, updateRequest);
-        DemoGraphicsInfoResponse dataResponse = demoGraphicsInfoConverter.convert(data);
+        DemoGraphicsInfoResponse dataResponse = ProfileConverterHelper.convert(data);
         dataResponse.setHtId(htId);
 
         return dataResponse;

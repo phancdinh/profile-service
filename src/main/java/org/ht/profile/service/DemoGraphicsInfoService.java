@@ -1,9 +1,9 @@
 package org.ht.profile.service;
 
 import org.bson.types.ObjectId;
-import org.ht.profile.converter.DemoGraphicsInfoConverter;
 import org.ht.profile.dto.request.DemoGraphicsInfoCreateRequest;
 import org.ht.profile.dto.request.DemoGraphicsInfoUpdateRequest;
+import org.ht.profile.helper.ProfileConverterHelper;
 import org.ht.profile.model.DemoGraphicsInfo;
 import org.ht.profile.constants.DemoGraphicsInfoAttribute;
 import org.ht.profile.repository.DemoGraphicsInfoRepository;
@@ -14,11 +14,9 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class DemoGraphicsInfoService {
     private final DemoGraphicsInfoRepository demoGraphicsInfoRepository;
-    private final DemoGraphicsInfoConverter demoGraphicsInfoConverter;
 
-    public DemoGraphicsInfoService(DemoGraphicsInfoRepository demoGraphicsInfoRepository, DemoGraphicsInfoConverter demoGraphicsInfoConverter) {
+    public DemoGraphicsInfoService(DemoGraphicsInfoRepository demoGraphicsInfoRepository) {
         this.demoGraphicsInfoRepository = demoGraphicsInfoRepository;
-        this.demoGraphicsInfoConverter = demoGraphicsInfoConverter;
     }
 
     public DemoGraphicsInfo findByHtIdAndAttribute(ObjectId profileId, DemoGraphicsInfoAttribute demoGraphicsInfoAttribute) {
@@ -34,7 +32,7 @@ public class DemoGraphicsInfoService {
         if(existingDemoGraphicsInfo != null) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, String.format("Value %s is existed!", demoGraphicsInfoAttribute.toString()));
         }
-        DemoGraphicsInfo demoGraphicsInfo = demoGraphicsInfoConverter.convert(request);
+        DemoGraphicsInfo demoGraphicsInfo = ProfileConverterHelper.convert(request);
         demoGraphicsInfo.setProfileId(profileId);
         demoGraphicsInfo.setAttribute(demoGraphicsInfoAttribute);
         return demoGraphicsInfoRepository.insert(demoGraphicsInfo);
