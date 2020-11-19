@@ -12,7 +12,7 @@ spring:
     mongodb:
       field-naming-strategy: org.springframework.data.mapping.model.SnakeCaseFieldNamingStrategy
       auto-index-creation: true
-      uri: ${DATABASE_CONNECTION_URI}
+      uri: mongodb+srv://htuser:hungthinh123@cluster0.apuky.mongodb.net/profile_db?retryWrites=true&w=majority
   security:
     oauth2:
       resourceserver:
