@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.NotEmpty;
 import java.util.Date;
 import java.util.List;
 
@@ -21,9 +20,6 @@ import static org.ht.profile.constants.DateTime.DATE_PATTERN;
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class BasicInfoCreateRequest {
-
-    @NotEmpty(message = "{validation.htid.notEmpty}")
-    private String htId;
 
     private String gender;
 

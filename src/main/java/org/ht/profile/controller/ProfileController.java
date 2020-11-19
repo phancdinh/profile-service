@@ -35,10 +35,10 @@ public class ProfileController {
         return ResponseEntity.ok(p);
     }
 
-    @PostMapping(value = {""})
+    @PostMapping(value = "{htId}")
     @PreAuthorize(MANAGE)
-    public ResponseEntity<BasicInfoResponse> create(@Valid @RequestBody BasicInfoCreateRequest profile) {
-        BasicInfoResponse createdProfile = profileBizService.create(profile);
+    public ResponseEntity<BasicInfoResponse> create(@PathVariable String htId, @Valid @RequestBody BasicInfoCreateRequest profile) {
+        BasicInfoResponse createdProfile = profileBizService.create(htId, profile);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdProfile);
     }
 

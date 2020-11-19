@@ -26,8 +26,7 @@ public class ProfileBizService {
         this.basicInfoDataService = basicInfoDataService;
     }
 
-    public BasicInfoResponse create(BasicInfoCreateRequest profileRequest) {
-        String htId = profileRequest.getHtId();
+    public BasicInfoResponse create(String htId, BasicInfoCreateRequest profileRequest) {
         // because we don't have api to create ht_id so I try to create ht_id for case creating basic info.
         // I think this business should be removed.
         // todo remove this business when we have api create ht id.
@@ -39,7 +38,7 @@ public class ProfileBizService {
                 });
 
         if (basicInfoDataService.existsByProfileId(profile.getId())) {
-            String error = String.format("Basic info is already existed with %s", profile.getId());
+            String error = String.format("Basic info is already existed with %s", htId);
             throw new ResponseStatusException(HttpStatus.CONFLICT, error);
         }
 
