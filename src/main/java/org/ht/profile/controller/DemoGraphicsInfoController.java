@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 
 @RestController
 @RequestMapping(value = "api/profiles")
@@ -31,14 +33,14 @@ public class DemoGraphicsInfoController {
 
     @PostMapping(value = {"/{htId}/marital-status"})
     @PreAuthorize(Role.DemoGraphics.MANAGE)
-    public ResponseEntity<DemoGraphicsInfoResponse> createMarital(@PathVariable String htId, DemoGraphicsInfoCreateRequest request) {
+    public ResponseEntity<DemoGraphicsInfoResponse> createMarital(@PathVariable String htId, @Valid @RequestBody DemoGraphicsInfoCreateRequest request) {
         DemoGraphicsInfoResponse createdProfile = demoGraphicsInfoServiceFacade.create(htId, DemoGraphicsInfoAttribute.MARITAL_STATUS, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdProfile);
     }
 
     @PutMapping(value = "/{htId}/marital-status")
     @PreAuthorize(Role.DemoGraphics.MANAGE)
-    public ResponseEntity<DemoGraphicsInfoResponse> updateMarital(@PathVariable String htId, DemoGraphicsInfoUpdateRequest request) {
+    public ResponseEntity<DemoGraphicsInfoResponse> updateMarital(@PathVariable String htId, @Valid @RequestBody DemoGraphicsInfoUpdateRequest request) {
         DemoGraphicsInfoResponse updatedProfile = demoGraphicsInfoServiceFacade.update(htId, DemoGraphicsInfoAttribute.MARITAL_STATUS, request);
         return ResponseEntity.ok(updatedProfile);
     }
@@ -60,14 +62,14 @@ public class DemoGraphicsInfoController {
 
     @PostMapping(value = {"/{htId}/customer-type-status"})
     @PreAuthorize(Role.DemoGraphics.MANAGE)
-    public ResponseEntity<DemoGraphicsInfoResponse> createCustomerType(@PathVariable String htId, DemoGraphicsInfoCreateRequest request) {
+    public ResponseEntity<DemoGraphicsInfoResponse> createCustomerType(@PathVariable String htId, @Valid @RequestBody DemoGraphicsInfoCreateRequest request) {
         DemoGraphicsInfoResponse createdProfile = demoGraphicsInfoServiceFacade.create(htId, DemoGraphicsInfoAttribute.CUSTOMER_TYPE_STATUS, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdProfile);
     }
 
     @PutMapping(value = "/{htId}/customer-type-status")
     @PreAuthorize(Role.DemoGraphics.MANAGE)
-    public ResponseEntity<DemoGraphicsInfoResponse> updateCustomerType(@PathVariable String htId, DemoGraphicsInfoUpdateRequest request) {
+    public ResponseEntity<DemoGraphicsInfoResponse> updateCustomerType(@PathVariable String htId, @Valid @RequestBody DemoGraphicsInfoUpdateRequest request) {
         DemoGraphicsInfoResponse updatedProfile = demoGraphicsInfoServiceFacade.update(htId, DemoGraphicsInfoAttribute.CUSTOMER_TYPE_STATUS, request);
         return ResponseEntity.ok(updatedProfile);
     }
