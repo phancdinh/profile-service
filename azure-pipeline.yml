@@ -71,6 +71,7 @@ stages:
           containerRegistry: $(containerRegistry)
           tags: |
             $(gitCommit)
+            latest
             
       - task: Docker@2
         inputs:
