@@ -1,33 +1,30 @@
 package org.ht.profile.helper;
 
-import org.ht.profile.dto.request.DemoGraphicsInfoCreateRequest;
-import org.ht.profile.dto.response.BasicInfoResponse;
+import org.bson.types.ObjectId;
+import org.ht.profile.data.model.BasicInfo;
+import org.ht.profile.data.model.DemoGraphicsInfo;
+import org.ht.profile.data.model.internal.Address;
+import org.ht.profile.data.model.internal.HierarchyDate;
+import org.ht.profile.data.model.internal.UserName;
 import org.ht.profile.dto.request.BasicInfoCreateRequest;
+import org.ht.profile.dto.request.DemoGraphicsInfoCreateRequest;
 import org.ht.profile.dto.response.DemoGraphicsInfoResponse;
-import org.ht.profile.model.BasicInfo;
-import org.ht.profile.model.DemoGraphicsInfo;
-import org.ht.profile.model.internal.Address;
-import org.ht.profile.model.internal.HierarchyDate;
-import org.ht.profile.model.internal.UserName;
 import org.springframework.beans.BeanUtils;
+
 import java.util.Date;
 
 public class ProfileConverterHelper {
-    static public BasicInfo convert(BasicInfoCreateRequest profileRequest) {
+    static public BasicInfo convert(BasicInfoCreateRequest profileRequest,
+                                    ObjectId profileId) {
         BasicInfo basicInfo = new BasicInfo();
         BeanUtils.copyProperties(profileRequest, basicInfo);
+        basicInfo.setProfileId(profileId);
+        basicInfo.setPob(ProfileConverterHelper.convert(profileRequest.getPob()));
+        basicInfo.setPermanentAddress(ProfileConverterHelper.convert(profileRequest.getPermanentAddress()));
+        basicInfo.setHometown(ProfileConverterHelper.convert(profileRequest.getHometown()));
+        basicInfo.setDob(ProfileConverterHelper.convert(profileRequest.getDob()));
+        basicInfo.setUserName(ProfileConverterHelper.convertUserName(profileRequest.getFullName()));
         return basicInfo;
-    }
-
-    static public BasicInfoResponse convert(BasicInfo basicInfo) {
-        BasicInfoResponse profileResponse = new BasicInfoResponse();
-        BeanUtils.copyProperties(basicInfo, profileResponse);
-        profileResponse.setHometown(basicInfo.getHometown().getFullAddress());
-        profileResponse.setPermanentAddress(basicInfo.getPermanentAddress().getFullAddress());
-        profileResponse.setPob(basicInfo.getPob().getFullAddress());
-        profileResponse.setDob(basicInfo.getDob().getFullDate());
-        profileResponse.setFullName(basicInfo.getUserName().getFullName());
-        return profileResponse;
     }
 
     static public Address convert(String fullAddress) {
