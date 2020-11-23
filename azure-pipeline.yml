@@ -14,6 +14,8 @@ resources:
 variables:
   # Container registry service connection established during pipeline creation
   containerRegistry: 'acr-httech'
+  azureSubscriptionEndpoint: 'httech-az-connection'
+  azureContainerRegistry: 'httech.azurecr.io'
   dockerfilePath: '**/Dockerfile'
   imageName: $(Build.DefinitionName) | grep -o '[^.]*$'
   gitCommit: $(Build.SourceVersion)
@@ -69,7 +71,9 @@ stages:
           command: buildAndPush
           repository: $(Build.SourceBranchName)-htid-profile-service
           dockerfile: $(dockerfilePath)
-          containerRegistry: $(containerRegistry)
+          azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
+          azureContainerRegistry: $(azureContainerRegistry)
+#          containerRegistry: $(containerRegistry)
 #          includeLatestTag: true
           tags: |
             $(gitCommit)
