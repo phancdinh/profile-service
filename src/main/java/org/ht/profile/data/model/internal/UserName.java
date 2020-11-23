@@ -1,4 +1,5 @@
-package org.ht.profile.model.internal;
+package org.ht.profile.data.model.internal;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

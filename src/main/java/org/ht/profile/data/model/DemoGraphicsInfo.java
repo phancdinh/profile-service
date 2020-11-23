@@ -1,30 +1,35 @@
-package org.ht.profile.model;
+package org.ht.profile.data.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.bson.types.ObjectId;
+import org.ht.profile.constants.DemoGraphicsInfoAttribute;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "profile")
-public class Profile {
+@Document(collection = "demographics_info")
+public class DemoGraphicsInfo {
     @Id
     private ObjectId id;
 
-    @Indexed
-    private String htId;
+    private ObjectId profileId;
+
+    private DemoGraphicsInfoAttribute attribute;
+
+    @NotNull(message = "Value cannot be null")
+    private String value;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @CreatedDate
@@ -33,5 +38,4 @@ public class Profile {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @LastModifiedDate
     private Date lastModifiedDate;
-
 }

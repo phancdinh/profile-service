@@ -1,13 +1,13 @@
 package org.ht.profile.authority;
 
-public class Role {
-    public class BasicInfo {
-        public static final String MANAGE = "hasRole('PROFILE_MANAGE')";
-        public static final String VIEW = "hasAnyRole('PROFILE_ACCESS', 'PROFILE_MANAGE')";
+public interface Role {
+    interface BasicInfo {
+        String MANAGE = "hasRole('PROFILE_MANAGE')";
+        String VIEW = "hasAnyRole('PROFILE_ACCESS', 'PROFILE_MANAGE')";
     }
 
-    public class DemoGraphics{
-        public static final String MANAGE = "hasRole('PROFILE_MANAGE')";
-        public static final String VIEW = "hasAnyRole('PROFILE_ACCESS', 'PROFILE_MANAGE')";
+    interface DemoGraphics {
+        String MANAGE = "hasRole('PROFILE_MANAGE')";
+        String VIEW = "hasAnyRole('PROFILE_ACCESS', 'PROFILE_MANAGE')";
     }
 }

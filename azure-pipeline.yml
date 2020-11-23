@@ -1,4 +1,4 @@
-# Deploy to Azure Kubernetes Service   
+# Deploy to Azure Kubernetes Service
 # Build and push image to Azure Container Registry;
 # https://docs.microsoft.com/azure/devops/pipelines/languages/docker
 trigger:
@@ -21,7 +21,7 @@ variables:
   isDevelop: $[eq(variables['Build.SourceBranchName'], 'develop')]
   isStaging: $[eq(variables['Build.SourceBranchName'], 'staging')]
   isProduction: $[eq(variables['Build.SourceBranchName'], 'main')]
-  # Agent VM image name    
+  # Agent VM image name
   vmImageName: 'ubuntu-latest'
 
 stages:
@@ -44,6 +44,7 @@ stages:
               publishJUnitResults: true
               testResultsFiles: '**/surefire-reports/TEST-*.xml'
               javaHomeOption: 'JDKVersion'
+              jdkVersionOption: '1.11'
               mavenVersionOption: 'Default'
               mavenAuthenticateFeed: false
               effectivePomSkip: false
@@ -72,7 +73,7 @@ stages:
           tags: |
             $(gitCommit)
             latest
-            
+
       - task: Docker@2
         inputs:
           containerRegistry: $(containerRegistry)
