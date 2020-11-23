@@ -8,7 +8,7 @@
         <version>2.3.4.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>org.ht</groupId>
+    <groupId>org.ht.id</groupId>
     <artifactId>profile-api</artifactId>
     <version>0.0.1</version>
     <name>profile api</name>
@@ -20,17 +20,17 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.ht</groupId>
+            <groupId>org.ht.id</groupId>
             <artifactId>profile-mgmt</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.ht</groupId>
+            <groupId>org.ht.id</groupId>
             <artifactId>account-mgmt</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.ht</groupId>
+            <groupId>org.ht.id</groupId>
             <artifactId>common</artifactId>
             <version>${project.version}</version>
         </dependency>
