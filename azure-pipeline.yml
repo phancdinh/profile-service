@@ -74,7 +74,7 @@ stages:
           azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
           azureContainerRegistry: $(azureContainerRegistry)
 #          containerRegistry: $(containerRegistry)
-#          includeLatestTag: true
+          includeLatestTag: true
           tags: |
             $(gitCommit)
 
