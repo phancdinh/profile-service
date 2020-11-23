@@ -70,7 +70,7 @@ stages:
           repository: $(Build.SourceBranchName)-htid-profile-service
           dockerfile: $(dockerfilePath)
           containerRegistry: $(containerRegistry)
-          includeLatestTag: true
+#          includeLatestTag: true
           tags: |
             $(gitCommit)
 
