@@ -47,10 +47,16 @@ public class ContactInfoBizService {
     }
 
     public ContactInfoResponse findByHtId(String htId) {
-        return profileDataService.findByHtId(htId)
+
+        Optional<Profile> profileOptional = profileDataService.findByHtId(htId);
+        if (profileOptional.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Profile is not existed with htId: %s", htId));
+        }
+
+        return profileOptional
                 .flatMap(existingProfile ->
                         contactInfoDataService.findByProfileId(existingProfile.getId()))
                 .map(contactInfo -> ProfileConverterHelper.convert(contactInfo, htId))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Profile is not existed."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer Info is not existed."));
     }
 }

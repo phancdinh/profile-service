@@ -60,19 +60,30 @@ public class DemoGraphicsInfoBizService {
     public DemoGraphicsInfoResponse findByHtIdAndAttribute(String htId,
                                                            DemoGraphicsInfoAttribute demoGraphicsInfoAttribute) {
 
-        return profileDataService.findByHtId(htId)
+        Optional<Profile> profileOptional = profileDataService.findByHtId(htId);
+        if (profileOptional.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Profile is not existed with htId: %s", htId));
+        }
+
+        return profileOptional
                 .flatMap(existingProfile ->
                         demoGraphicsInfoDataService.findByHtIdAndAttribute(existingProfile.getId(), demoGraphicsInfoAttribute))
                 .map(demoGraphicsInfo -> ProfileConverterHelper.convert(demoGraphicsInfo, htId))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Profile is not existed."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("%s is not existed.", demoGraphicsInfoAttribute)));
     }
 
     public DemoGraphicsInfoResponse update(String htId,
                                            DemoGraphicsInfoAttribute demoGraphicsInfoAttribute,
                                            DemoGraphicsInfoUpdateRequest updateRequest) {
-        return profileDataService.findByHtId(htId)
-                .flatMap(existingProfile ->
-                        demoGraphicsInfoDataService.findByHtIdAndAttribute(existingProfile.getId(), demoGraphicsInfoAttribute))
+
+        Optional<Profile> profileOptional = profileDataService.findByHtId(htId);
+        if (profileOptional.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Profile is not existed with htId: %s", htId));
+        }
+
+        return profileOptional
+                .flatMap(profile ->
+                        demoGraphicsInfoDataService.findByHtIdAndAttribute(profile.getId(), demoGraphicsInfoAttribute))
                 .map(demoGraphicsInfo -> {
                     demoGraphicsInfo.setValue(updateRequest.getValue());
                     return demoGraphicsInfo;
@@ -85,7 +96,13 @@ public class DemoGraphicsInfoBizService {
 
     public void delete(String htId,
                        DemoGraphicsInfoAttribute demoGraphicsInfoAttribute) {
-        profileDataService.findByHtId(htId)
+
+        Optional<Profile> profileOptional = profileDataService.findByHtId(htId);
+        if (profileOptional.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Profile is not existed with htId: %s", htId));
+        }
+
+        profileOptional
                 .flatMap(existingProfile ->
                         demoGraphicsInfoDataService.findByHtIdAndAttribute(existingProfile.getId(), demoGraphicsInfoAttribute))
                 .ifPresent(demoGraphicsInfoDataService::delete);
