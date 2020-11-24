@@ -49,9 +49,15 @@ public class ProfileBizService {
     }
 
     public BasicInfoResponse find(String htId) {
-        return profileDataService.findByHtId(htId)
+
+        Optional<Profile> profileOptional = profileDataService.findByHtId(htId);
+        if (profileOptional.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Profile is not existed with htId: %s", htId));
+        }
+
+        return profileOptional
                 .flatMap(profile -> basicInfoDataService.findByProfileId(profile.getId()))
                 .map(basicInfo -> new BasicInfoResponse(basicInfo, htId))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Profile is not existed."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Basic Info is not existed."));
     }
 }
