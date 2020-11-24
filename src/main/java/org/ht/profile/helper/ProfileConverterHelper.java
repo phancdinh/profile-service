@@ -4,12 +4,15 @@ import org.bson.types.ObjectId;
 import org.ht.profile.data.model.BasicInfo;
 import org.ht.profile.data.model.DemoGraphicsInfo;
 import org.ht.profile.data.model.internal.Address;
+import org.ht.profile.data.model.internal.AddressContact;
 import org.ht.profile.data.model.internal.HierarchyContact;
 import org.ht.profile.data.model.internal.HierarchyDate;
 import org.ht.profile.data.model.internal.UserName;
 import org.ht.profile.dto.request.BasicInfoCreateRequest;
 import org.ht.profile.dto.request.ContactInfoCreateRequest;
 import org.ht.profile.dto.request.DemoGraphicsInfoCreateRequest;
+import org.ht.profile.dto.request.internal.AddressContactRequest;
+import org.ht.profile.dto.request.internal.HierarchyContactRequest;
 import org.ht.profile.dto.response.ContactInfoResponse;
 import org.ht.profile.dto.response.DemoGraphicsInfoResponse;
 import org.ht.profile.data.model.ContactInfo;
@@ -17,6 +20,7 @@ import org.ht.profile.dto.response.internal.AddressContactResponse;
 import org.ht.profile.dto.response.internal.HierarchyContactResponse;
 import org.springframework.beans.BeanUtils;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
@@ -71,15 +75,34 @@ public class ProfileConverterHelper {
     static public ContactInfoResponse convert(ContactInfo contactInfo, String htId) {
         ContactInfoResponse contactInfoResponse = new ContactInfoResponse();
         BeanUtils.copyProperties(contactInfo, contactInfoResponse);
-        contactInfoResponse.setPostalAddresses(contactInfo.getPostalAddresses().stream().map(AddressContactResponse::new).collect(Collectors.toList()));
+        List<AddressContactResponse> responses = contactInfo.getPostalAddresses().stream().map(AddressContactResponse::new).collect(Collectors.toList());
+        contactInfoResponse.setPostalAddresses(responses);
         contactInfoResponse.setHtId(htId);
         return contactInfoResponse;
     }
 
     static public ContactInfo convert(ContactInfoCreateRequest contactInfoCreateRequest, ObjectId profileId) {
         ContactInfo contactInfo = new ContactInfo();
-        BeanUtils.copyProperties(contactInfoCreateRequest, contactInfo);
+        contactInfo.setEmails(contactInfoCreateRequest.getEmails().stream().map(ProfileConverterHelper::convert).collect(Collectors.toList()));
+        contactInfo.setPhoneNumbers(contactInfoCreateRequest.getPhoneNumbers().stream().map(ProfileConverterHelper::convert).collect(Collectors.toList()));
+        contactInfo.setPostalAddresses(contactInfoCreateRequest.getPostalAddresses().stream().map(ProfileConverterHelper::convert).collect(Collectors.toList()));
         contactInfo.setProfileId(profileId);
         return contactInfo;
+    }
+
+    static public AddressContact convert(AddressContactRequest request) {
+        AddressContact addressContact = new AddressContact();
+        addressContact.setTags(request.getTags());
+        addressContact.setPrimary(request.isPrimary());
+        addressContact.setFullAddress(request.getValue());
+        return addressContact;
+    }
+
+    static public HierarchyContact convert(HierarchyContactRequest request) {
+        HierarchyContact hierarchyContact = new HierarchyContact();
+        hierarchyContact.setTags(request.getTags());
+        hierarchyContact.setPrimary(request.isPrimary());
+        hierarchyContact.setValue(request.getValue());
+        return hierarchyContact;
     }
 }
