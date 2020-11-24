@@ -10,4 +10,9 @@ public interface Role {
         String MANAGE = "hasRole('PROFILE_MANAGE')";
         String VIEW = "hasAnyRole('PROFILE_ACCESS', 'PROFILE_MANAGE')";
     }
+
+    interface ContactInfo {
+        String MANAGE = "hasRole('PROFILE_MANAGE')";
+        String VIEW = "hasAnyRole('PROFILE_ACCESS', 'PROFILE_MANAGE')";
+    }
 }

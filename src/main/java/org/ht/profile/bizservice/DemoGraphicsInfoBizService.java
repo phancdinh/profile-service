@@ -53,11 +53,7 @@ public class DemoGraphicsInfoBizService {
                     return demoGraphicsInfo;
                 })
                 .map(demoGraphicsInfoDataService::insert)
-                .map(ProfileConverterHelper::convert)
-                .map(response -> {
-                    response.setHtId(htId);
-                    return response;
-                })
+                .map(demoGraphicsInfo -> ProfileConverterHelper.convert(demoGraphicsInfo, htId))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Not existed"));
     }
 
@@ -67,12 +63,8 @@ public class DemoGraphicsInfoBizService {
         return profileDataService.findByHtId(htId)
                 .flatMap(existingProfile ->
                         demoGraphicsInfoDataService.findByHtIdAndAttribute(existingProfile.getId(), demoGraphicsInfoAttribute))
-                .map(ProfileConverterHelper::convert)
-                .map(response -> {
-                    response.setHtId(htId);
-                    return response;
-                })
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Not existed"));
+                .map(demoGraphicsInfo -> ProfileConverterHelper.convert(demoGraphicsInfo, htId))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Profile is not existed."));
     }
 
     public DemoGraphicsInfoResponse update(String htId,
@@ -86,11 +78,7 @@ public class DemoGraphicsInfoBizService {
                     return demoGraphicsInfo;
                 })
                 .map(demoGraphicsInfoDataService::save)
-                .map(ProfileConverterHelper::convert)
-                .map(response -> {
-                    response.setHtId(htId);
-                    return response;
-                })
+                .map(demoGraphicsInfo -> ProfileConverterHelper.convert(demoGraphicsInfo, htId))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         format("Value %s is not existed for Update!", demoGraphicsInfoAttribute.toString())));
     }
