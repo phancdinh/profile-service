@@ -7,7 +7,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 public class Address {
     private String fullAddress;
@@ -16,4 +15,8 @@ public class Address {
     private String district;
     private String ward;
     private String other;
+
+    public Address(String fullAddress) {
+        this.fullAddress = fullAddress;
+    }
 }
