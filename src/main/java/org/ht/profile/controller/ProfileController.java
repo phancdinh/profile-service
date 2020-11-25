@@ -41,6 +41,4 @@ public class ProfileController {
         BasicInfoResponse createdProfile = profileBizService.create(htId, profile);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdProfile);
     }
-
-
 }

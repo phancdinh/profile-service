@@ -6,6 +6,7 @@ import org.ht.profile.constants.DemoGraphicsInfoAttribute;
 import org.ht.profile.dto.request.DemoGraphicsInfoCreateRequest;
 import org.ht.profile.dto.request.DemoGraphicsInfoUpdateRequest;
 import org.ht.profile.dto.response.DemoGraphicsInfoResponse;
+import org.ht.profile.dto.response.LegalInfoResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -91,5 +92,4 @@ public class DemoGraphicsInfoController {
         demoGraphicsInfoBizService.delete(htId, DemoGraphicsInfoAttribute.CUSTOMER_TYPE_STATUS);
         return ResponseEntity.noContent().build();
     }
-
 }
