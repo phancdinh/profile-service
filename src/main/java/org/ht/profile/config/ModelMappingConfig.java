@@ -1,10 +1,21 @@
 package org.ht.profile.config;
 
+import org.ht.profile.data.model.BasicInfo;
+import org.ht.profile.data.model.DemoGraphicsInfo;
+import org.ht.profile.data.model.internal.AddressContact;
 import org.ht.profile.data.model.internal.BaseIdentityDocument;
+import org.ht.profile.data.model.internal.HierarchyContact;
+import org.ht.profile.dto.request.BasicInfoCreateRequest;
+import org.ht.profile.dto.request.DemoGraphicsInfoCreateRequest;
+import org.ht.profile.dto.request.internal.AddressContactRequest;
 import org.ht.profile.dto.request.internal.CitizenIdentityRequest;
+import org.ht.profile.dto.request.internal.HierarchyContactRequest;
 import org.ht.profile.dto.request.internal.NationalIdentityRequest;
 import org.ht.profile.dto.request.internal.PassportRequest;
+import org.ht.profile.dto.response.BasicInfoResponse;
+import org.ht.profile.dto.response.internal.AddressContactResponse;
 import org.ht.profile.dto.response.internal.CitizenIdentityResponse;
+import org.ht.profile.dto.response.internal.HierarchyContactResponse;
 import org.ht.profile.dto.response.internal.NationalIdentityResponse;
 import org.ht.profile.dto.response.internal.PassportResponse;
 import org.modelmapper.ModelMapper;
@@ -81,6 +92,28 @@ public class ModelMappingConfig {
                 map().setIssuedDate(source.getIssuedDate().getFullDate());
                 map().setPob(source.getPob().getFullAddress());
                 map().setIssuedPlace(source.getIssuedPlace().getFullAddress());
+            }
+        });
+
+        modelMapper.addMappings(new PropertyMap<BasicInfoCreateRequest, BasicInfo>() {
+            @Override
+            protected void configure() {
+                map().getPermanentAddress().setFullAddress(source.getPermanentAddress());
+                map().getHometown().setFullAddress(source.getHometown());
+                map().getPob().setFullAddress(source.getPob());
+                map().getDob().setFullDate(source.getDob());
+                map().getUserName().setFullName(source.getFullName());
+            }
+        });
+
+        modelMapper.addMappings(new PropertyMap<BasicInfo, BasicInfoResponse>() {
+            @Override
+            protected void configure() {
+                map().setPermanentAddress(source.getPermanentAddress().getFullAddress());
+                map().setHometown(source.getHometown().getFullAddress());
+                map().setPob(source.getPob().getFullAddress());
+                map().setDob(source.getDob().getFullDate());
+                map().setFullName(source.getUserName().getFullName());
             }
         });
 

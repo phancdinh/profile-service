@@ -20,11 +20,13 @@ public class ContactInfoBizService {
 
     private final ProfileDataService profileDataService;
     private final ContactInfoDataService contactInfoDataService;
+    private final ProfileConverterHelper profileConverterHelper;
 
 
-    public ContactInfoBizService(ProfileDataService profileDataService, ContactInfoDataService contactInfoDataService) {
+    public ContactInfoBizService(ProfileDataService profileDataService, ContactInfoDataService contactInfoDataService, ProfileConverterHelper profileConverterHelper) {
         this.profileDataService = profileDataService;
         this.contactInfoDataService = contactInfoDataService;
+        this.profileConverterHelper = profileConverterHelper;
     }
 
     public ContactInfoResponse create(String htId, ContactInfoCreateRequest contactInfoCreateRequest) {
@@ -39,10 +41,9 @@ public class ContactInfoBizService {
         if (contactInfoDataService.existsByProfileId(profileId)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, String.format("Contact info is already existed with %s", htId));
         }
-
-        return Optional.of(ProfileConverterHelper.convert(contactInfoCreateRequest, profileId))
+        return Optional.of(profileConverterHelper.convert(contactInfoCreateRequest, profileId))
                 .map(contactInfoDataService::create)
-                .map(contactInfo -> ProfileConverterHelper.convert(contactInfo, htId))
+                .map(contactInfo -> profileConverterHelper.convert(contactInfo, htId))
                 .orElseThrow();
     }
 
@@ -56,7 +57,7 @@ public class ContactInfoBizService {
         return profileOptional
                 .flatMap(existingProfile ->
                         contactInfoDataService.findByProfileId(existingProfile.getId()))
-                .map(contactInfo -> ProfileConverterHelper.convert(contactInfo, htId))
+                .map(contactInfo -> profileConverterHelper.convert(contactInfo, htId))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer Info is not existed."));
     }
 }

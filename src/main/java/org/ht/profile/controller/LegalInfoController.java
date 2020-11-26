@@ -29,7 +29,6 @@ public class LegalInfoController {
     @PreAuthorize(Role.ContactInfo.VIEW)
     public ResponseEntity<LegalInfoResponse> findOne(@PathVariable String htId) {
         LegalInfoResponse result = legalInfoBizService.findByHtId(htId);
-        result.setHtId(htId);
         return ResponseEntity.ok(result);
     }
 
@@ -38,7 +37,6 @@ public class LegalInfoController {
     public ResponseEntity<LegalInfoResponse> createLegalInfo(@PathVariable String htId,
                                                              @Valid @RequestBody LegalInfoCreateRequest request) {
         LegalInfoResponse result = legalInfoBizService.create(htId, request);
-        result.setHtId(htId);
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 }

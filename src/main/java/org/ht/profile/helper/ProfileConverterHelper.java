@@ -2,107 +2,73 @@ package org.ht.profile.helper;
 
 import org.bson.types.ObjectId;
 import org.ht.profile.data.model.BasicInfo;
+import org.ht.profile.data.model.ContactInfo;
 import org.ht.profile.data.model.DemoGraphicsInfo;
-import org.ht.profile.data.model.internal.Address;
-import org.ht.profile.data.model.internal.AddressContact;
-import org.ht.profile.data.model.internal.HierarchyContact;
-import org.ht.profile.data.model.internal.HierarchyDate;
-import org.ht.profile.data.model.internal.UserName;
+import org.ht.profile.data.model.LegalInfo;
 import org.ht.profile.dto.request.BasicInfoCreateRequest;
 import org.ht.profile.dto.request.ContactInfoCreateRequest;
 import org.ht.profile.dto.request.DemoGraphicsInfoCreateRequest;
-import org.ht.profile.dto.request.internal.AddressContactRequest;
-import org.ht.profile.dto.request.internal.HierarchyContactRequest;
+import org.ht.profile.dto.request.LegalInfoCreateRequest;
+import org.ht.profile.dto.response.BasicInfoResponse;
 import org.ht.profile.dto.response.ContactInfoResponse;
 import org.ht.profile.dto.response.DemoGraphicsInfoResponse;
-import org.ht.profile.data.model.ContactInfo;
-import org.ht.profile.dto.response.internal.AddressContactResponse;
-import org.ht.profile.dto.response.internal.HierarchyContactResponse;
-import org.springframework.beans.BeanUtils;
+import org.ht.profile.dto.response.LegalInfoResponse;
+import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
+@Component
 public class ProfileConverterHelper {
-    static public BasicInfo convert(BasicInfoCreateRequest profileRequest,
+
+    private final ModelMapper modelMapper;
+
+    public ProfileConverterHelper(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper;
+    }
+
+    public BasicInfo convert(BasicInfoCreateRequest profileRequest,
                                     ObjectId profileId) {
-        BasicInfo basicInfo = new BasicInfo();
-        BeanUtils.copyProperties(profileRequest, basicInfo);
+        BasicInfo basicInfo = modelMapper.map(profileRequest, BasicInfo.class);
         basicInfo.setProfileId(profileId);
-        basicInfo.setPob(ProfileConverterHelper.convert(profileRequest.getPob()));
-        basicInfo.setPermanentAddress(ProfileConverterHelper.convert(profileRequest.getPermanentAddress()));
-        basicInfo.setHometown(ProfileConverterHelper.convert(profileRequest.getHometown()));
-        basicInfo.setDob(ProfileConverterHelper.convert(profileRequest.getDob()));
-        basicInfo.setUserName(ProfileConverterHelper.convertUserName(profileRequest.getFullName()));
         return basicInfo;
     }
-
-    static public Address convert(String fullAddress) {
-        Address address = new Address();
-        address.setFullAddress(fullAddress);
-        return address;
+    public BasicInfoResponse convert(BasicInfo info,
+                                     String htId) {
+        BasicInfoResponse response = modelMapper.map(info, BasicInfoResponse.class);
+        response.setHtId(htId);
+        return response;
     }
 
-    static public HierarchyDate convert(Date date) {
-        HierarchyDate hierarchyDate = new HierarchyDate();
-        hierarchyDate.setFullDate(date);
-        return hierarchyDate;
+    public DemoGraphicsInfo convert(DemoGraphicsInfoCreateRequest request) {
+        return modelMapper.map(request, DemoGraphicsInfo.class);
     }
 
-    static public UserName convertUserName(String fullName) {
-        UserName userName = new UserName();
-        userName.setFullName(fullName);
-        return userName;
-    }
-
-    //Converter DemoGraphics Info
-    static public DemoGraphicsInfo convert(DemoGraphicsInfoCreateRequest request) {
-        DemoGraphicsInfo demoGraphicsInfo = new DemoGraphicsInfo();
-        BeanUtils.copyProperties(request, demoGraphicsInfo);
-        return demoGraphicsInfo;
-    }
-
-    static public DemoGraphicsInfoResponse convert(DemoGraphicsInfo demoGraphicsInfo, String htId) {
-        DemoGraphicsInfoResponse demoGraphicsInfoResponse = new DemoGraphicsInfoResponse();
-        BeanUtils.copyProperties(demoGraphicsInfo, demoGraphicsInfoResponse);
+    public DemoGraphicsInfoResponse convert(DemoGraphicsInfo demoGraphicsInfo, String htId) {
+        DemoGraphicsInfoResponse demoGraphicsInfoResponse = modelMapper.map(demoGraphicsInfo, DemoGraphicsInfoResponse.class);
         demoGraphicsInfoResponse.setHtId(htId);
         return demoGraphicsInfoResponse;
     }
 
-    static public ContactInfoResponse convert(ContactInfo contactInfo, String htId) {
-        ContactInfoResponse contactInfoResponse = new ContactInfoResponse();
-        BeanUtils.copyProperties(contactInfo, contactInfoResponse);
-        List<AddressContactResponse> responses = contactInfo.getPostalAddresses().stream().map(AddressContactResponse::new).collect(Collectors.toList());
-        contactInfoResponse.setPostalAddresses(responses);
+    public ContactInfoResponse convert(ContactInfo contactInfo, String htId) {
+        ContactInfoResponse contactInfoResponse = modelMapper.map(contactInfo, ContactInfoResponse.class);
         contactInfoResponse.setHtId(htId);
         return contactInfoResponse;
     }
 
-    static public ContactInfo convert(ContactInfoCreateRequest contactInfoCreateRequest, ObjectId profileId) {
-        ContactInfo contactInfo = new ContactInfo();
-        contactInfo.setEmails(contactInfoCreateRequest.getEmails().stream().map(ProfileConverterHelper::convert).collect(Collectors.toList()));
-        contactInfo.setPhoneNumbers(contactInfoCreateRequest.getPhoneNumbers().stream().map(ProfileConverterHelper::convert).collect(Collectors.toList()));
-        contactInfo.setPostalAddresses(contactInfoCreateRequest.getPostalAddresses().stream().map(ProfileConverterHelper::convert).collect(Collectors.toList()));
+    public ContactInfo convert(ContactInfoCreateRequest contactInfoCreateRequest, ObjectId profileId) {
+        ContactInfo contactInfo = modelMapper.map(contactInfoCreateRequest, ContactInfo.class);
         contactInfo.setProfileId(profileId);
         return contactInfo;
     }
 
-    static public AddressContact convert(AddressContactRequest request) {
-        AddressContact addressContact = new AddressContact();
-        addressContact.setTags(request.getTags());
-        addressContact.setPrimary(request.isPrimary());
-        addressContact.setFullAddress(request.getValue());
-        return addressContact;
+    public LegalInfo convert(LegalInfoCreateRequest request, ObjectId profileId) {
+        LegalInfo creation = modelMapper.map(request, LegalInfo.class);
+        creation.setProfileId(profileId);
+        return creation;
     }
 
-    static public HierarchyContact convert(HierarchyContactRequest request) {
-        HierarchyContact hierarchyContact = new HierarchyContact();
-        hierarchyContact.setTags(request.getTags());
-        hierarchyContact.setPrimary(request.isPrimary());
-        hierarchyContact.setValue(request.getValue());
-        return hierarchyContact;
+    public LegalInfoResponse convert(LegalInfo info, String htId) {
+        LegalInfoResponse response = modelMapper.map(info, LegalInfoResponse.class);
+        response.setHtId(htId);
+        return response;
     }
 }
