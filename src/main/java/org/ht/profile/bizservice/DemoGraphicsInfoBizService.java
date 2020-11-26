@@ -23,11 +23,14 @@ import static java.lang.String.format;
 public class DemoGraphicsInfoBizService {
     private final DemoGraphicsInfoDataService demoGraphicsInfoDataService;
     private final ProfileDataService profileDataService;
+    private final ProfileConverterHelper profileConverterHelper;
+
 
     public DemoGraphicsInfoBizService(DemoGraphicsInfoDataService demoGraphicsInfoDataService,
-                                      ProfileDataService profileDataService) {
+                                      ProfileDataService profileDataService, ProfileConverterHelper profileConverterHelper) {
         this.demoGraphicsInfoDataService = demoGraphicsInfoDataService;
         this.profileDataService = profileDataService;
+        this.profileConverterHelper = profileConverterHelper;
     }
 
     public DemoGraphicsInfoResponse create(String htId,
@@ -46,14 +49,14 @@ public class DemoGraphicsInfoBizService {
         }
 
         return Optional.of(demoGraphicsInfoCreateRequest)
-                .map(ProfileConverterHelper::convert)
+                .map(profileConverterHelper::convert)
                 .map(demoGraphicsInfo -> {
                     demoGraphicsInfo.setProfileId(profileId);
                     demoGraphicsInfo.setAttribute(demoGraphicsInfoAttribute);
                     return demoGraphicsInfo;
                 })
                 .map(demoGraphicsInfoDataService::insert)
-                .map(demoGraphicsInfo -> ProfileConverterHelper.convert(demoGraphicsInfo, htId))
+                .map(demoGraphicsInfo -> profileConverterHelper.convert(demoGraphicsInfo, htId))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Not existed"));
     }
 
@@ -68,7 +71,7 @@ public class DemoGraphicsInfoBizService {
         return profileOptional
                 .flatMap(existingProfile ->
                         demoGraphicsInfoDataService.findByHtIdAndAttribute(existingProfile.getId(), demoGraphicsInfoAttribute))
-                .map(demoGraphicsInfo -> ProfileConverterHelper.convert(demoGraphicsInfo, htId))
+                .map(demoGraphicsInfo -> profileConverterHelper.convert(demoGraphicsInfo, htId))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("%s is not existed.", demoGraphicsInfoAttribute)));
     }
 
@@ -89,7 +92,7 @@ public class DemoGraphicsInfoBizService {
                     return demoGraphicsInfo;
                 })
                 .map(demoGraphicsInfoDataService::save)
-                .map(demoGraphicsInfo -> ProfileConverterHelper.convert(demoGraphicsInfo, htId))
+                .map(demoGraphicsInfo -> profileConverterHelper.convert(demoGraphicsInfo, htId))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         format("Value %s is not existed for Update!", demoGraphicsInfoAttribute.toString())));
     }

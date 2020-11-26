@@ -1,7 +1,6 @@
 package org.ht.profile.bizservice;
 
 import lombok.extern.slf4j.Slf4j;
-import org.ht.profile.data.model.BasicInfo;
 import org.ht.profile.data.model.Profile;
 import org.ht.profile.data.service.BasicInfoDataService;
 import org.ht.profile.data.service.ProfileDataService;
@@ -19,11 +18,13 @@ import java.util.Optional;
 public class ProfileBizService {
     private final ProfileDataService profileDataService;
     private final BasicInfoDataService basicInfoDataService;
+    private final ProfileConverterHelper profileConverterHelper;
 
     public ProfileBizService(ProfileDataService profileDataService,
-                             BasicInfoDataService basicInfoDataService) {
+                             BasicInfoDataService basicInfoDataService, ProfileConverterHelper profileConverterHelper) {
         this.profileDataService = profileDataService;
         this.basicInfoDataService = basicInfoDataService;
+        this.profileConverterHelper = profileConverterHelper;
     }
 
     public BasicInfoResponse create(String htId, BasicInfoCreateRequest profileRequest) {
@@ -42,9 +43,9 @@ public class ProfileBizService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, error);
         }
 
-        return Optional.of(ProfileConverterHelper.convert(profileRequest, profile.getId()))
+        return Optional.of(profileConverterHelper.convert(profileRequest, profile.getId()))
                 .map(basicInfoDataService::create)
-                .map(basicInfo -> new BasicInfoResponse(basicInfo, htId))
+                .map(basicInfo -> profileConverterHelper.convert(basicInfo, htId))
                 .orElseThrow();
     }
 
@@ -57,7 +58,7 @@ public class ProfileBizService {
 
         return profileOptional
                 .flatMap(profile -> basicInfoDataService.findByProfileId(profile.getId()))
-                .map(basicInfo -> new BasicInfoResponse(basicInfo, htId))
+                .map(basicInfo -> profileConverterHelper.convert(basicInfo, htId))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Basic Info is not existed."));
     }
 }
