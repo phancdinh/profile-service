@@ -1,0 +1,31 @@
+server:
+  port: 8080
+  error:
+    include-stacktrace: on_trace_param
+spring:
+  profiles:
+    include:
+      - 'profile'
+      - 'account-mgmt'
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: https://htid.hungthinhcorp.com.vn/oauth2/jwks
+  main:
+    allow-bean-definition-overriding: true
+logging:
+  level:
+    root: INFO
+    web: DEBUG
+    org:
+      springframework:
+        web: DEBUG
+        security: DEBUG
+springdoc:
+  swagger-ui:
+    path: /swagger.html
+  api-docs:
+    path: /api-docs
+
+

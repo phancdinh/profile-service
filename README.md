@@ -7,3 +7,6 @@ docker-compose up -d
 http://localhost:8080/swagger.html
 #Xuất file Yaml
 http://localhost:8080/api-docs.yaml
+
+##run project
+./mvnw install && ./mvnw spring-boot:run -pl application

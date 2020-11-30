@@ -1,0 +1,7 @@
+profile:
+  datasource:
+    mongoProperties:
+      field-naming-strategy: org.springframework.data.mapping.model.SnakeCaseFieldNamingStrategy
+      auto-index-creation: true
+      uri: mongodb://htuser:hungthinh123@localhost:27017
+      database: profile_db
