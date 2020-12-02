@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+
 import java.util.Locale;
 import java.util.Optional;
 

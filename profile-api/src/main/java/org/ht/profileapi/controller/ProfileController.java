@@ -1,6 +1,6 @@
 package org.ht.profileapi.controller;
 
-import org.ht.profileapi.service.ProfileInfoService;
+import org.ht.profileapi.facade.ProfileInfoService;
 import org.ht.profileapi.dto.request.BasicInfoCreateRequest;
 import org.ht.profileapi.dto.response.BasicInfoResponse;
 import org.ht.profileapi.authority.Role;

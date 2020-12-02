@@ -1,5 +1,7 @@
 package org.ht.profileapi;
 
+import org.ht.account.config.EnableAccountMgmtModule;
+import org.ht.profile.config.EnableProfileMgmtModule;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -8,12 +10,13 @@ import org.springframework.context.annotation.Bean;
 
 import java.util.Arrays;
 
-@SpringBootApplication(scanBasePackages = "org.ht")
+@SpringBootApplication(scanBasePackages = "org.ht.profileapi")
+@EnableProfileMgmtModule
+@EnableAccountMgmtModule
 public class Application {
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
-
     @Bean
     public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
         return args -> {

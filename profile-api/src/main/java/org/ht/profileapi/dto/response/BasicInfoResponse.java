@@ -9,8 +9,8 @@ import lombok.Setter;
 import java.util.Date;
 import java.util.List;
 
-import static org.ht.profileapi.constants.DateTime.DATETIME_PATTERN;
-import static org.ht.profileapi.constants.DateTime.DATE_PATTERN;
+import static org.ht.common.constant.DateTime.DATETIME_PATTERN;
+import static org.ht.common.constant.DateTime.DATE_PATTERN;
 
 
 @Getter
