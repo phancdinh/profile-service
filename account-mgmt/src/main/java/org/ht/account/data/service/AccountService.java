@@ -19,4 +19,26 @@ public class AccountService {
         return Optional.ofNullable(htId)
                 .flatMap(accountRepository::findByHtId);
     }
+    
+    public Account create(Account acct) {
+    	log.info("Create " + acct);
+        return accountRepository.insert(acct);
+    }
+    public Account update(Account acct) {
+    	log.info("Update " + acct);
+        return accountRepository.save(acct);
+    }
+
+	public void createOrUpdate(Account acct) {
+    	
+		if((findByHtId(acct.getHtId()).isEmpty())) {
+			accountRepository.save(acct);
+			log.info("Update " + acct);
+		}else {
+			accountRepository.insert(acct);
+			log.info("Create " + acct);
+		}
+		return ;
+	}
+
 }

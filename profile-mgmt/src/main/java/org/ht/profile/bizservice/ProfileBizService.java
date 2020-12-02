@@ -57,4 +57,11 @@ public class ProfileBizService {
                 .flatMap(profile -> basicInfoDataService.findByProfileId(profile.getId()))
                 .orElseThrow(() -> new DataNotExistingException("Basic Info is not existed."));
     }
+    
+    public boolean existsByHtId(String htId) {
+    	return profileDataService.existsByHtId(htId);
+    }
+    
+
+    
 }
