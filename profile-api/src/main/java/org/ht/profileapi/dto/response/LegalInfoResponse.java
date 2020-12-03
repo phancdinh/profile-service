@@ -14,7 +14,7 @@ import org.ht.profileapi.dto.response.internal.PassportResponse;
 import java.util.ArrayList;
 import java.util.Date;
 
-import static org.ht.profileapi.constants.DateTime.DATETIME_PATTERN;
+import static org.ht.common.constant.DateTime.DATETIME_PATTERN;
 
 @Getter
 @Setter

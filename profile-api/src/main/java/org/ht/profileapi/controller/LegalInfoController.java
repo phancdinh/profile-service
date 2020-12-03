@@ -3,7 +3,7 @@ package org.ht.profileapi.controller;
 import org.ht.profileapi.authority.Role;
 import org.ht.profileapi.dto.request.LegalInfoCreateRequest;
 import org.ht.profileapi.dto.response.LegalInfoResponse;
-import org.ht.profileapi.service.LegalInfoService;
+import org.ht.profileapi.facade.LegalInfoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,7 +27,7 @@ public class LegalInfoController {
 
 
     @GetMapping(value = "/{htId}/legal-info")
-    @PreAuthorize(Role.ContactInfo.VIEW)
+    @PreAuthorize(Role.LegalInfo.VIEW)
     public ResponseEntity<LegalInfoResponse> findOne(@PathVariable String htId) {
         LegalInfoResponse result = legalInfoService.findByHtId(htId);
         return ResponseEntity.ok(result);

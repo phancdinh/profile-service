@@ -1,5 +1,7 @@
 package org.ht.profileapi.config;
 
+import org.ht.profile.data.model.BasicInfo;
+import org.ht.profile.data.model.internal.BaseIdentityDocument;
 import org.ht.profileapi.dto.request.BasicInfoCreateRequest;
 import org.ht.profileapi.dto.request.internal.CitizenIdentityRequest;
 import org.ht.profileapi.dto.request.internal.NationalIdentityRequest;
@@ -8,8 +10,6 @@ import org.ht.profileapi.dto.response.BasicInfoResponse;
 import org.ht.profileapi.dto.response.internal.CitizenIdentityResponse;
 import org.ht.profileapi.dto.response.internal.NationalIdentityResponse;
 import org.ht.profileapi.dto.response.internal.PassportResponse;
-import org.ht.profile.dto.BasicInfoDto;
-import org.ht.profile.dto.internal.BaseIdentityDocumentDto;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.springframework.context.annotation.Bean;
@@ -22,7 +22,7 @@ public class ModelMappingConfig {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setAmbiguityIgnored(true);
 
-        modelMapper.addMappings(new PropertyMap<NationalIdentityRequest, BaseIdentityDocumentDto>() {
+        modelMapper.addMappings(new PropertyMap<NationalIdentityRequest, BaseIdentityDocument>() {
             @Override
             protected void configure() {
                 map().getPermanentAddress().setFullAddress(source.getPermanentAddress());
@@ -33,7 +33,7 @@ public class ModelMappingConfig {
             }
         });
 
-        modelMapper.addMappings(new PropertyMap<CitizenIdentityRequest, BaseIdentityDocumentDto>() {
+        modelMapper.addMappings(new PropertyMap<CitizenIdentityRequest, BaseIdentityDocument>() {
             @Override
             protected void configure() {
                 map().getPermanentAddress().setFullAddress(source.getPermanentAddress());
@@ -44,7 +44,7 @@ public class ModelMappingConfig {
             }
         });
 
-        modelMapper.addMappings(new PropertyMap<PassportRequest, BaseIdentityDocumentDto>() {
+        modelMapper.addMappings(new PropertyMap<PassportRequest, BaseIdentityDocument>() {
             @Override
             protected void configure() {
                 map().getPob().setFullAddress(source.getPob());
@@ -55,7 +55,7 @@ public class ModelMappingConfig {
             }
         });
 
-        modelMapper.addMappings(new PropertyMap<BaseIdentityDocumentDto, NationalIdentityResponse>() {
+        modelMapper.addMappings(new PropertyMap<BaseIdentityDocument, NationalIdentityResponse>() {
             @Override
             protected void configure() {
                 map().setDob(source.getDob().getFullDate());
@@ -66,7 +66,7 @@ public class ModelMappingConfig {
             }
         });
 
-        modelMapper.addMappings(new PropertyMap<BaseIdentityDocumentDto, CitizenIdentityResponse>() {
+        modelMapper.addMappings(new PropertyMap<BaseIdentityDocument, CitizenIdentityResponse>() {
             @Override
             protected void configure() {
                 map().setDob(source.getDob().getFullDate());
@@ -77,7 +77,7 @@ public class ModelMappingConfig {
             }
         });
 
-        modelMapper.addMappings(new PropertyMap<BaseIdentityDocumentDto, PassportResponse>() {
+        modelMapper.addMappings(new PropertyMap<BaseIdentityDocument, PassportResponse>() {
             @Override
             protected void configure() {
                 map().setDob(source.getDob().getFullDate());
@@ -87,7 +87,7 @@ public class ModelMappingConfig {
             }
         });
 
-        modelMapper.addMappings(new PropertyMap<BasicInfoCreateRequest, BasicInfoDto>() {
+        modelMapper.addMappings(new PropertyMap<BasicInfoCreateRequest, BasicInfo>() {
             @Override
             protected void configure() {
                 map().getPermanentAddress().setFullAddress(source.getPermanentAddress());
@@ -98,7 +98,7 @@ public class ModelMappingConfig {
             }
         });
 
-        modelMapper.addMappings(new PropertyMap<BasicInfoDto, BasicInfoResponse>() {
+        modelMapper.addMappings(new PropertyMap<BasicInfo, BasicInfoResponse>() {
             @Override
             protected void configure() {
                 map().setPermanentAddress(source.getPermanentAddress().getFullAddress());

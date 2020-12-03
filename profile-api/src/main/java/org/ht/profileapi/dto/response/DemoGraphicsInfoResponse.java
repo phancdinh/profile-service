@@ -10,7 +10,8 @@ import lombok.Setter;
 
 import java.util.Date;
 
-import static org.ht.profileapi.constants.DateTime.DATETIME_PATTERN;
+import static org.ht.common.constant.DateTime.DATETIME_PATTERN;
+
 
 @Getter
 @Setter

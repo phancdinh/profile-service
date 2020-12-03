@@ -1,11 +1,11 @@
 package org.ht.profileapi.controller;
 
+import org.ht.common.constant.DemoGraphicsAttribute;
 import org.ht.profileapi.authority.Role;
-import org.ht.profileapi.constants.DemoGraphicsAttribute;
 import org.ht.profileapi.dto.request.DemoGraphicsInfoCreateRequest;
 import org.ht.profileapi.dto.request.DemoGraphicsInfoUpdateRequest;
 import org.ht.profileapi.dto.response.DemoGraphicsInfoResponse;
-import org.ht.profileapi.service.DemoGraphicsInfoService;
+import org.ht.profileapi.facade.DemoGraphicsInfoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

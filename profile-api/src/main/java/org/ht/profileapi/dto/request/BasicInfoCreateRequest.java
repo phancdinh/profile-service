@@ -12,7 +12,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.util.Date;
 import java.util.List;
 
-import static org.ht.profileapi.constants.DateTime.DATE_PATTERN;@Getter
+import static org.ht.common.constant.DateTime.DATE_PATTERN;
+
+@Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor

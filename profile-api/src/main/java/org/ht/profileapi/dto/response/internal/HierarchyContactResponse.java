@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.ht.profileapi.constants.ApplicationContactTag;
+import org.ht.common.constant.ContactTag;
 
 import java.util.Set;
 
@@ -16,5 +16,5 @@ import java.util.Set;
 public class HierarchyContactResponse {
     private String value;
     private boolean primary;
-    private Set<ApplicationContactTag> tags;
+    private Set<ContactTag> tags;
 }

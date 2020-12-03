@@ -9,4 +9,4 @@ http://localhost:8080/swagger.html
 http://localhost:8080/api-docs.yaml
 
 ##run project
-./mvnw install && ./mvnw spring-boot:run -pl application
+./mvnw install && ./mvnw spring-boot:run -pl profile-api

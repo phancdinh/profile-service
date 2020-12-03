@@ -21,12 +21,17 @@
     <dependencies>
         <dependency>
             <groupId>org.ht</groupId>
-            <artifactId>profile</artifactId>
+            <artifactId>profile-mgmt</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.ht</groupId>
             <artifactId>account-mgmt</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ht</groupId>
+            <artifactId>common</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

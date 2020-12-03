@@ -3,7 +3,7 @@ package org.ht.profileapi.controller;
 import org.ht.profileapi.authority.Role;
 import org.ht.profileapi.dto.request.ContactInfoCreateRequest;
 import org.ht.profileapi.dto.response.ContactInfoResponse;
-import org.ht.profileapi.service.ContactInfoService;
+import org.ht.profileapi.facade.ContactInfoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
