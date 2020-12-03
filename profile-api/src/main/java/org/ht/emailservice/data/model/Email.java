@@ -1,4 +1,4 @@
-package org.ht.profile.data.model;
+package org.ht.emailservice.data.model;
 
 import java.util.Date;
 import java.util.List;

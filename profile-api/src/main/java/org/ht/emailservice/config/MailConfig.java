@@ -1,4 +1,4 @@
-package org.ht.profileapi.config;
+package org.ht.emailservice.config;
 import java.util.Properties;
 
 import org.springframework.beans.factory.annotation.Autowired;

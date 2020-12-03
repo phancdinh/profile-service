@@ -1,4 +1,4 @@
-package org.ht.profileapi.service;
+package org.ht.emailservice.facade;
 
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -8,7 +8,7 @@ import java.io.UnsupportedEncodingException;
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import org.ht.profile.data.model.Email;
+import org.ht.emailservice.data.model.Email;
 import org.ht.profileapi.service.ThymeleafService;
 
 @Service

@@ -1,7 +1,7 @@
-package org.ht.profileapi.controller;
+package org.ht.emailservice.controller;
 
-import org.ht.profile.data.model.Email;
-import org.ht.profileapi.service.EmailDataService;
+import org.ht.emailservice.data.model.Email;
+import org.ht.emailservice.facade.EmailDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
