@@ -9,7 +9,6 @@ import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import org.ht.emailservice.data.model.Email;
-import org.ht.profileapi.service.ThymeleafService;
 
 @Service
 public class EmailDataService {

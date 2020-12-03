@@ -1,4 +1,4 @@
-package org.ht.profileapi.service;
+package org.ht.emailservice.facade;
 
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.stereotype.Service;
