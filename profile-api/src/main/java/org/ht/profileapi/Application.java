@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Bean;
 
 import java.util.Arrays;
 
-@SpringBootApplication(scanBasePackages = "org.ht.profileapi")
+@SpringBootApplication(scanBasePackages = {"org.ht.profileapi", "org.ht.email"})
 @EnableProfileMgmtModule
 @EnableAccountMgmtModule
 public class Application {
