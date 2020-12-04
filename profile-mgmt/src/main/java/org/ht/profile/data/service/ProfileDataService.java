@@ -31,9 +31,10 @@ public class ProfileDataService {
         return profileRepository.existsByHtId(htId);
     }
 
-    public Profile create(String htId) {
+    public Profile create(String htId, String leadSource) {
         Profile addedProfile = new Profile();
         addedProfile.setHtId(htId);
+        addedProfile.setLeadSource(leadSource);
         return profileRepository.insert(addedProfile);
     }
 

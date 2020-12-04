@@ -5,18 +5,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
 import org.bson.types.ObjectId;
 import org.ht.account.data.model.internal.Activation;
 import org.ht.account.data.model.internal.Invitation;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
-
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -38,6 +36,9 @@ public class Account {
 
     private String phone;
 
+    @Transient
+    private String password;
+
     private boolean active;
 
     private boolean userCreated;
@@ -50,10 +51,10 @@ public class Account {
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @CreatedDate
-    private LocalDateTime createdAt;
+    private Date createdAt;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @LastModifiedDate
-    private LocalDateTime lastModifiedDate;
+    private Date lastModifiedDate;
 }
 

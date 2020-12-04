@@ -24,7 +24,7 @@ public class DemoGraphicsInfo {
     @Id
     private ObjectId id;
 
-    private ObjectId profileId;
+    private ObjectId htCode;
 
     private DemoGraphicsAttribute attribute;
 

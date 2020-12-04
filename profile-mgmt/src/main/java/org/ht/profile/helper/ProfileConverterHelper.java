@@ -21,15 +21,15 @@ public class ProfileConverterHelper {
     }
 
     public BasicInfo convert(BasicInfo basicInfoDto,
-                             ObjectId profileId) {
+                             ObjectId htCode) {
         BasicInfo basicInfo = profileMapper.map(basicInfoDto, BasicInfo.class);
-        basicInfo.setProfileId(profileId);
+        basicInfo.setHtCode(htCode);
         return basicInfo;
     }
 
-    public ContactInfo convert(ContactInfo contactInfoDto, ObjectId profileId) {
+    public ContactInfo convert(ContactInfo contactInfoDto, ObjectId htCode) {
         ContactInfo contactInfo = profileMapper.map(contactInfoDto, ContactInfo.class);
-        contactInfo.setProfileId(profileId);
+        contactInfo.setHtCode(htCode);
         return contactInfo;
     }
 
@@ -37,9 +37,9 @@ public class ProfileConverterHelper {
         return profileMapper.map(demoGraphicsInfoDto, DemoGraphicsInfo.class);
     }
 
-    public LegalInfo convert(LegalInfo legalInfoDto, ObjectId profileId) {
+    public LegalInfo convert(LegalInfo legalInfoDto, ObjectId htCode) {
         LegalInfo legalInfo = profileMapper.map(legalInfoDto, LegalInfo.class);
-        legalInfo.setProfileId(profileId);
+        legalInfo.setHtCode(htCode);
         return legalInfo;
     }
 

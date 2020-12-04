@@ -33,21 +33,21 @@ public class DemoGraphicsInfoBizService {
 
     public DemoGraphicsInfo create(String htId,
                                    DemoGraphicsInfo demoGraphicsInfo) throws DataNotExistingException, DataConflictingException {
-        ObjectId profileId = profileDataService.findByHtId(htId)
-                .map(Profile::getId)
+        ObjectId htCode = profileDataService.findByHtId(htId)
+                .map(Profile::getHtCode)
                 .orElseThrow(() -> {
                     String error = String.format("Profile is  not existed with htId: %s", htId);
                     log.error(error);
                     return new DataNotExistingException(error);
                 });
         DemoGraphicsAttribute demoGraphicsInfoAttribute = demoGraphicsInfo.getAttribute();
-        boolean isExisting = demoGraphicsInfoDataService.existingDemoGraphicsInfo(profileId, demoGraphicsInfoAttribute);
+        boolean isExisting = demoGraphicsInfoDataService.existingDemoGraphicsInfo(htCode, demoGraphicsInfoAttribute);
         if (isExisting) {
             throw new DataConflictingException(format("Value %s is existed!", demoGraphicsInfo.getAttribute()));
         }
         return Optional.of(demoGraphicsInfo)
                 .map(info -> {
-                    info.setProfileId(profileId);
+                    info.setHtCode(htCode);
                     info.setAttribute(demoGraphicsInfoAttribute);
                     return demoGraphicsInfo;
                 })
@@ -62,7 +62,7 @@ public class DemoGraphicsInfoBizService {
         }
         return profileOptional
                 .flatMap(existingProfile ->
-                        demoGraphicsInfoDataService.findByHtIdAndAttribute(existingProfile.getId(), demoGraphicsInfoAttribute))
+                        demoGraphicsInfoDataService.findByHtIdAndAttribute(existingProfile.getHtCode(), demoGraphicsInfoAttribute))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("%s is not existed.", demoGraphicsInfoAttribute)));
     }
 
@@ -76,7 +76,7 @@ public class DemoGraphicsInfoBizService {
         DemoGraphicsAttribute demoGraphicsInfoAttribute = updateRequest.getAttribute();
         return profileOptional
                 .flatMap(profile ->
-                        demoGraphicsInfoDataService.findByHtIdAndAttribute(profile.getId(), demoGraphicsInfoAttribute))
+                        demoGraphicsInfoDataService.findByHtIdAndAttribute(profile.getHtCode(), demoGraphicsInfoAttribute))
                 .map(demoGraphicsInfo -> {
                     demoGraphicsInfo.setValue(updateRequest.getValue());
                     return demoGraphicsInfo;
@@ -96,7 +96,7 @@ public class DemoGraphicsInfoBizService {
 
         profileOptional
                 .flatMap(existingProfile ->
-                        demoGraphicsInfoDataService.findByHtIdAndAttribute(existingProfile.getId(), attribute))
+                        demoGraphicsInfoDataService.findByHtIdAndAttribute(existingProfile.getHtCode(), attribute))
                 .ifPresent(demoGraphicsInfoDataService::delete);
     }
 

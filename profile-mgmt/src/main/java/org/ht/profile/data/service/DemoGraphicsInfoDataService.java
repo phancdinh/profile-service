@@ -16,14 +16,14 @@ public class DemoGraphicsInfoDataService {
         this.demoGraphicsInfoRepository = demoGraphicsInfoRepository;
     }
 
-    public Optional<DemoGraphicsInfo> findByHtIdAndAttribute(ObjectId profileId,
+    public Optional<DemoGraphicsInfo> findByHtIdAndAttribute(ObjectId htCode,
                                                              DemoGraphicsAttribute demoGraphicsInfoAttribute) {
-        return demoGraphicsInfoRepository.findByProfileIdAndAttribute(profileId, demoGraphicsInfoAttribute);
+        return demoGraphicsInfoRepository.findByHtCodeAndAttribute(htCode, demoGraphicsInfoAttribute);
     }
 
-    public boolean existingDemoGraphicsInfo(ObjectId profileId,
+    public boolean existingDemoGraphicsInfo(ObjectId htCode,
                                             DemoGraphicsAttribute demoGraphicsInfoAttribute) {
-        return demoGraphicsInfoRepository.existsByProfileIdAndAttribute(profileId, demoGraphicsInfoAttribute);
+        return demoGraphicsInfoRepository.existsByHtCodeAndAttribute(htCode, demoGraphicsInfoAttribute);
     }
 
     public DemoGraphicsInfo insert(DemoGraphicsInfo demoGraphicsInfo) {

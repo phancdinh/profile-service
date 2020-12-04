@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface BasicInfoRepository extends MongoRepository<BasicInfo, String> {
-    Optional<BasicInfo> findByProfileId(ObjectId profileId);
+    Optional<BasicInfo> findByHtCode(ObjectId htCode);
 
-    boolean existsByProfileId(ObjectId profileId);
+    boolean existsByHtCode(ObjectId htCode);
 }

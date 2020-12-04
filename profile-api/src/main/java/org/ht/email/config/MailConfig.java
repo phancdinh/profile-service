@@ -1,6 +1,6 @@
 package org.ht.email.config;
-import java.util.Properties;
 
+import java.util.Properties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +19,7 @@ public class MailConfig {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
 
         mailSender.setHost(env.getProperty("MAIL_HOST"));
-        mailSender.setPort(Integer.valueOf(env.getProperty("MAIL_PORT")));
+        mailSender.setPort(Integer.parseInt(env.getProperty("MAIL_PORT")));
         mailSender.setUsername(env.getProperty("MAIL_USERNAME"));
         mailSender.setPassword(env.getProperty("MAIL_PASSWORD"));
 

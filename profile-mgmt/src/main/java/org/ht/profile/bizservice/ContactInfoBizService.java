@@ -31,19 +31,19 @@ public class ContactInfoBizService {
     }
 
     public ContactInfo create(String htId, ContactInfo ContactInfo) throws DataConflictingException, DataNotExistingException {
-        ObjectId profileId = profileDataService.findByHtId(htId)
-                .map(Profile::getId)
+        ObjectId htCode = profileDataService.findByHtId(htId)
+                .map(Profile::getHtCode)
                 .orElseThrow(() -> {
                     String error = String.format("Profile is not existed with htId: %s", htId);
                     log.error(error);
                     return new DataNotExistingException(error);
                 });
 
-        if (contactInfoDataService.existsByProfileId(profileId)) {
+        if (contactInfoDataService.existsByHtCode(htCode)) {
             throw new DataConflictingException(String.format("Contact info is already existed with %s", htId));
         }
         return Optional.of(profileConverterHelper.convert(
-                ContactInfo, profileId))
+                ContactInfo, htCode))
                 .map(contactInfoDataService::create)
                 .map(contactInfo -> profileConverterHelper.convertToDto(contactInfo, htId, ContactInfo.class))
                 .orElseThrow();
@@ -58,7 +58,7 @@ public class ContactInfoBizService {
 
         return profileOptional
                 .flatMap(existingProfile ->
-                        contactInfoDataService.findByProfileId(existingProfile.getId()))
+                        contactInfoDataService.findByHtCode(existingProfile.getHtCode()))
                 .map(contactInfo -> profileConverterHelper.convertToDto(contactInfo, htId, ContactInfo.class))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer Info is not existed."));
     }

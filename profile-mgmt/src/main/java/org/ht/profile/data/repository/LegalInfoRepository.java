@@ -6,6 +6,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.Optional;
 
 public interface LegalInfoRepository extends MongoRepository<LegalInfo, String> {
-    Optional<LegalInfo> findByProfileId(ObjectId profileId);
-    boolean existsByProfileId(ObjectId profileId);
+    Optional<LegalInfo> findByHtCode(ObjectId htCode);
+    boolean existsByHtCode(ObjectId htCode);
 }

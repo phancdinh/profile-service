@@ -5,3 +5,12 @@ account-mgmt:
       auto-index-creation: true
       uri: ${DATABASE_CONNECTION_URI}
       database: ${DATABASE_NAME}
+  identity:
+    server: ${IDENTITY_SERVER}
+    scim2:
+      users: ${IDENTITY_SCIM2_USERS}
+    mgt-user:
+      id: ${IDENTITY_MGT_USER_ID}
+      password: ${IDENTITY_MGT_USER_PASSWORD}
+
+

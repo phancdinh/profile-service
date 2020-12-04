@@ -7,6 +7,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.Optional;
 
 public interface ContactInfoRepository extends MongoRepository<ContactInfo, String> {
-    Optional<ContactInfo> findByProfileId(ObjectId profileId);
-    boolean existsByProfileId(ObjectId profileId);
+    Optional<ContactInfo> findByHtCode(ObjectId htCode);
+    boolean existsByHtCode(ObjectId htCode);
 }
