@@ -12,7 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-public class CitizenIdentityRequest extends BaseIdentityDocumentRequest {
+public class IdentityInfoRequest extends BaseIdentityDocumentRequest {
     private String homeTown;
     private String permanentAddress;
 }

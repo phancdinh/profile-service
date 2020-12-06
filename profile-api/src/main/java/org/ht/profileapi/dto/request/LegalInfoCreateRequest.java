@@ -6,8 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.ht.profileapi.dto.request.internal.CitizenIdentityRequest;
-import org.ht.profileapi.dto.request.internal.NationalIdentityRequest;
+import org.ht.profileapi.dto.request.internal.IdentityInfoRequest;
 import org.ht.profileapi.dto.request.internal.PassportRequest;
 
 import java.util.ArrayList;
@@ -18,7 +17,7 @@ import java.util.ArrayList;
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class LegalInfoCreateRequest {
-    private NationalIdentityRequest nationalIdentity;
-    private CitizenIdentityRequest citizenIdentity;
+    private IdentityInfoRequest nationalIdentity;
+    private IdentityInfoRequest citizenIdentity;
     private ArrayList<PassportRequest> passports;
 }

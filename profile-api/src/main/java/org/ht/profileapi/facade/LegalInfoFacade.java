@@ -29,7 +29,7 @@ public class LegalInfoFacade {
     public LegalInfoResponse create(String htId, LegalInfoCreateRequest createRequest) {
         try {
             return Optional.of(createRequest)
-                    .map(info -> profileInfoConverter.convertToEntity(info, LegalInfo.class))
+                    .map(profileInfoConverter::convertToEntity)
                     .map(legalInfo -> legalInfoFacadeService.create(htId, legalInfo))
                     .map(legalInfo -> profileInfoConverter.convertToResponse(legalInfo, htId)).orElse(null);
         } catch (DataConflictingException e) {

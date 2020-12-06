@@ -11,8 +11,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
-import java.util.ArrayList;
+
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -25,7 +26,7 @@ public class LegalInfo {
     private ObjectId htCode;
     private BaseIdentityDocument nationalIdentity;
     private BaseIdentityDocument citizenIdentity;
-    private ArrayList<BaseIdentityDocument> passports;
+    private List<BaseIdentityDocument> passports;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @CreatedDate
