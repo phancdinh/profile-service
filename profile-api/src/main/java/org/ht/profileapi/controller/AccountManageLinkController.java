@@ -1,84 +1,51 @@
 package org.ht.profileapi.controller;
 
-import org.ht.account.dto.response.ResponseData;
-import org.ht.account.dto.response.ResponseStatus;
-import org.ht.profileapi.authority.Role;
-import org.ht.profileapi.facade.AccountFacade;
+import org.ht.profileapi.dto.response.ActivationResponse;
+import org.ht.profileapi.dto.response.InvitationResponse;
+import org.ht.profileapi.facade.AccountManageLinkFacade;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @RestController
 @RequestMapping(value = "api/accounts")
 public class AccountManageLinkController {
 
-    private final AccountFacade accountFacade;
+    private final AccountManageLinkFacade accMgmLinkService;
 
-    public AccountManageLinkController(AccountFacade accountFacade) {
-        this.accountFacade = accountFacade;
+    public AccountManageLinkController(AccountManageLinkFacade accMgmLinkService) {
+        this.accMgmLinkService = accMgmLinkService;
     }
 
-    @GetMapping(value = "/{htId}/activation")
-    @PreAuthorize(Role.BasicInfo.VIEW)
-    public ResponseEntity<ResponseData> getActLink(@RequestParam(name = "htId", required = true) String htId,
-                                                   @RequestParam(name = "prefixUrl", required = true) String prefixUrl) {
-
-        ResponseData response = accountFacade.getActLink(htId, prefixUrl);
-        log.info(response.getMessage());
-
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
+    @PostMapping(value = "/activation")
+    public ResponseEntity<ActivationResponse> generateActivationLink(
+            @RequestParam(name = "htId", required = true) String htId) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(accMgmLinkService.generateActivationLink(htId));
     }
 
-    @PatchMapping(value = "/{htId}/activation/verification")
-    @PreAuthorize(Role.ContactInfo.VIEW)
-    public ResponseEntity<ResponseData> verifyActLink(@RequestParam(name = "htId", required = true) String htId,
-                                                      @RequestParam(name = "url", required = true) String url) {
-
-        ResponseData response = new ResponseData();
-        response = accountFacade.verifyActLink(htId, url);
-        log.info("Validate user: " + htId + ", result: " + response);
-
-        if (response.getStatus() == ResponseStatus.SUCCESS) {
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
-        } else {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
-        }
+    @GetMapping(value = "/activation")
+    public ResponseEntity<ActivationResponse> getActivationLink(
+            @RequestParam(name = "htId", required = true) String htId,
+            @RequestParam(name = "valid", required = true) String valid) {
+        return ResponseEntity.status(HttpStatus.OK).body(accMgmLinkService.getActivationLink(htId, valid));
     }
 
-
-    @GetMapping(value = "/{htId}/invitation")
-    @PreAuthorize(Role.ContactInfo.VIEW)
-    public ResponseEntity<ResponseData> getInvtLink(@RequestParam(name = "htId", required = true) String htId
-            , @RequestParam(name = "prefixUrl", required = true) String prefixUrl
-            , @RequestParam(name = "contact", required = true) String contact) {
-
-
-        ResponseData response = accountFacade.getInvtLink(htId, prefixUrl, contact);
-        log.info(response.getMessage());
-
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
+    @PostMapping(value = "/invitation")
+    public ResponseEntity<InvitationResponse> generateInvitationLink(
+            @RequestParam(name = "htId", required = true) String htId,
+            @RequestParam(name = "contact", required = true) String contact) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(accMgmLinkService.generateInvitationLink(htId, contact));
     }
 
-    @PatchMapping(value = "/{htId}/invitation/verification")
-    @PreAuthorize(Role.ContactInfo.VIEW)
-    public ResponseEntity<ResponseData> verifyInvtLink(@RequestParam(name = "htId", required = true) String htId
-            , @RequestParam(name = "url", required = true) String url
-            , @RequestParam(name = "contact", required = true) String contact) {
-
-        ResponseData p = accountFacade.verifyInvtLink(htId, url, contact);
-        log.info("Validate user: " + htId + ", result: " + p);
-
-        if (p.getStatus() == ResponseStatus.SUCCESS) {
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(p);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(p);
-        }
+    @GetMapping(value = "/invitation")
+    public ResponseEntity<InvitationResponse> getInvitationLink(
+            @RequestParam(name = "htId", required = true) String htId,
+            @RequestParam(name = "valid", required = true) String valid) {
+        return ResponseEntity.status(HttpStatus.OK).body(accMgmLinkService.getInvitationLink(htId, valid));
     }
+
 }

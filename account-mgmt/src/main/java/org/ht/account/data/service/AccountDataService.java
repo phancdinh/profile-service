@@ -1,14 +1,14 @@
 package org.ht.account.data.service;
 
-import lombok.extern.slf4j.Slf4j;
+import static java.util.function.Predicate.not;
+
+import java.util.Optional;
+
 import org.ht.account.data.model.Account;
 import org.ht.account.data.repository.AccountRepository;
 import org.springframework.stereotype.Service;
-import java.util.Optional;
-import static java.util.function.Predicate.not;
 
 @Service
-@Slf4j
 public class AccountDataService {
     private final AccountRepository accountRepository;
 
@@ -23,17 +23,8 @@ public class AccountDataService {
                 .orElse(account);
     }
 
-    public Account update(Account acct) {
-        return accountRepository.save(acct);
-    }
-
-    public void createOrUpdate(Account acct) {
-
-        if ((findByHtId(acct.getHtId()).isEmpty())) {
-            accountRepository.save(acct);
-        } else {
-            accountRepository.insert(acct);
-        }
+    public Account update(Account account) {
+        return accountRepository.save(account);
     }
 
     public Optional<Account> findByHtId(String htId) {
