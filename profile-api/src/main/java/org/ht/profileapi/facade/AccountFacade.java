@@ -103,4 +103,11 @@ public class AccountFacade {
     public Invitation verifyInvtLink(String htId, String url, String valid) {
         return manageLinkBizService.getInvitationLink(htId, valid);
     }
+
+    public boolean checkEmailHasRegistered(String email) {
+        if (contactInfoBizService.existByEmailAndActive(email)) {
+            return true;
+        }
+        return accountBizService.checkEmailValidForRegister(email);
+    }
 }

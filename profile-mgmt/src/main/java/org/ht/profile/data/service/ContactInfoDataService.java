@@ -85,5 +85,9 @@ public class ContactInfoDataService {
             return contactInfo;
         }).map(contactInfoRepository::save);
     }
+
+    public List<ContactInfo> findByEmailAndPrimary(String email) {
+        return contactInfoRepository.findByEmailAndPrimary(email);
+    }
 }
 

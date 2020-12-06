@@ -1,6 +1,7 @@
 package org.ht.profile.data.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.bson.types.ObjectId;
 import org.ht.profile.data.model.Profile;
 import org.ht.profile.data.repository.ProfileRepository;
 import org.springframework.stereotype.Service;
@@ -40,5 +41,9 @@ public class ProfileDataService {
 
     public void deleteProfileByHtId(String htId) {
         profileRepository.deleteByHtId(htId);
+    }
+
+    public boolean existsByHtCodesAndActive(List<ObjectId> htCodes, boolean active) {
+        return profileRepository.existsByHtCodeInAndActive(htCodes, active);
     }
 }

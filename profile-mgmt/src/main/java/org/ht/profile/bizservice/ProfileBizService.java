@@ -79,9 +79,9 @@ public class ProfileBizService {
         }
         return profileOptional.get();
     }
-    
+
     public boolean existsByHtId(String htId) {
-    	return profileDataService.existsByHtId(htId);
+        return profileDataService.existsByHtId(htId);
     }
 
 

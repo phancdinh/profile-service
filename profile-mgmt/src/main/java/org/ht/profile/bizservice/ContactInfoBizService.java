@@ -13,7 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -22,7 +24,6 @@ public class ContactInfoBizService {
     private final ProfileDataService profileDataService;
     private final ContactInfoDataService contactInfoDataService;
     private final ProfileConverterHelper profileConverterHelper;
-
 
     public ContactInfoBizService(ProfileDataService profileDataService, ContactInfoDataService contactInfoDataService, ProfileConverterHelper profileConverterHelper) {
         this.profileDataService = profileDataService;
@@ -55,12 +56,23 @@ public class ContactInfoBizService {
         }
 
         return profileOptional
-                .flatMap(existingProfile ->
-                        contactInfoDataService.findByHtCode(existingProfile.getHtCode()))
+                .flatMap(existingProfile -> contactInfoDataService.findByHtCode(existingProfile.getHtCode()))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer Info is not existed."));
     }
 
     public void updatePrimaryEmail(ObjectId htCode, String email) {
         contactInfoDataService.updatePrimaryEmail(htCode, email);
+    }
+
+    public boolean existByEmailAndActive(String email) {
+        List<ContactInfo> listContactInfo = contactInfoDataService.findByEmailAndPrimary(email);
+
+        if (listContactInfo.isEmpty()) {
+            return false;
+        }
+
+        List<ObjectId> listHtCodes = listContactInfo.stream().map(b -> b.getHtCode()).collect(Collectors.toList());
+
+        return profileDataService.existsByHtCodesAndActive(listHtCodes, true);
     }
 }
