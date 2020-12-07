@@ -26,5 +26,7 @@ public class AccountCreationRequest {
     @Pattern(regexp = ValidationPattern.PASSWORD_PATTERN, message = "Password does not meet requirement")
     private String password;
 
+    private String htId;
+
     private String leadSource;
 }

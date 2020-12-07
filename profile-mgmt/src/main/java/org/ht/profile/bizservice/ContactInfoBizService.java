@@ -59,4 +59,8 @@ public class ContactInfoBizService {
                         contactInfoDataService.findByHtCode(existingProfile.getHtCode()))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer Info is not existed."));
     }
+
+    public void updatePrimaryEmail(ObjectId htCode, String email) {
+        contactInfoDataService.updatePrimaryEmail(htCode, email);
+    }
 }

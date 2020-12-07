@@ -61,7 +61,7 @@ public class ProfileBizService {
                 .orElseThrow();
     }
 
-    public BasicInfo find(String htId) throws DataNotExistingException {
+    public BasicInfo findBasicInfo(String htId) throws DataNotExistingException {
         Optional<Profile> profileOptional = profileDataService.findByHtId(htId);
         if (profileOptional.isEmpty()) {
             throw new DataNotExistingException(String.format("Profile is not existed with htId: %s", htId));
@@ -70,6 +70,14 @@ public class ProfileBizService {
         return profileOptional
                 .flatMap(profile -> basicInfoDataService.findByHtCode(profile.getHtCode()))
                 .orElseThrow(() -> new DataNotExistingException("Basic Info is not existed."));
+    }
+
+    public Profile findProfile(String htId) throws DataNotExistingException {
+        Optional<Profile> profileOptional = profileDataService.findByHtId(htId);
+        if (profileOptional.isEmpty()) {
+            throw new DataNotExistingException(String.format("Profile is not existed with htId: %s", htId));
+        }
+        return profileOptional.get();
     }
     
     public boolean existsByHtId(String htId) {
