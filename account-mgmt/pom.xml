@@ -16,6 +16,8 @@
 
     <properties>
         <java.version>11</java.version>
+        <springcloud.version>2.2.5.RELEASE</springcloud.version>
+        <openfeign.okhttp.version>11.0</openfeign.okhttp.version>
     </properties>
 
     <dependencies>
@@ -70,5 +72,25 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-openfeign-core</artifactId>
+            <version>${springcloud.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+            <version>${springcloud.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-okhttp</artifactId>
+            <version>${openfeign.okhttp.version}</version>
+        </dependency>
+
     </dependencies>
 </project>

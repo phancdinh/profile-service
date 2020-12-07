@@ -29,18 +29,18 @@ public class LegalInfoBizService {
     }
 
     public LegalInfo create(String htId, LegalInfo createdInfo) throws DataNotExistingException, DataConflictingException {
-        ObjectId profileId = profileDataService.findByHtId(htId)
-                .map(Profile::getId)
+        ObjectId htCode = profileDataService.findByHtId(htId)
+                .map(Profile::getHtCode)
                 .orElseThrow(() -> {
                     String error = String.format("Profile is not existed with htId: %s", htId);
                     log.error(error);
                     return new DataNotExistingException(error);
                 });
 
-        if (legalInfoDataService.existsByProfileId(profileId)) {
+        if (legalInfoDataService.existsByHtCode(htCode)) {
             throw new DataConflictingException(String.format("Legal info is already existed with %s", htId));
         }
-        return Optional.of(profileConverterHelper.convert(createdInfo, profileId))
+        return Optional.of(profileConverterHelper.convert(createdInfo, htCode))
                 .map(legalInfoDataService::create)
                 .orElseThrow();
     }
@@ -52,7 +52,7 @@ public class LegalInfoBizService {
         }
 
         return profileOptional
-                .flatMap(existingProfile -> legalInfoDataService.findByProfileId(existingProfile.getId()))
+                .flatMap(existingProfile -> legalInfoDataService.findByHtCode(existingProfile.getHtCode()))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Legal Info is not existed."));
     }
 }

@@ -5,7 +5,7 @@ import org.ht.profileapi.authority.Role;
 import org.ht.profileapi.dto.request.DemoGraphicsInfoCreateRequest;
 import org.ht.profileapi.dto.request.DemoGraphicsInfoUpdateRequest;
 import org.ht.profileapi.dto.response.DemoGraphicsInfoResponse;
-import org.ht.profileapi.facade.DemoGraphicsInfoService;
+import org.ht.profileapi.facade.DemoGraphicsInfoFacade;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,9 +24,9 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping(value = "api/profiles")
 public class DemoGraphicsInfoController {
-    private final DemoGraphicsInfoService demoGraphicsInfoBizService;
+    private final DemoGraphicsInfoFacade demoGraphicsInfoBizService;
 
-    public DemoGraphicsInfoController(DemoGraphicsInfoService demoGraphicsInfoBizService) {
+    public DemoGraphicsInfoController(DemoGraphicsInfoFacade demoGraphicsInfoBizService) {
         this.demoGraphicsInfoBizService = demoGraphicsInfoBizService;
     }
 

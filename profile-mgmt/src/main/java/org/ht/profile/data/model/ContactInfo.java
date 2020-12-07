@@ -27,7 +27,7 @@ public class ContactInfo {
     private ObjectId id;
 
     @Indexed(unique = true)
-    private ObjectId profileId;
+    private ObjectId htCode;
 
     private List<AddressContact> postalAddresses;
     private List<HierarchyContact> emails;

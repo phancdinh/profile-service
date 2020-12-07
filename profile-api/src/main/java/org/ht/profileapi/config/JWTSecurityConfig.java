@@ -28,7 +28,7 @@ public class JWTSecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().configurationSource(corsConfigurationSource()).and().httpBasic().and()
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeRequests(authz -> authz
-                        .antMatchers("/api-docs.yaml", "/api-docs/**", "/swagger-ui/**", "/swagger.html").permitAll()
+                        .antMatchers("/api-docs.yaml", "/api-docs/**", "/swagger-ui/**", "/swagger.html", "/api/accounts/**").permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt()
                         .jwtAuthenticationConverter(jwtAuthenticationConverter())

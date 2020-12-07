@@ -8,9 +8,9 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.Optional;
 
 public interface DemoGraphicsInfoRepository extends MongoRepository<DemoGraphicsInfo, String> {
-    Optional<DemoGraphicsInfo> findByProfileIdAndAttribute(ObjectId profileId, DemoGraphicsAttribute demoGraphicsInfoAttribute);
+    Optional<DemoGraphicsInfo> findByHtCodeAndAttribute(ObjectId htCode, DemoGraphicsAttribute demoGraphicsInfoAttribute);
 
-    boolean existsByProfileIdAndAttribute(ObjectId profileId, DemoGraphicsAttribute demoGraphicsInfoAttribute);
+    boolean existsByHtCodeAndAttribute(ObjectId htCode, DemoGraphicsAttribute demoGraphicsInfoAttribute);
 
-    void deleteByProfileIdAndAttribute(ObjectId profileId, DemoGraphicsAttribute demoGraphicsInfoAttribute);
+    void deleteByHtCodeAndAttribute(ObjectId htCode, DemoGraphicsAttribute demoGraphicsInfoAttribute);
 }

@@ -6,10 +6,10 @@ import org.ht.profile.data.exception.DataNotExistingException;
 import org.ht.profile.data.model.BasicInfo;
 import org.ht.profile.data.model.Profile;
 import org.ht.profile.data.service.BasicInfoDataService;
+import org.ht.profile.data.service.ContactInfoDataService;
 import org.ht.profile.data.service.ProfileDataService;
 import org.ht.profile.helper.ProfileConverterHelper;
 import org.springframework.stereotype.Service;
-
 import java.util.Optional;
 
 @Service
@@ -18,12 +18,26 @@ public class ProfileBizService {
     private final ProfileDataService profileDataService;
     private final BasicInfoDataService basicInfoDataService;
     private final ProfileConverterHelper profileConverterHelper;
+    private final ContactInfoDataService contactInfoDataService;
 
     public ProfileBizService(ProfileDataService profileDataService,
-                             BasicInfoDataService basicInfoDataService, ProfileConverterHelper profileConverterHelper) {
+                             BasicInfoDataService basicInfoDataService,
+                             ProfileConverterHelper profileConverterHelper,
+                             ContactInfoDataService contactInfoDataService) {
         this.profileDataService = profileDataService;
         this.basicInfoDataService = basicInfoDataService;
         this.profileConverterHelper = profileConverterHelper;
+        this.contactInfoDataService = contactInfoDataService;
+    }
+
+    public Profile create(String htId, String primaryEmail, String primaryPhone, String leadSource) {
+
+        Profile createdProfile = profileDataService
+                .findByHtId(htId)
+                .orElseGet(() -> profileDataService.create(htId, leadSource));
+
+        contactInfoDataService.create(createdProfile.getHtCode(), primaryEmail, primaryPhone);
+        return createdProfile;
     }
 
     public BasicInfo create(String htId, BasicInfo basicInfo) throws DataConflictingException {
@@ -34,15 +48,15 @@ public class ProfileBizService {
                 .findByHtId(htId)
                 .orElseGet(() -> {
                     log.info("try to create profile when create basic info.");
-                    return profileDataService.create(htId);
+                    return profileDataService.create(htId, "");
                 });
 
-        if (basicInfoDataService.existsByProfileId(profile.getId())) {
+        if (basicInfoDataService.existsByHtCode(profile.getHtCode())) {
             String error = String.format("Basic info is already existed with %s", htId);
             throw new DataConflictingException(error);
         }
 
-        return Optional.of(profileConverterHelper.convert(basicInfo, profile.getId()))
+        return Optional.of(profileConverterHelper.convert(basicInfo, profile.getHtCode()))
                 .map(basicInfoDataService::create)
                 .orElseThrow();
     }
@@ -54,7 +68,7 @@ public class ProfileBizService {
         }
 
         return profileOptional
-                .flatMap(profile -> basicInfoDataService.findByProfileId(profile.getId()))
+                .flatMap(profile -> basicInfoDataService.findByHtCode(profile.getHtCode()))
                 .orElseThrow(() -> new DataNotExistingException("Basic Info is not existed."));
     }
     

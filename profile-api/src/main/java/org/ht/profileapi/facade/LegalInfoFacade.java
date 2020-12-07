@@ -16,12 +16,12 @@ import java.util.Optional;
 
 @Component
 @Slf4j
-public class LegalInfoService {
+public class LegalInfoFacade {
     
     private final LegalInfoBizService legalInfoFacadeService;
     private final ProfileInfoConverter profileInfoConverter;
 
-    public LegalInfoService(LegalInfoBizService legalInfoFacadeService, ProfileInfoConverter profileInfoConverter) {
+    public LegalInfoFacade(LegalInfoBizService legalInfoFacadeService, ProfileInfoConverter profileInfoConverter) {
         this.legalInfoFacadeService = legalInfoFacadeService;
         this.profileInfoConverter = profileInfoConverter;
     }

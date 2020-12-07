@@ -16,9 +16,9 @@ public class LegalInfoDataService {
         this.legalInfoRepository = legalInfoRepository;
     }
 
-    public Optional<LegalInfo> findByProfileId(ObjectId profileId) {
-        return Optional.ofNullable(profileId)
-                .flatMap(legalInfoRepository::findByProfileId);
+    public Optional<LegalInfo> findByHtCode(ObjectId htCode) {
+        return Optional.ofNullable(htCode)
+                .flatMap(legalInfoRepository::findByHtCode);
     }
 
     public LegalInfo create(LegalInfo legalInfo) {
@@ -27,9 +27,9 @@ public class LegalInfoDataService {
                 .orElse(legalInfo);
     }
 
-    public boolean existsByProfileId(ObjectId profileId) {
-        return Optional.ofNullable(profileId)
-                .map(legalInfoRepository::existsByProfileId)
+    public boolean existsByHtCode(ObjectId htCode) {
+        return Optional.ofNullable(htCode)
+                .map(legalInfoRepository::existsByHtCode)
                 .orElse(false);
     }
 }

@@ -16,12 +16,12 @@ import java.util.Optional;
 
 @Component
 @Slf4j
-public class ProfileInfoService {
+public class ProfileInfoFacade {
 
     private final ProfileBizService profileBizService;
     private final ProfileInfoConverter profileInfoConverter;
 
-    public ProfileInfoService(ProfileBizService profileBizService, ProfileInfoConverter profileInfoConverter) {
+    public ProfileInfoFacade(ProfileBizService profileBizService, ProfileInfoConverter profileInfoConverter) {
         this.profileBizService = profileBizService;
         this.profileInfoConverter = profileInfoConverter;
     }

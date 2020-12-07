@@ -3,7 +3,7 @@ package org.ht.profileapi.controller;
 import org.ht.profileapi.authority.Role;
 import org.ht.profileapi.dto.request.ContactInfoCreateRequest;
 import org.ht.profileapi.dto.response.ContactInfoResponse;
-import org.ht.profileapi.facade.ContactInfoService;
+import org.ht.profileapi.facade.ContactInfoFacade;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,23 +20,23 @@ import javax.validation.Valid;
 @RequestMapping(value = "api/profiles")
 public class ContactController {
 
-    private final ContactInfoService contactInfoService;
+    private final ContactInfoFacade contactInfoFacade;
 
-    public ContactController(ContactInfoService contactInfoService) {
-        this.contactInfoService = contactInfoService;
+    public ContactController(ContactInfoFacade contactInfoFacade) {
+        this.contactInfoFacade = contactInfoFacade;
     }
 
     @GetMapping(value = "/{htId}/contact")
     @PreAuthorize(Role.ContactInfo.VIEW)
     public ResponseEntity<ContactInfoResponse> findOne(@PathVariable String htId) {
-        ContactInfoResponse p = contactInfoService.findByHtId(htId);
+        ContactInfoResponse p = contactInfoFacade.findByHtId(htId);
         return ResponseEntity.ok(p);
     }
 
     @PostMapping(value = "/{htId}/contact")
     @PreAuthorize(Role.ContactInfo.MANAGE)
     public ResponseEntity<ContactInfoResponse> create(@PathVariable String htId, @Valid @RequestBody ContactInfoCreateRequest profile) {
-        ContactInfoResponse createdProfile = contactInfoService.create(htId, profile);
+        ContactInfoResponse createdProfile = contactInfoFacade.create(htId, profile);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdProfile);
     }
 }

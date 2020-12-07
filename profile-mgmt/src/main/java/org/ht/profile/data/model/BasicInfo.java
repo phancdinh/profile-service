@@ -28,7 +28,7 @@ public class BasicInfo {
     private ObjectId id;
 
     @Indexed(unique = true)
-    private ObjectId profileId;
+    private ObjectId htCode;
 
     private String gender;
 

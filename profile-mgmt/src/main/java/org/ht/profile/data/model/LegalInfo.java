@@ -22,7 +22,7 @@ import java.util.Date;
 public class LegalInfo {
     @Id
     private ObjectId id;
-    private ObjectId profileId;
+    private ObjectId htCode;
     private BaseIdentityDocument nationalIdentity;
     private BaseIdentityDocument citizenIdentity;
     private ArrayList<BaseIdentityDocument> passports;

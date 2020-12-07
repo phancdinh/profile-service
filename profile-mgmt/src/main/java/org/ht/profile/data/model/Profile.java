@@ -11,7 +11,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
-
 import java.util.Date;
 
 @Getter
@@ -21,10 +20,14 @@ import java.util.Date;
 @Document(collection = "profile")
 public class Profile {
     @Id
-    private ObjectId id;
+    private ObjectId htCode;
 
     @Indexed
     private String htId;
+
+    private boolean active;
+
+    private String leadSource;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @CreatedDate

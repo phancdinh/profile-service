@@ -17,11 +17,11 @@ import java.util.Optional;
 
 @Component
 @Slf4j
-public class DemoGraphicsInfoService {
+public class DemoGraphicsInfoFacade {
     private final DemoGraphicsInfoBizService demoGraphicsInfoBizService;
     private final ProfileInfoConverter profileInfoConverter;
 
-    public DemoGraphicsInfoService(DemoGraphicsInfoBizService demoGraphicsInfoBizService, ProfileInfoConverter profileInfoConverter) {
+    public DemoGraphicsInfoFacade(DemoGraphicsInfoBizService demoGraphicsInfoBizService, ProfileInfoConverter profileInfoConverter) {
         this.demoGraphicsInfoBizService = demoGraphicsInfoBizService;
         this.profileInfoConverter = profileInfoConverter;
     }

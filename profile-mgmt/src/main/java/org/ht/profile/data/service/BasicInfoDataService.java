@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.ht.profile.data.model.BasicInfo;
 import org.ht.profile.data.repository.BasicInfoRepository;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -21,20 +20,20 @@ public class BasicInfoDataService {
         this.basicInfoRepository = basicInfoRepository;
     }
 
-    public Optional<BasicInfo> findByProfileId(ObjectId profileId) {
-        return Optional.ofNullable(profileId)
-                .flatMap(basicInfoRepository::findByProfileId);
+    public Optional<BasicInfo> findByHtCode(ObjectId htCode) {
+        return Optional.ofNullable(htCode)
+                .flatMap(basicInfoRepository::findByHtCode);
     }
 
-    public boolean existsByProfileId(ObjectId profileId) {
-        return Optional.ofNullable(profileId)
-                .map(basicInfoRepository::existsByProfileId)
+    public boolean existsByHtCode(ObjectId htCode) {
+        return Optional.ofNullable(htCode)
+                .map(basicInfoRepository::existsByHtCode)
                 .orElse(false);
     }
 
     public BasicInfo create(BasicInfo basicInfo) {
         return Optional.ofNullable(basicInfo)
-                .filter(not(o -> basicInfoRepository.existsByProfileId(o.getProfileId())))
+                .filter(not(o -> basicInfoRepository.existsByHtCode(o.getHtCode())))
                 .map(basicInfoRepository::insert)
                 .orElse(basicInfo);
     }

@@ -1,6 +1,6 @@
 package org.ht.profileapi.controller;
 
-import org.ht.profileapi.facade.ProfileInfoService;
+import org.ht.profileapi.facade.ProfileInfoFacade;
 import org.ht.profileapi.dto.request.BasicInfoCreateRequest;
 import org.ht.profileapi.dto.response.BasicInfoResponse;
 import org.ht.profileapi.authority.Role;
@@ -20,23 +20,23 @@ import javax.validation.Valid;
 @RequestMapping(value = "api/profiles")
 public class ProfileController {
 
-    private final ProfileInfoService profileInfoService;
+    private final ProfileInfoFacade profileInfoFacade;
 
-    public ProfileController(ProfileInfoService profileInfoService) {
-        this.profileInfoService = profileInfoService;
+    public ProfileController(ProfileInfoFacade profileInfoFacade) {
+        this.profileInfoFacade = profileInfoFacade;
     }
 
     @GetMapping(value = "/{htId}")
     @PreAuthorize(Role.BasicInfo.VIEW)
     public ResponseEntity<BasicInfoResponse> findOne(@PathVariable String htId) {
-        BasicInfoResponse p = profileInfoService.find(htId);
+        BasicInfoResponse p = profileInfoFacade.find(htId);
         return ResponseEntity.ok(p);
     }
 
     @PostMapping(value = "{htId}")
     @PreAuthorize(Role.BasicInfo.MANAGE)
     public ResponseEntity<BasicInfoResponse> create(@PathVariable String htId, @Valid @RequestBody BasicInfoCreateRequest profile) {
-        BasicInfoResponse createdProfile = profileInfoService.create(htId, profile);
+        BasicInfoResponse createdProfile = profileInfoFacade.create(htId, profile);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdProfile);
     }
 }
