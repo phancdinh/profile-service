@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.ht.profileapi.dto.request.internal.AddressContactRequest;
 import org.ht.profileapi.dto.request.internal.HierarchyContactRequest;
+import org.ht.profileapi.validator.constraint.UniqueContactValue;
 import org.ht.profileapi.validator.constraint.UniquePrimaryContact;
 
 import java.util.List;
@@ -18,12 +19,15 @@ import java.util.List;
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class ContactInfoCreateRequest {
-    @UniquePrimaryContact(message = "{validation.contact.address.unique}")
+    @UniquePrimaryContact(message = "{validation.contact.address.primary.unique}")
     private List<AddressContactRequest> postalAddresses;
 
-    @UniquePrimaryContact(message = "{validation.contact.email.unique}")
+
+    @UniquePrimaryContact(message = "{validation.contact.email.primary.unique}")
+    @UniqueContactValue(message = "{validation.contact.email.unique}")
     private List<HierarchyContactRequest> emails;
 
-    @UniquePrimaryContact(message = "{validation.contact.phone.unique}")
+    @UniqueContactValue(message = "{validation.contact.phone.unique}")
+    @UniquePrimaryContact(message = "{validation.contact.phone.primary.unique}")
     private List<HierarchyContactRequest> phoneNumbers;
 }

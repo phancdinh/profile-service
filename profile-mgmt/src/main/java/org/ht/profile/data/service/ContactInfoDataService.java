@@ -63,5 +63,27 @@ public class ContactInfoDataService {
                 .map(contactInfoRepository::insert)
                 .orElse(contactInfo);
     }
+
+    public void updatePrimaryEmail(ObjectId htCode, String emailStr) {
+        if (StringUtils.isEmpty(emailStr)) {
+            return;
+        }
+        Optional<ContactInfo> contactInfoOptional = findByHtCode(htCode);
+        contactInfoOptional.map(contactInfo -> {
+            boolean existed = false;
+            List<HierarchyContact> emails = contactInfo.getEmails();
+            for (HierarchyContact email : emails) {
+                email.setPrimary(false);
+                if (email.getValue().equals(emailStr)) {
+                    email.setPrimary(true);
+                    existed = true;
+                }
+            }
+            if (!existed) {
+                emails.add(new HierarchyContact(emailStr, true));
+            }
+            return contactInfo;
+        }).map(contactInfoRepository::save);
+    }
 }
 

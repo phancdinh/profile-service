@@ -47,7 +47,7 @@ public class ProfileInfoFacade {
 
     public BasicInfoResponse find(String htId) {
         try {
-            return profileInfoConverter.convertToResponse(profileBizService.find(htId), htId);
+            return profileInfoConverter.convertToResponse(profileBizService.findBasicInfo(htId), htId);
         } catch (DataNotExistingException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
