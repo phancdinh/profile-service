@@ -32,7 +32,7 @@ public class DemoGraphicsInfoFacade {
                                            DemoGraphicsInfoCreateRequest demoGraphicsInfoCreateRequest) {
         try {
             return Optional.of(demoGraphicsInfoCreateRequest)
-                    .map(info -> profileInfoConverter.convert(info, demoGraphicsInfoAttribute))
+                    .map(info -> profileInfoConverter.convertToEntity(info, demoGraphicsInfoAttribute))
                     .map(graphicsInfo -> demoGraphicsInfoBizService.create(htId, graphicsInfo))
                     .map(graphicsInfo -> profileInfoConverter.convertToResponse(graphicsInfo, htId)).orElse(null);
         } catch (DataConflictingException e) {
@@ -56,7 +56,7 @@ public class DemoGraphicsInfoFacade {
                                            DemoGraphicsInfoUpdateRequest updateRequest) {
         try {
             return Optional.of(updateRequest)
-                    .map(info -> profileInfoConverter.convert(updateRequest, demoGraphicsInfoAttribute))
+                    .map(info -> profileInfoConverter.convertToEntity(updateRequest, demoGraphicsInfoAttribute))
                     .map(graphicsInfoDto -> demoGraphicsInfoBizService.update(htId, graphicsInfoDto))
                     .map(graphicsInfoDto -> profileInfoConverter.convertToResponse(graphicsInfoDto, htId)).orElse(null);
         } catch (DataConflictingException e) {

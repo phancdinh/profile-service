@@ -38,4 +38,7 @@ public class ProfileDataService {
         return profileRepository.insert(addedProfile);
     }
 
+    public void deleteProfileByHtId(String htId) {
+        profileRepository.deleteByHtId(htId);
+    }
 }

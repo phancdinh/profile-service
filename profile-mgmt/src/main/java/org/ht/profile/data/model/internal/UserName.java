@@ -10,6 +10,11 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserName {
+
+    public UserName(String fullName) {
+        this.fullName = fullName;
+    }
+
     private String nickName;
     private String displayName;
     private String fullName;

@@ -43,13 +43,7 @@ public class ProfileConverterHelper {
         return legalInfo;
     }
 
-    public <T> T convertToDto(Object source, String htId, Class<T> destinationType) {
-        T data = profileMapper.map(source, destinationType);
-        return data;
-    }
-
     public DemoGraphicsInfo convert(DemoGraphicsInfo demoGraphicsInfo, String htId) {
-        DemoGraphicsInfo dto = profileMapper.map(demoGraphicsInfo, DemoGraphicsInfo.class);
-        return dto;
+        return profileMapper.map(demoGraphicsInfo, DemoGraphicsInfo.class);
     }
 }

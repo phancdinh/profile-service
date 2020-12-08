@@ -3,8 +3,7 @@ package org.ht.profileapi.config;
 import org.ht.profile.data.model.BasicInfo;
 import org.ht.profile.data.model.internal.BaseIdentityDocument;
 import org.ht.profileapi.dto.request.BasicInfoCreateRequest;
-import org.ht.profileapi.dto.request.internal.CitizenIdentityRequest;
-import org.ht.profileapi.dto.request.internal.NationalIdentityRequest;
+import org.ht.profileapi.dto.request.internal.IdentityInfoRequest;
 import org.ht.profileapi.dto.request.internal.PassportRequest;
 import org.ht.profileapi.dto.response.BasicInfoResponse;
 import org.ht.profileapi.dto.response.internal.CitizenIdentityResponse;
@@ -22,7 +21,7 @@ public class ModelMappingConfig {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setAmbiguityIgnored(true);
 
-        modelMapper.addMappings(new PropertyMap<NationalIdentityRequest, BaseIdentityDocument>() {
+        modelMapper.addMappings(new PropertyMap<IdentityInfoRequest, BaseIdentityDocument>() {
             @Override
             protected void configure() {
                 map().getPermanentAddress().setFullAddress(source.getPermanentAddress());
@@ -33,16 +32,6 @@ public class ModelMappingConfig {
             }
         });
 
-        modelMapper.addMappings(new PropertyMap<CitizenIdentityRequest, BaseIdentityDocument>() {
-            @Override
-            protected void configure() {
-                map().getPermanentAddress().setFullAddress(source.getPermanentAddress());
-                map().getHomeTown().setFullAddress(source.getHomeTown());
-                map().getIssuedPlace().setFullAddress(source.getIssuedPlace());
-                map().getIssuedDate().setFullDate(source.getIssuedDate());
-                map().getDob().setFullDate(source.getDob());
-            }
-        });
 
         modelMapper.addMappings(new PropertyMap<PassportRequest, BaseIdentityDocument>() {
             @Override

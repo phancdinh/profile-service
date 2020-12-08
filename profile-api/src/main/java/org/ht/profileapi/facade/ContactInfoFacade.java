@@ -29,7 +29,7 @@ public class ContactInfoFacade {
     public ContactInfoResponse create(String htId, ContactInfoCreateRequest createRequest) {
         try {
             return Optional.of(createRequest)
-                    .map(info -> profileInfoConverter.convertToEntity(info, ContactInfo.class))
+                    .map(info -> profileInfoConverter.convertToEntity(info))
                     .map(contactInfoDto -> contactInfoBizService.create(htId, contactInfoDto))
                     .map(contactInfoDto -> profileInfoConverter.convertToResponse(contactInfoDto, htId)).orElse(null);
         } catch (DataConflictingException e) {

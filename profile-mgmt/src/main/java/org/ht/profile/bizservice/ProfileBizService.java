@@ -1,6 +1,7 @@
 package org.ht.profile.bizservice;
 
 import lombok.extern.slf4j.Slf4j;
+import org.bson.types.ObjectId;
 import org.ht.profile.data.exception.DataConflictingException;
 import org.ht.profile.data.exception.DataNotExistingException;
 import org.ht.profile.data.model.BasicInfo;
@@ -10,6 +11,7 @@ import org.ht.profile.data.service.ContactInfoDataService;
 import org.ht.profile.data.service.ProfileDataService;
 import org.ht.profile.helper.ProfileConverterHelper;
 import org.springframework.stereotype.Service;
+
 import java.util.Optional;
 
 @Service
@@ -41,22 +43,20 @@ public class ProfileBizService {
     }
 
     public BasicInfo create(String htId, BasicInfo basicInfo) throws DataConflictingException {
-        // because we don't have api to create ht_id so I try to create ht_id for case creating basic info.
-        // I think this business should be removed.
-        // todo remove this business when we have api create ht id.
-        Profile profile = profileDataService
-                .findByHtId(htId)
-                .orElseGet(() -> {
-                    log.info("try to create profile when create basic info.");
-                    return profileDataService.create(htId, "");
+        ObjectId htCode = profileDataService.findByHtId(htId)
+                .map(Profile::getHtCode)
+                .orElseThrow(() -> {
+                    String error = String.format("Profile is not existed with htId: %s", htId);
+                    log.error(error);
+                    return new DataNotExistingException(error);
                 });
 
-        if (basicInfoDataService.existsByHtCode(profile.getHtCode())) {
+        if (basicInfoDataService.existsByHtCode(htCode)) {
             String error = String.format("Basic info is already existed with %s", htId);
             throw new DataConflictingException(error);
         }
 
-        return Optional.of(profileConverterHelper.convert(basicInfo, profile.getHtCode()))
+        return Optional.of(profileConverterHelper.convert(basicInfo, htCode))
                 .map(basicInfoDataService::create)
                 .orElseThrow();
     }
@@ -75,7 +75,21 @@ public class ProfileBizService {
     public boolean existsByHtId(String htId) {
     	return profileDataService.existsByHtId(htId);
     }
-    
 
-    
+
+    public Profile create(String hungthinhId, String leadSource) throws DataConflictingException {
+        if (profileDataService.existsByHtId(hungthinhId)) {
+            throw new DataConflictingException("HtID is already existed with value " + hungthinhId);
+        }
+        return Optional.of(hungthinhId)
+                .map(htId -> profileDataService.create(htId, leadSource))
+                .orElseThrow();
+    }
+
+    public void deleteProfile(String htId) {
+        if (!profileDataService.existsByHtId(htId)) {
+            throw new DataNotExistingException(String.format("Profile is not existed with htId: %s", htId));
+        }
+        profileDataService.deleteProfileByHtId(htId);
+    }
 }

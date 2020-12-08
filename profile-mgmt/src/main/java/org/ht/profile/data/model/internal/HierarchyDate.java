@@ -14,6 +14,11 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class HierarchyDate {
+
+    public HierarchyDate(Date fullDate) {
+        this.fullDate = fullDate;
+    }
+
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date fullDate;
     private Integer year;
