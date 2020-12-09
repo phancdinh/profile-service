@@ -13,8 +13,9 @@ resources:
 
 variables:
   # Container registry service connection established during pipeline creation
-  containerRegistry: 'acr-httech'
-  azureSubscriptionEndpoint: 'httech-az-connection'
+  serviceName: 'htid-profile-service'
+  containerRegistry: 'httech-acr-connection'
+  azureSubscriptionEndpoint: 'httech-resource-mgt-connection'
   azureContainerRegistry: 'httech.azurecr.io'
   dockerfilePath: '**/Dockerfile'
   imageName: $(Build.DefinitionName) | grep -o '[^.]*$'
@@ -69,7 +70,7 @@ stages:
         displayName: Build & Push to ACR
         inputs:
           command: buildAndPush
-          repository: $(Build.SourceBranchName)-htid-profile-service
+          repository: $(Build.SourceBranchName)-$(serviceName)
           dockerfile: $(dockerfilePath)
           azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
           azureContainerRegistry: $(azureContainerRegistry)
