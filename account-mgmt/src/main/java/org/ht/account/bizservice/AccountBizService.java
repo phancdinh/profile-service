@@ -22,7 +22,7 @@ public class AccountBizService {
         if (accountDataService.existsByEmail(creationAccount.getEmail())) {
             String errorMessage = String.format("Email %s has been registered ", creationAccount.getEmail());
             log.error(errorMessage);
-            throw new AccountRegisterFailureException(errorMessage);
+            throw new AccountRegisterFailureException(errorMessage); 
         }
 
         return Optional.of(creationAccount)
