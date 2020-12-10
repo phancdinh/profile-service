@@ -8,7 +8,7 @@ account-mgmt:
   identity:
     server: ${IDENTITY_SERVER}
     scim2:
-      users: ${IDENTITY_SCIM2_USERS}
+      users: "/scim2/Users"
     mgt-user:
       id: ${IDENTITY_MGT_USER_ID}
       password: ${IDENTITY_MGT_USER_PASSWORD}
