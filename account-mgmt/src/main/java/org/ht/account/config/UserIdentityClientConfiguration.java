@@ -3,6 +3,7 @@ package org.ht.account.config;
 import feign.auth.BasicAuthRequestInterceptor;
 import feign.okhttp.OkHttpClient;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -10,11 +11,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class UserIdentityClientConfiguration {
 
-    private final AppProperties appProperties;
+    @Value("${account-mgmt.identity.mgt-user.id}")
+    private String managementUserId;
 
-    public UserIdentityClientConfiguration(AppProperties appProperties) {
-        this.appProperties = appProperties;
-    }
+    @Value("${account-mgmt.identity.mgt-user.password}")
+    private String managementUserPassword;
 
     @Bean
     public OkHttpClient client() {
@@ -23,7 +24,8 @@ public class UserIdentityClientConfiguration {
 
     @Bean
     public BasicAuthRequestInterceptor basicAuthRequestInterceptor() {
-        log.debug(String.format("%s :: %s", appProperties.getIdentityManagementUserId(), appProperties.getIdentityManagementUserPassword()));
-        return new BasicAuthRequestInterceptor(appProperties.getIdentityManagementUserId(), appProperties.getIdentityManagementUserPassword());
+
+        log.debug(String.format("Identity Server:: %s / %s", managementUserId, managementUserPassword));
+        return new BasicAuthRequestInterceptor(managementUserId, managementUserPassword);
     }
 }
