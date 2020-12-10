@@ -1,7 +1,7 @@
 package org.ht.profileapi.handler;
 
 import org.ht.account.exception.AccountRegisterFailureException;
-import org.ht.common.response.GenericResponse;
+import org.ht.profileapi.dto.response.GenericResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

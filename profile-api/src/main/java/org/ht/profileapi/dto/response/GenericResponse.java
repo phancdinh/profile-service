@@ -1,6 +1,7 @@
-package org.ht.common.response;
+package org.ht.profileapi.dto.response;
 
 import org.springframework.http.HttpStatus;
+
 import java.util.HashMap;
 
 public class GenericResponse extends HashMap<String, Object> {
