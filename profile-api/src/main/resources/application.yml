@@ -28,4 +28,5 @@ springdoc:
   api-docs:
     path: /api-docs
 
-
+profile:
+  web-client: https://app-profile-dev.hungthinhcorp.com.vn
