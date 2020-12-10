@@ -5,4 +5,3 @@ profile:
       auto-index-creation: true
       uri: ${DATABASE_CONNECTION_URI}
       database: ${DATABASE_NAME}
-  web-client: ${PROFILE_WEB_CLIENT}
