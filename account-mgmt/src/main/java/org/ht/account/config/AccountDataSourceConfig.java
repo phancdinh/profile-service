@@ -14,21 +14,8 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 @Configuration
 @RequiredArgsConstructor
-@EnableConfigurationProperties(AccountMongoDbProperties.class)
-@EnableMongoRepositories(basePackages = {"org.ht.account.data.repository"}, mongoTemplateRef = "accountMongoTemplate")
+@EnableMongoRepositories(basePackages = {"org.ht.account.data.repository"})
 @EnableMongoAuditing
 @EntityScan("org.ht.account.data.model")
 public class AccountDataSourceConfig {
-
-    private final AccountMongoDbProperties mongoDbProperties;
-
-    @Bean(name = "accountMongoTemplate")
-    public MongoTemplate accountMongoTemplate() throws Exception {
-        return new MongoTemplate(accountMongoFactory(this.mongoDbProperties.getMongoProperties()));
-    }
-
-    @Bean
-    public MongoDatabaseFactory accountMongoFactory(final MongoProperties mongo) throws Exception {
-        return new SimpleMongoClientDatabaseFactory(mongo.getUri());
-    }
 }

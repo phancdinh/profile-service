@@ -1,10 +1,4 @@
 account-mgmt:
-  datasource:
-    mongoProperties:
-      field-naming-strategy: org.springframework.data.mapping.model.SnakeCaseFieldNamingStrategy
-      auto-index-creation: true
-      uri: ${DATABASE_CONNECTION_URI}
-      database: ${DATABASE_NAME}
   identity:
     server: ${IDENTITY_SERVER}
     scim2:

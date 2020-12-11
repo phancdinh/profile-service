@@ -30,7 +30,7 @@ public class AccountBizService {
         return Optional.of(creationAccount).map(accountDataService::create).orElseThrow();
     }
 
-    public boolean checkEmailValidForRegister(String email) {
+    public boolean isValidForRegister(String email) {
         Optional<Account> account = accountDataService.findByEmailAndActive(email, false);
         if (account.isEmpty()) {
             String errorMessage = String.format("Account %s was not found ", email);

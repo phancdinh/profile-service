@@ -2,6 +2,7 @@ package org.ht.profileapi.facade;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.ht.account.bizservice.AccountBizService;
 import org.ht.profile.bizservice.ContactInfoBizService;
 import org.ht.profile.bizservice.IdGeneratorBizService;
 import org.ht.profile.bizservice.LegalInfoBizService;
@@ -12,8 +13,10 @@ import org.ht.profile.data.model.BasicInfo;
 import org.ht.profile.data.model.ContactInfo;
 import org.ht.profile.data.model.LegalInfo;
 import org.ht.profile.data.model.Profile;
+import org.ht.profileapi.dto.request.AccountCreationRequest;
 import org.ht.profileapi.dto.request.BasicInfoCreateRequest;
 import org.ht.profileapi.dto.request.ProfileCreateRequest;
+import org.ht.profileapi.dto.request.internal.HierarchyContactRequest;
 import org.ht.profileapi.dto.response.BasicInfoResponse;
 import org.ht.profileapi.dto.response.ProfileResponse;
 import org.ht.profileapi.facade.converter.ProfileInfoConverter;
@@ -32,6 +35,7 @@ public class ProfileInfoFacade {
     private final ContactInfoBizService contactInfoBizService;
     private final LegalInfoBizService legalInfoBizService;
     private final ProfileInfoConverter profileInfoConverter;
+    private final AccountBizService accountBizService;
     private final IdGeneratorBizService idGeneratorBizService;
 
     public BasicInfoResponse create(String htId, BasicInfoCreateRequest profileRequest) {
@@ -55,13 +59,15 @@ public class ProfileInfoFacade {
 
 
     public ProfileResponse createProfileFromCertainInfo(ProfileCreateRequest request) {
-        // TODO: 07/12/2020 try to validate contact primary email and phone and existed, ref #363
-        try {
-            return Optional.of(request)
-                    .map(this::createProfile).orElse(null);
-        } catch (DataConflictingException e) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
-        }
+        return Optional.of(request).map(r -> {
+            validateWhenAddProfile(r);
+            try {
+                return Optional.of(r)
+                        .map(this::createProfile).orElse(null);
+            } catch (DataConflictingException e) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+            }
+        }).orElse(null);
     }
 
     private ProfileResponse createProfile(ProfileCreateRequest profileRequest) {
@@ -83,4 +89,19 @@ public class ProfileInfoFacade {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
+
+    private void validateWhenAddProfile(ProfileCreateRequest creationRequest) {
+        HierarchyContactRequest primaryEmail = creationRequest.getContactInfo().getEmails()
+                .stream()
+                .filter(HierarchyContactRequest::isPrimary)
+                .findFirst().orElse(new HierarchyContactRequest());
+        String email = primaryEmail.getValue();
+        if (contactInfoBizService.existByEmailAndActive(email)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email had been used.");
+        }
+        if (!accountBizService.isValidForRegister(email)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email had been used.");
+        }
+    }
+
 }
