@@ -1,181 +1,149 @@
 package org.ht.account.bizservice;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
+import org.ht.account.config.AccountMgmtProperties;
 import org.ht.account.data.model.Account;
 import org.ht.account.data.model.internal.Activation;
 import org.ht.account.data.model.internal.Invitation;
 import org.ht.account.data.service.AccountDataService;
-import org.ht.account.dto.response.ResponseData;
-import org.ht.account.dto.response.ResponseStatus;
+import org.ht.account.exception.DataNotExistingException;
 import org.springframework.stereotype.Component;
+import org.springframework.util.DigestUtils;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
 public class ManageLinkBizService {
 
-
-    private static int EXPIRE_PERIOD_DAYS = 10;
-
+    private final AccountMgmtProperties accountApiProperties;
     private final AccountDataService actDataService;
 
-    public ManageLinkBizService(AccountDataService actDataService) {
+    public ManageLinkBizService(AccountDataService actDataService, AccountMgmtProperties accountApiProperties) {
         this.actDataService = actDataService;
+        this.accountApiProperties = accountApiProperties;
     }
 
-    public ResponseData getActLink(String htId, String prefixUrl) {
+    public String generateActivationLink(String htId) throws DataNotExistingException {
 
-        ResponseData result = new ResponseData();
-        Optional<Account> oData = actDataService.findByHtId(htId);
-        if (oData.isEmpty()) {
-            result.setStatus(ResponseStatus.FAILURE);
-            result.setMessage("Account does not existed!");
-            return result;
-        }
-        Account data = oData.get();
+        Account account = actDataService.findByHtId(htId).filter(p -> !p.isActive() && !p.isUserCreated())
+                .orElseThrow(() -> {
+                    String error = String.format("Account does not existed or actived with htId: %s", htId);
+                    log.error(error);
+                    return new DataNotExistingException(error);
+                });
         Activation actLink = new Activation();
-        LocalDateTime currentTime = LocalDateTime.now();
-        String url = prefixUrl + "/" + htId + "?" + currentTime.getNano();
+        actLink.setCreatedAt(new Date());
+        actLink.setExpiredAt(DateUtils.addDays(new Date(), accountApiProperties.getActivationExpirePeriodDays()));
+        account.setActivation(actLink);
+        actDataService.update(account);
 
-        actLink.setCreatedAt(currentTime);
-        actLink.setExpiredAt(currentTime.plusDays(EXPIRE_PERIOD_DAYS));
-        actLink.setUrl(url);
-
+        String url = initActivationLink(account);
         log.info("url: " + url);
-        data.setActivation(actLink);
-
-        //Store Activation link to DB and return url back user
-        actDataService.createOrUpdate(data);
-        result.setStatus(ResponseStatus.SUCCESS);
-        result.setMessage(url);
-        return result;
+        return url;
     }
 
-    public ResponseData verifyActLink(String htId, String url) {
-        ResponseData result = new ResponseData();
-        //Does not existed account or account is register
-        Optional<Account> oData = actDataService.findByHtId(htId);
-
-        if (oData.isEmpty()
-                || oData.get().getActivation().getUrl() == null || oData.get().getActivation().getUrl() == ""
-                || oData.get().getActivation().getUrl().equalsIgnoreCase(url)
-                || oData.get().isActive()) {
-            log.info("HtId: " + htId + " does not existed!");
-            result.setMessage("Activation link does not existed!");
-            result.setStatus(ResponseStatus.FAILURE);
-            result.setCode("");// define later
-            return result;
+    public Account getActivationLink(String htId, String check) throws DataNotExistingException {
+        Account account = actDataService.findByHtId(htId)
+                .filter(p -> !p.isActive() && !p.isUserCreated() && p.getActivation() != null).orElseThrow(() -> {
+                    String error = String.format("Account activation does not existed or actived with htId: %s", htId);
+                    log.error(error);
+                    return new DataNotExistingException(error);
+                });
+        // Check activation date is still valid and correct link for this htid
+        if (isLinkExpire(account) && !check.equals(getMd5Activation(account))) {
+            String error = String.format("Account activation does not existed or actived with htId: %s", htId);
+            log.error(error);
+            throw new DataNotExistingException(error);
         }
 
-        Account data = oData.get();
-
-        //check expire date from create
-        if (LocalDateTime.now().isAfter(data.getActivation().getExpiredAt())) {
-            log.info("HtId: " + htId + " active link expired already!");
-            result.setMessage("HTID active link expired already!!");
-            result.setStatus(ResponseStatus.FAILURE);
-            result.setCode("");// define later
-
-            //data.getActivation().setConfirmedAt(LocalDateTime.now());
-            data.getActivation().setUrl("");//Remove active Link
-            actDataService.update(data);
-            return result;
-        }
-
-        data.setActive(true);
-        data.getActivation().setConfirmedAt(LocalDateTime.now());
-        data.getActivation().setUrl("");
-
-        actDataService.update(data);
-        result.setMessage("HTID active link valid!");
-        result.setStatus(ResponseStatus.SUCCESS);
-        result.setCode("");// define later
-        return result;
+        account.setActive(true);
+        account.setUserCreated(true);
+        account.getActivation().setConfirmedAt(new Date());
+        return actDataService.update(account);
     }
 
+    public String generateInvitationLink(String htId, String contact) throws DataNotExistingException {
+        Account account = actDataService.findByHtId(htId).filter(p -> !p.isActive() && !p.isUserCreated())
+                .orElseThrow(() -> {
+                    String error = String.format("Account does not existed or actived with htId: %s", htId);
+                    log.error(error);
+                    return new DataNotExistingException(error);
+                });
 
-    public ResponseData getInvtLink(String htId, String prefixUrl, String contact) {
+        Date currentDate = new Date();
+        // Incase resend email/phone to invitation link, will update Invitation,
+        // other will create new
+        Invitation invitation = new Invitation(contact, currentDate, null);
 
-
-        ResponseData result = new ResponseData();
-        LocalDateTime currentTime = LocalDateTime.now();
-        //Does not create Profile this account
-        Optional<Account> oData = actDataService.findByHtId(htId);
-        if (oData.isEmpty()) {
-            result.setStatus(ResponseStatus.FAILURE);
-            result.setMessage("Account does not existed!");
-            return result;
+        if (account.getInvitations() != null) {
+            account.getInvitations().removeIf(p -> contact.equalsIgnoreCase(p.getMainContact()));
+            account.getInvitations().add(invitation);
+        } else {
+            List<Invitation> list = Stream.of(invitation).collect(Collectors.toList());
+            account.setInvitations(list);
         }
+        String url = initInvitationLink(account, invitation);
+        actDataService.update(account);
 
-        //Account is existed or active already
-        Account data = oData.get();
-        if (data.isActive() || data.isUserCreated()) {
-            result.setStatus(ResponseStatus.FAILURE);
-            result.setMessage("Account is created already!");
-            return result;
-        }
-
-        //Incase resend email/phone to invitation link, will update Invitation, other will create new
-        data.getInvitations().removeIf(p -> contact.equalsIgnoreCase(p.getMainContact()));
-        Invitation invtData = null;
-        String url = prefixUrl + "/" + htId + "?" + currentTime.getNano() + "&" + contact;
-
-        invtData = new Invitation();
-        invtData.setCreatedAt(currentTime);
-        invtData.setMainContact(contact);
-        invtData.setUrl(url);
-        invtData.setShortUrl(url);//will update later after short link will be applied
-
-        data.getInvitations().add(invtData);
-        //Store Activation link to DB and return url back user
-        actDataService.update(data);
-        result.setStatus(ResponseStatus.SUCCESS);
-        result.setMessage(url);
-        return result;
-
+        return url;
     }
 
-    public ResponseData verifyInvtLink(String htId, String url, String contact) {
+    public Invitation getInvitationLink(String htId, String valid) throws DataNotExistingException {
+        Account data = actDataService.findByHtId(htId)
+                .filter(p -> !p.isActive() && !p.isUserCreated() && p.getInvitations().stream().count() > 0)
+                .orElseThrow(() -> {
+                    String error = String.format("Invitation does not existed or actived with htId: %s", htId);
+                    log.error(error);
+                    return new DataNotExistingException(error);
+                });
 
-        ResponseData result = new ResponseData();
-        //Does not create Profile this account
-        Optional<Account> oData = actDataService.findByHtId(htId);
-        if (oData.isEmpty()) {
-            result.setStatus(ResponseStatus.FAILURE);
-            result.setMessage("Account does not existed!");
-            return result;
-        }
+        return getInvitation(valid, data);
+    }
 
-        //Account is existed or active already
-        Account data = oData.get();
-        if (data.isActive() || data.isUserCreated()) {
-            result.setStatus(ResponseStatus.FAILURE);
-            result.setMessage("Account is created already!");
-            return result;
-        }
+    private String initActivationLink(Account account) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(accountApiProperties.getAccountActivationLink());
+        builder.append("?htId=").append(account.getHtId());
+        builder.append("&valid=").append(getMd5Activation(account));
+        return builder.toString();
+    }
 
-        //Incase resend email/phone to invitation link, will update Invitation, other will create new
-        Invitation invtData = data.getInvitations().stream().filter(p -> contact.equalsIgnoreCase(p.getMainContact())).findAny().orElse(null);
+    private String getMd5Invitation(Account account, Invitation invitation) {
+        return new String((DigestUtils.md5DigestAsHex(
+                (account.getHtId() + invitation.getMainContact() + invitation.getCreatedAt()).getBytes())));
+    }
 
-        if (invtData == null) {
-            result.setStatus(ResponseStatus.FAILURE);
-            result.setMessage("Invitation Link does not existed!");
-            return result;
-        }
-        invtData.setLastModifiedDate(LocalDateTime.now());
-        invtData.setUrl("");
-        invtData.setShortUrl("");
+    private String initInvitationLink(Account account, Invitation invitation) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(accountApiProperties.getAccountInvitationLink());
+        builder.append("?htId=").append(account.getHtId());
+        builder.append("&valid=").append(getMd5Invitation(account, invitation));
+        return builder.toString();
+    }
 
-        List<Invitation> newList = data.getInvitations().stream().filter(p -> !contact.equalsIgnoreCase(p.getMainContact())).collect(Collectors.toList());
-        newList.add(invtData);
-        data.setInvitations(newList);
-        //Store Activation link to DB and return url back user
-        actDataService.update(data);
-        result.setStatus(ResponseStatus.SUCCESS);
-        result.setMessage(url);
-        return result;
+    private Invitation getInvitation(String check, Account account) {
+        return account.getInvitations().stream().filter(p -> check.equals(getMd5Invitation(account, p))).findFirst()
+                .orElseThrow(() -> {
+                    String error = String.format("Invitation does not match with htId: %s", account.getHtId());
+                    log.error(error);
+                    return new DataNotExistingException(error);
+                });
+    }
+
+    private boolean isLinkExpire(Account data) {
+        Date currentDate = new Date();
+        return currentDate.compareTo(data.getActivation().getExpiredAt()) > 0;
+    }
+
+    private String getMd5Activation(Account account) {
+        return new String(
+                (DigestUtils.md5DigestAsHex((account.getHtId() + account.getActivation().getCreatedAt()).getBytes())));
     }
 }

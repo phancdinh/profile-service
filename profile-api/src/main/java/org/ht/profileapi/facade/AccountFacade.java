@@ -1,13 +1,12 @@
 package org.ht.profileapi.facade;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Optional;
+
 import org.ht.account.bizservice.AccountBizService;
 import org.ht.account.bizservice.ManageLinkBizService;
 import org.ht.account.bizservice.UserIdentityBizService;
 import org.ht.account.data.model.Account;
-import org.ht.account.dto.response.ResponseData;
-import org.ht.account.dto.response.ResponseStatus;
+import org.ht.account.data.model.internal.Invitation;
 import org.ht.profile.bizservice.ContactInfoBizService;
 import org.ht.profile.bizservice.IdGeneratorBizService;
 import org.ht.profile.bizservice.ProfileBizService;
@@ -24,7 +23,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
@@ -83,27 +83,24 @@ public class AccountFacade {
     }
 
 
-    public ResponseData getActLink(String htId, String prefixUrl) {
-        return manageLinkBizService.getActLink(htId, prefixUrl);
+    public String getActLink(String htId, String prefixUrl) {
+        return manageLinkBizService.generateActivationLink(htId);
     }
 
-    public ResponseData verifyActLink(String htId, String url) {
-        return manageLinkBizService.verifyActLink(htId, url);
+    public Account verifyActLink(String htId, String check) {
+        return manageLinkBizService.getActivationLink(htId, check);
     }
 
-    public ResponseData getInvtLink(String htId, String prefixUrl, String contact) {
-        ResponseData response = new ResponseData();
+    public String getInvtLink(String htId, String prefixUrl, String contact) {
 
         if (profileBizService.existsByHtId(htId)) {
-            response.setStatus(ResponseStatus.FAILURE);
-            response.setMessage("Doest not existed Profile!");
-            return response;
+            return "";
         }
 
-        return manageLinkBizService.getInvtLink(htId, prefixUrl, contact);
+        return manageLinkBizService.generateInvitationLink(htId, contact);
     }
 
-    public ResponseData verifyInvtLink(String htId, String url, String contact) {
-        return manageLinkBizService.verifyInvtLink(htId, url, contact);
+    public Invitation verifyInvtLink(String htId, String url, String valid) {
+        return manageLinkBizService.getInvitationLink(htId, valid);
     }
 }

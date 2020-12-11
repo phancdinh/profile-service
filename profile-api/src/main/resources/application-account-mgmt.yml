@@ -12,5 +12,9 @@ account-mgmt:
     mgt-user:
       id: ${IDENTITY_MGT_USER_ID}
       password: ${IDENTITY_MGT_USER_PASSWORD}
-
-
+  configuration:
+    activation:
+      default-link: ${ACCOUNT_ACTIVATION_LINK}
+      expire-period-days: ${ACCOUNT_ACTIVATION_EXPIRE_PERIOD_DAYS}
+    invitation:
+      default-link: ${ACCOUNT_INVITATION_LINK}

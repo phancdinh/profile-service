@@ -1,6 +1,6 @@
 package org.ht.account.data.model.internal;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 import org.hibernate.validator.constraints.URL;
 import org.springframework.data.annotation.CreatedDate;
@@ -17,21 +17,15 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Invitation {
-	
-	@URL
-    private String url;
-	
-	@URL
-	private String shortUrl;
 
     private String mainContact;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @CreatedDate
-    private LocalDateTime createdAt;
-    
+    private Date createdAt;
+
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @LastModifiedDate
-    private LocalDateTime lastModifiedDate;
-   
+    private Date lastModifiedDate;
+
 }
