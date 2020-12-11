@@ -24,7 +24,9 @@ public class AccountDataService {
     }
 
     public Account update(Account account) {
-        return accountRepository.save(account);
+        return Optional.ofNullable(account)
+        .map(accountRepository::save)
+        .orElseThrow();
     }
 
     public Optional<Account> findByHtId(String htId) {
