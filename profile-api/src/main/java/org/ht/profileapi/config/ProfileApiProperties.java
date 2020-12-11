@@ -8,5 +8,23 @@ import org.springframework.stereotype.Component;
 @Getter
 public class ProfileApiProperties {
     @Value("${profile.web-client}")
-    private String WebClient;
+    private String webClient;
+
+    @Value("${profile.mail.host}")
+    private String mailHost;
+
+    @Value("${profile.mail.port}")
+    private String mailPort;
+
+    @Value("${profile.mail.username}")
+    private String mailUsername;
+
+    @Value("${profile.mail.password}")
+    private String mailPassword;
+
+    @Value("${profile.mail.from}")
+    private String mailFrom;
+
+    @Value("${account-mgmt.configuration.activation.email-subject}")
+    private String activationEmailSubject;
 }

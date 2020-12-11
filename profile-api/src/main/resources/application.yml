@@ -30,3 +30,9 @@ springdoc:
 
 profile:
   web-client: https://app-profile-dev.hungthinhcorp.com.vn
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    from: "Customer"
