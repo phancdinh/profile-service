@@ -28,13 +28,14 @@ public class AccountDataService {
     }
 
     public Optional<Account> findByHtId(String htId) {
-        return Optional.ofNullable(htId)
-                .flatMap(accountRepository::findByHtId);
+        return Optional.ofNullable(htId).flatMap(accountRepository::findByHtId);
     }
 
     public boolean existsByEmail(String email) {
-        return Optional.ofNullable(email)
-                .map(accountRepository::existsByEmail)
-                .orElse(false);
+        return Optional.ofNullable(email).map(accountRepository::existsByEmail).orElse(false);
+    }
+
+    public Optional<Account> findByEmailAndActive(String email, boolean active) {
+        return accountRepository.findByEmailAndActive(email, active);
     }
 }

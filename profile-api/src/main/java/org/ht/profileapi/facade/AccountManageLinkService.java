@@ -59,7 +59,7 @@ public class AccountManageLinkService {
         }
         return Optional.of(manageLinkBizService.generateInvitationLink(htId,contact))
         .map(r -> invitationConverter.convertToInvitationReponse(r, htId, contact)).orElseThrow();
-        
+
     }
 
     public InvitationResponse getInvitationLink(String htId, String valid) {
