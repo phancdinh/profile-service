@@ -1,11 +1,11 @@
 package org.ht.account.bizservice;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.ht.account.config.AccountMgmtProperties;
 import org.ht.account.data.model.Account;
@@ -31,13 +31,13 @@ public class ManageLinkBizService {
     }
 
     public String generateActivationLink(String htId) throws DataNotExistingException {
-
         Account account = actDataService.findByHtId(htId).filter(p -> !p.isActive() && !p.isUserCreated())
                 .orElseThrow(() -> {
                     String error = String.format("Account does not existed or actived with htId: %s", htId);
                     log.error(error);
                     return new DataNotExistingException(error);
                 });
+        
         Activation actLink = new Activation();
         actLink.setCreatedAt(new Date());
         actLink.setExpiredAt(DateUtils.addDays(new Date(), accountApiProperties.getActivationExpirePeriodDays()));
@@ -70,13 +70,19 @@ public class ManageLinkBizService {
     }
 
     public String generateInvitationLink(String htId, String contact) throws DataNotExistingException {
-        Account account = actDataService.findByHtId(htId).filter(p -> !p.isActive() && !p.isUserCreated())
-                .orElseThrow(() -> {
-                    String error = String.format("Account does not existed or actived with htId: %s", htId);
-                    log.error(error);
-                    return new DataNotExistingException(error);
-                });
-
+        Account account = actDataService.findByHtId(htId).orElse(null);
+        //TODO: this is around solution for current situation.
+        if(account == null) {
+            Account newAccount = new Account();
+            newAccount.setHtId(htId);
+            account = actDataService.update(newAccount);
+        }else {
+            Optional.of(account).filter(p -> !p.isActive() && !p.isUserCreated()).orElseThrow(() -> {
+                String error = String.format("Account does not existed or actived with htId: %s", htId);
+                log.error(error);
+                return new DataNotExistingException(error);
+            });
+        }
         Date currentDate = new Date();
         // Incase resend email/phone to invitation link, will update Invitation,
         // other will create new
