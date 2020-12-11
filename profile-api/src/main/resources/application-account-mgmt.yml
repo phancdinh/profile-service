@@ -14,7 +14,7 @@ account-mgmt:
       password: ${IDENTITY_MGT_USER_PASSWORD}
   configuration:
     activation:
-      default-link: ${ACCOUNT_ACTIVATION_LINK}
-      expire-period-days: ${ACCOUNT_ACTIVATION_EXPIRE_PERIOD_DAYS}
+      default-link: https://app-profile-dev.hungthinhcorp.com.vn/account/register
+      expire-period-days: 10
     invitation:
-      default-link: ${ACCOUNT_INVITATION_LINK}
+      default-link: https://app-profile-dev.hungthinhcorp.com.vn/account/active
