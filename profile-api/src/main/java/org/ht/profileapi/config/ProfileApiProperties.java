@@ -27,4 +27,7 @@ public class ProfileApiProperties {
 
     @Value("${account-mgmt.configuration.activation.email-subject}")
     private String activationEmailSubject;
+
+    @Value("${profile.default-lead-source}")
+    private String defaultLeadSource;
 }

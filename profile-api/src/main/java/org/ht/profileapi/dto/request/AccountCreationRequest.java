@@ -22,7 +22,6 @@ public class AccountCreationRequest {
     private String email;
 
     @NotBlank(message = "Password is mandatory")
-    //@ValidPassword
     @Pattern(regexp = ValidationPattern.PASSWORD_PATTERN, message = "Password does not meet requirement")
     private String password;
 

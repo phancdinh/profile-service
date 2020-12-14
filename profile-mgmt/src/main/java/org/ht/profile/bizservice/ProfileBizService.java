@@ -84,7 +84,6 @@ public class ProfileBizService {
         return profileDataService.existsByHtId(htId);
     }
 
-
     public Profile create(String hungthinhId, String leadSource) throws DataConflictingException {
         if (profileDataService.existsByHtId(hungthinhId)) {
             throw new DataConflictingException("HtID is already existed with value " + hungthinhId);

@@ -43,6 +43,11 @@ public class AccountFacade {
 
     public AccountResponse create(AccountCreationRequest creationRequest) {
         validateWhenRegister(creationRequest);
+
+        if (StringUtils.isEmpty(creationRequest.getLeadSource())) {
+            creationRequest.setLeadSource(profileApiProperties.getDefaultLeadSource());
+        }
+
         // 1. Create a profile mapping or check ht_id
         Pair<String, Profile> stringProfilePair = createOrCheckHtId(creationRequest);
         var htId = stringProfilePair.getFirst();
@@ -53,7 +58,7 @@ public class AccountFacade {
         // 3. Create a account
         var accountResponse = Optional.of(creationRequest)
                 .map(account -> accountConverter.convertToEntity(creationRequest, Account.class))
-                .map(account -> accountBizService.create(htId, account))
+                .map(account -> accountBizService.createOrUpdate(htId, account))
                 .map(account -> accountConverter.convertToResponse(account, AccountResponse.class))
                 .orElseThrow();
 

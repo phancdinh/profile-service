@@ -36,9 +36,6 @@ public class Account {
 
     private String phone;
 
-    @Transient
-    private String password;
-
     private boolean active;
 
     private boolean userCreated;
