@@ -42,6 +42,7 @@ public class AccountFacade {
     private final ProfileApiProperties profileApiProperties;
 
     public AccountResponse create(AccountCreationRequest creationRequest) {
+        validateWhenRegister(creationRequest);
         // 1. Create a profile mapping or check ht_id
         Pair<String, Profile> stringProfilePair = createOrCheckHtId(creationRequest);
         var htId = stringProfilePair.getFirst();
@@ -95,10 +96,17 @@ public class AccountFacade {
         });
     }
 
+    private void validateWhenRegister(AccountCreationRequest creationRequest) {
+        String email = creationRequest.getEmail();
+        if (checkEmailHasRegistered(email)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email had been used.");
+        }
+    }
+
     public boolean checkEmailHasRegistered(String email) {
         if (contactInfoBizService.existByEmailAndActive(email)) {
             return true;
         }
-        return accountBizService.checkEmailValidForRegister(email);
+        return !accountBizService.isValidForRegister(email);
     }
 }
