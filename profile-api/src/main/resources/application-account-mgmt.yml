@@ -6,7 +6,9 @@ account-mgmt:
       email-subject: "Kích hoạt tài khoản đăng ký"
     invitation:
       default-link: https://app-profile-dev.hungthinhcorp.com.vn/account/register
-  bitly: 
+    reset-password:
+      default-link: https://app-profile-dev.hungthinhcorp.com.vn/account/reset-password
+  bitly:
     name: bit.ly
     server: https://api-ssl.bitly.com
     shorten-link: /v4/shorten
