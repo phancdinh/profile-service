@@ -20,13 +20,13 @@ public class AccountDataService {
         return Optional.ofNullable(account)
                 .filter(not(o -> accountRepository.existsByEmail(o.getEmail())))
                 .map(accountRepository::insert)
-                .orElse(account);
+                .orElseThrow();
     }
 
     public Account update(Account account) {
         return Optional.ofNullable(account)
-        .map(accountRepository::save)
-        .orElseThrow();
+                .map(accountRepository::save)
+                .orElseThrow();
     }
 
     public Optional<Account> findByHtId(String htId) {
@@ -39,5 +39,9 @@ public class AccountDataService {
 
     public Optional<Account> findByEmailAndActive(String email, boolean active) {
         return accountRepository.findByEmailAndActive(email, active);
+    }
+
+    public boolean existsByHtId(String htId) {
+        return Optional.ofNullable(htId).map(accountRepository::existsByHtId).orElse(false);
     }
 }

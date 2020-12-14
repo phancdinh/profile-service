@@ -41,3 +41,4 @@ profile:
     username: ${MAIL_USERNAME}
     password: ${MAIL_PASSWORD}
     from: "Customer"
+  default-lead-source: "Hung Thinh Mobile App"
