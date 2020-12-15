@@ -1,6 +1,7 @@
 package org.ht.profile.data.repository;
 
 import org.bson.types.ObjectId;
+import org.ht.common.constant.UserStatus;
 import org.ht.profile.data.model.Profile;
 import org.springframework.data.mongodb.repository.ExistsQuery;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -17,5 +18,5 @@ public interface ProfileRepository extends MongoRepository<Profile, String> {
 
     void deleteByHtId(String htId);
 
-    boolean existsByHtCodeInAndActive(List<ObjectId> htCodes, boolean active);
+    boolean existsByHtCodeInAndStatus(List<ObjectId> htCodes, UserStatus status);
 }

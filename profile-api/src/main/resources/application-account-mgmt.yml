@@ -1,11 +1,4 @@
 account-mgmt:
-  identity:
-    server: ${IDENTITY_SERVER}
-    scim2:
-      users: "/scim2/Users"
-    mgt-user:
-      id: ${IDENTITY_MGT_USER_ID}
-      password: ${IDENTITY_MGT_USER_PASSWORD}
   configuration:
     activation:
       default-link: https://app-profile-dev.hungthinhcorp.com.vn/account/active

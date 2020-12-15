@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.ht.account.bizservice.AccountBizService;
 import org.ht.account.bizservice.ManageLinkBizService;
-import org.ht.account.bizservice.UserIdentityBizService;
 import org.ht.account.data.model.Account;
+import org.ht.common.constant.UserStatus;
 import org.ht.email.EmailSenderType;
 import org.ht.email.EmailService;
 import org.ht.profile.bizservice.ContactInfoBizService;
@@ -22,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
+
 import javax.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
 import java.util.Optional;
@@ -36,7 +37,6 @@ public class AccountFacade {
     private final ContactInfoBizService contactInfoBizService;
     private final AccountConverter accountConverter;
     private final IdGeneratorBizService idGeneratorBizService;
-    private final UserIdentityBizService userIdentityBizService;
     private final ManageLinkBizService manageLinkBizService;
     private final EmailService emailService;
     private final ProfileApiProperties profileApiProperties;
@@ -49,42 +49,39 @@ public class AccountFacade {
         }
 
         // 1. Create a profile mapping or check ht_id
-        Pair<String, Profile> stringProfilePair = createOrCheckHtId(creationRequest);
+        Pair<String, Profile> stringProfilePair = createHtIdOrUpdateStatus(creationRequest);
         var htId = stringProfilePair.getFirst();
         var profile = stringProfilePair.getSecond();
-        // 2. Create a identity user account in IS
-        userIdentityBizService.createUser(htId, creationRequest.getPassword(), creationRequest.getEmail());
 
-        // 3. Create a account
+        // 2. Create a account
         var accountResponse = Optional.of(creationRequest)
                 .map(account -> accountConverter.convertToEntity(creationRequest, Account.class))
                 .map(account -> accountBizService.createOrUpdate(htId, account))
                 .map(account -> accountConverter.convertToResponse(account, AccountResponse.class))
                 .orElseThrow();
 
-        // 4. Send the activation link to our customer
+        // 3. Send the activation link to our customer
         var activationLink = manageLinkBizService.generateActivationLink(htId);
         sendActivationEmail(activationLink, creationRequest.getEmail());
-
         accountResponse.setLeadSource(profile.getLeadSource());
         return accountResponse;
     }
 
-    private Pair<String, Profile> createOrCheckHtId(AccountCreationRequest creationRequest) {
+    private Pair<String, Profile> createHtIdOrUpdateStatus(AccountCreationRequest creationRequest) {
         var htId = creationRequest.getHtId();
         Profile profile;
         if (StringUtils.isEmpty(htId)) {
             htId = idGeneratorBizService.generateId();
-            profile = profileBizService.create(htId, creationRequest.getEmail(), null, creationRequest.getLeadSource());
+            profile = profileBizService.create(htId, creationRequest.getLeadSource(), creationRequest.getEmail(), null, creationRequest.getPassword());
         } else {
             //htId is existed then we check and link account to htId
             try {
                 profile = profileBizService.findProfile(htId);
                 contactInfoBizService.updatePrimaryEmail(profile.getHtCode(), creationRequest.getEmail());
+                profileBizService.updateStatus(htId, UserStatus.IN_ACTIVE, creationRequest.getEmail(), null, creationRequest.getPassword());
             } catch (DataNotExistingException e) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
             }
-
         }
         return Pair.of(htId, profile);
     }
@@ -109,7 +106,7 @@ public class AccountFacade {
     }
 
     public boolean checkEmailHasRegistered(String email) {
-        if (contactInfoBizService.existByEmailAndActive(email)) {
+        if (contactInfoBizService.existByEmailAndStatusActive(email)) {
             return true;
         }
         return !accountBizService.isValidForRegister(email);
