@@ -7,13 +7,11 @@ import org.ht.profile.data.exception.DataConflictingException;
 import org.ht.profile.data.exception.DataNotExistingException;
 import org.ht.profile.data.model.ContactInfo;
 import org.ht.profile.data.model.Profile;
+import org.ht.profile.data.model.internal.HierarchyContact;
+import org.ht.profile.data.service.ContactInfoDataService;
 import org.ht.profile.data.service.ProfileDataService;
 import org.ht.profile.helper.ProfileConverterHelper;
-import org.ht.profile.data.service.ContactInfoDataService;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -51,14 +49,17 @@ public class ContactInfoBizService {
 
     public ContactInfo findByHtId(String htId) throws DataNotExistingException {
 
-        Optional<Profile> profileOptional = profileDataService.findByHtId(htId);
-        if (profileOptional.isEmpty()) {
+        Profile profile = profileDataService.findByHtId(htId).orElseThrow(() -> {
             throw new DataNotExistingException(String.format("Profile is not existed with htId: %s", htId));
-        }
+        });
 
-        return profileOptional
-                .flatMap(existingProfile -> contactInfoDataService.findByHtCode(existingProfile.getHtCode()))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer Info is not existed."));
+        return findByHtCode(profile.getHtCode());
+    }
+
+    private ContactInfo findByHtCode(ObjectId htCode) {
+        return Optional.of(htCode)
+                .flatMap(contactInfoDataService::findByHtCode)
+                .orElseThrow(() -> new DataNotExistingException(String.format("Contact info is not existed htCode: %s", htCode)));
     }
 
     public void updatePrimaryEmail(ObjectId htCode, String email) {
@@ -75,5 +76,15 @@ public class ContactInfoBizService {
         List<ObjectId> listHtCodes = listContactInfo.stream().map(ContactInfo::getHtCode).collect(Collectors.toList());
 
         return profileDataService.existsByHtCodesAndStatus(listHtCodes, UserStatus.ACTIVE);
+    }
+
+    public HierarchyContact createContactEmail(ObjectId htCode, String email) {
+
+        ContactInfo contactInfo = findByHtCode(htCode);
+        if (contactInfo.getEmails().stream().anyMatch(e -> e.getValue().equalsIgnoreCase(email))) {
+            log.error(String.format("Email %s has already existed in the current contact htCode=%s", email, htCode));
+            throw new DataConflictingException("Email has already existed");
+        }
+        return contactInfoDataService.createContactEmail(htCode, email).orElseThrow();
     }
 }

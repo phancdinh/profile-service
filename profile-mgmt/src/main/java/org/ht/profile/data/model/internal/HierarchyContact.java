@@ -23,4 +23,5 @@ public class HierarchyContact {
     private String value;
     private boolean primary;
     private Set<ContactTag> tags;
+    private boolean verified;
 }

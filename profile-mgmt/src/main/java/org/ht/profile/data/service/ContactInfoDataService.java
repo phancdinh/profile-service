@@ -48,13 +48,13 @@ public class ContactInfoDataService {
 
         if (!StringUtils.isEmpty(primaryEmail)) {
             List<HierarchyContact> emails = new ArrayList<>();
-            emails.add(new HierarchyContact(primaryEmail, true, null));
+            emails.add(new HierarchyContact(primaryEmail, true, null, false));
             contactInfo.setEmails(emails);
         }
 
         if (!StringUtils.isEmpty(primaryPhone)) {
             List<HierarchyContact> phones = new ArrayList<>();
-            phones.add(new HierarchyContact(primaryPhone, true, null));
+            phones.add(new HierarchyContact(primaryPhone, true, null, false));
             contactInfo.setPhoneNumbers(phones);
         }
 
@@ -84,6 +84,25 @@ public class ContactInfoDataService {
             }
             return contactInfo;
         }).map(contactInfoRepository::save);
+    }
+
+    public Optional<HierarchyContact> createContactEmail(ObjectId htCode, String email) {
+        HierarchyContact additionalEmail = new HierarchyContact(email, false);
+
+        var updatedContact = Optional.ofNullable(htCode)
+                .flatMap(this::findByHtCode)
+                .filter(not(m -> m.getEmails().stream().anyMatch(e -> e.getValue().equalsIgnoreCase(email))))
+                .map(contactInfo -> {
+                    contactInfo.getEmails().add(additionalEmail);
+                    return contactInfo;
+                })
+                .map(contactInfoRepository::save)
+                .orElseThrow();
+
+        return updatedContact.getEmails()
+                .stream()
+                .filter(e -> e.getValue().equalsIgnoreCase(email))
+                .findFirst();
     }
 
     public List<ContactInfo> findByEmailAndPrimary(String email) {
