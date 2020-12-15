@@ -1,18 +1,21 @@
 package org.ht.account.bizservice;
 
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+
 import org.apache.commons.lang3.time.DateUtils;
 import org.ht.account.config.AccountMgmtProperties;
+import org.ht.account.config.BitlyApiProperties;
 import org.ht.account.data.model.Account;
 import org.ht.account.data.model.internal.Activation;
 import org.ht.account.data.model.internal.Invitation;
 import org.ht.account.data.service.AccountDataService;
 import org.ht.account.exception.DataNotExistingException;
+import org.ht.account.exception.ServiceUnavailableException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.DigestUtils;
 
@@ -21,16 +24,22 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @Slf4j
 public class ManageLinkBizService {
-
+    
     private final AccountMgmtProperties accountApiProperties;
+    private final BitlyApiProperties bitlyApiProperties;
     private final AccountDataService actDataService;
-
-    public ManageLinkBizService(AccountDataService actDataService, AccountMgmtProperties accountApiProperties) {
+    private final ShortenLinkBizService shortenLinkBizService;
+    
+    public ManageLinkBizService(AccountDataService actDataService, AccountMgmtProperties accountApiProperties,
+            ShortenLinkBizService shortenLinkBizService, BitlyApiProperties bitlyApiProperties) {
         this.actDataService = actDataService;
         this.accountApiProperties = accountApiProperties;
+        this.shortenLinkBizService = shortenLinkBizService;
+        this.bitlyApiProperties = bitlyApiProperties;
     }
-
+    
     public String generateActivationLink(String htId) throws DataNotExistingException {
+        
         Account account = actDataService.findByHtId(htId).filter(p -> !p.isActive() && !p.isUserCreated())
                 .orElseThrow(() -> {
                     String error = String.format("Account does not existed or actived with htId: %s", htId);
@@ -43,12 +52,12 @@ public class ManageLinkBizService {
         actLink.setExpiredAt(DateUtils.addDays(new Date(), accountApiProperties.getActivationExpirePeriodDays()));
         account.setActivation(actLink);
         actDataService.update(account);
-
+        
         String url = initActivationLink(account);
         log.info("url: " + url);
         return url;
     }
-
+    
     public Account getActivationLink(String htId, String check) throws DataNotExistingException {
         Account account = actDataService.findByHtId(htId)
                 .filter(p -> !p.isActive() && !p.isUserCreated() && p.getActivation() != null).orElseThrow(() -> {
@@ -62,21 +71,21 @@ public class ManageLinkBizService {
             log.error(error);
             throw new DataNotExistingException(error);
         }
-
+        
         account.setActive(true);
         account.setUserCreated(true);
         account.getActivation().setConfirmedAt(new Date());
         return actDataService.update(account);
     }
-
+    
     public String generateInvitationLink(String htId, String contact) throws DataNotExistingException {
         Account account = actDataService.findByHtId(htId).orElse(null);
-        //TODO: this is around solution for current situation.
-        if(account == null) {
+        // TODO: this is around solution for current situation.
+        if (account == null) {
             Account newAccount = new Account();
             newAccount.setHtId(htId);
             account = actDataService.update(newAccount);
-        }else {
+        } else {
             Optional.of(account).filter(p -> !p.isActive() && !p.isUserCreated()).orElseThrow(() -> {
                 String error = String.format("Account does not existed or actived with htId: %s", htId);
                 log.error(error);
@@ -87,7 +96,7 @@ public class ManageLinkBizService {
         // Incase resend email/phone to invitation link, will update Invitation,
         // other will create new
         Invitation invitation = new Invitation(contact, currentDate, null);
-
+        
         if (account.getInvitations() != null) {
             account.getInvitations().removeIf(p -> contact.equalsIgnoreCase(p.getMainContact()));
             account.getInvitations().add(invitation);
@@ -97,10 +106,17 @@ public class ManageLinkBizService {
         }
         String url = initInvitationLink(account, invitation);
         actDataService.update(account);
-
+        
+        try {
+            url = shortenLinkBizService
+                    .createShortLink(bitlyApiProperties.getServiceName(), bitlyApiProperties.getGroupName(), url)
+                    .map(p -> p.getLink()).orElse(url);
+        } catch (ServiceUnavailableException e) {
+            log.error(e.toString());//Original url will be return incase fail from external service
+        }
         return url;
     }
-
+    
     public Invitation getInvitationLink(String htId, String valid) throws DataNotExistingException {
         Account data = actDataService.findByHtId(htId)
                 .filter(p -> !p.isActive() && !p.isUserCreated() && p.getInvitations().stream().count() > 0)
@@ -109,10 +125,10 @@ public class ManageLinkBizService {
                     log.error(error);
                     return new DataNotExistingException(error);
                 });
-
+        
         return getInvitation(valid, data);
     }
-
+    
     private String initActivationLink(Account account) {
         StringBuilder builder = new StringBuilder();
         builder.append(accountApiProperties.getAccountActivationLink());
@@ -120,12 +136,12 @@ public class ManageLinkBizService {
         builder.append("&valid=").append(getMd5Activation(account));
         return builder.toString();
     }
-
+    
     private String getMd5Invitation(Account account, Invitation invitation) {
         return new String((DigestUtils.md5DigestAsHex(
                 (account.getHtId() + invitation.getMainContact() + invitation.getCreatedAt()).getBytes())));
     }
-
+    
     private String initInvitationLink(Account account, Invitation invitation) {
         StringBuilder builder = new StringBuilder();
         builder.append(accountApiProperties.getAccountInvitationLink());
@@ -133,7 +149,7 @@ public class ManageLinkBizService {
         builder.append("&valid=").append(getMd5Invitation(account, invitation));
         return builder.toString();
     }
-
+    
     private Invitation getInvitation(String check, Account account) {
         return account.getInvitations().stream().filter(p -> check.equals(getMd5Invitation(account, p))).findFirst()
                 .orElseThrow(() -> {
@@ -142,12 +158,12 @@ public class ManageLinkBizService {
                     return new DataNotExistingException(error);
                 });
     }
-
+    
     private boolean isLinkExpire(Account data) {
         Date currentDate = new Date();
         return currentDate.compareTo(data.getActivation().getExpiredAt()) > 0;
     }
-
+    
     private String getMd5Activation(Account account) {
         return new String(
                 (DigestUtils.md5DigestAsHex((account.getHtId() + account.getActivation().getCreatedAt()).getBytes())));
