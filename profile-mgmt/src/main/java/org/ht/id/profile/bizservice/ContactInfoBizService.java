@@ -7,13 +7,13 @@ import org.ht.id.common.constant.UserStatus;
 import org.ht.id.common.exception.DataConflictingException;
 import org.ht.id.common.exception.DataNotExistingException;
 import org.ht.id.profile.config.ProfileMgtMessageProperties;
-import org.ht.id.profile.helper.ProfileConverterHelper;
 import org.ht.id.profile.data.model.ContactInfo;
 import org.ht.id.profile.data.model.Profile;
 import org.ht.id.profile.data.model.internal.HierarchyContact;
 import org.ht.id.profile.data.service.ContactInfoDataService;
 import org.ht.id.profile.data.service.ProfileDataService;
 import org.springframework.stereotype.Component;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,7 +25,6 @@ public class ContactInfoBizService {
 
     private final ProfileDataService profileDataService;
     private final ContactInfoDataService contactInfoDataService;
-    private final ProfileConverterHelper profileConverterHelper;
     private final ProfileMgtMessageProperties profileMgtMessageProperties;
 
     public ContactInfo create(String htId, ContactInfo contactInfo) throws DataConflictingException, DataNotExistingException {
@@ -40,7 +39,11 @@ public class ContactInfoBizService {
         if (contactInfoDataService.existsByHtCode(htCode)) {
             throw new DataConflictingException(profileMgtMessageProperties.getMessage("validation.contact.existed", htId));
         }
-        return Optional.of(profileConverterHelper.convert(contactInfo, htCode))
+        return Optional.of(contactInfo)
+                .map(info -> {
+                    info.setHtCode(htCode);
+                    return info;
+                })
                 .map(contactInfoDataService::create)
                 .orElseThrow();
     }

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,21 +44,31 @@ public class ContactInfoDataService {
     }
 
     public ContactInfo create(ObjectId htCode, String primaryEmail, String primaryPhone) {
-        ContactInfo contactInfo = new ContactInfo();
-        contactInfo.setHtCode(htCode);
+        ContactInfo.ContactInfoBuilder builder = ContactInfo.builder();
+        builder.htCode(htCode);
 
         if (!StringUtils.isEmpty(primaryEmail)) {
-            List<HierarchyContact> emails = new ArrayList<>();
-            emails.add(new HierarchyContact(primaryEmail, true, null, false));
-            contactInfo.setEmails(emails);
+            builder.emails(Collections.singletonList(
+                    HierarchyContact.builder()
+                            .primary(true)
+                            .value(primaryEmail)
+                            .verified(false)
+                            .build())
+            );
         }
 
         if (!StringUtils.isEmpty(primaryPhone)) {
-            List<HierarchyContact> phones = new ArrayList<>();
-            phones.add(new HierarchyContact(primaryPhone, true, null, false));
-            contactInfo.setPhoneNumbers(phones);
+            builder.phoneNumbers(
+                    Collections.singletonList(
+                            HierarchyContact.builder()
+                                    .value(primaryPhone)
+                                    .primary(true)
+                                    .verified(false)
+                                    .build()
+                    )
+            );
         }
-
+        ContactInfo contactInfo = builder.build();
         return Optional.of(contactInfo)
                 .filter(not(o -> contactInfoRepository.existsByHtCode(o.getHtCode())))
                 .map(contactInfoRepository::insert)
@@ -80,14 +91,21 @@ public class ContactInfoDataService {
                 }
             }
             if (!existed) {
-                emails.add(new HierarchyContact(emailStr, true));
+                emails.add(HierarchyContact.builder()
+                        .value(emailStr)
+                        .primary(true)
+                        .build()
+                );
             }
             return contactInfo;
         }).map(contactInfoRepository::save);
     }
 
     public Optional<HierarchyContact> createContactEmail(ObjectId htCode, String email) {
-        HierarchyContact additionalEmail = new HierarchyContact(email, false);
+        HierarchyContact additionalEmail = HierarchyContact.builder()
+                .value(email)
+                .primary(false)
+                .build();
 
         var updatedContact = Optional.ofNullable(htCode)
                 .flatMap(this::findByHtCode)

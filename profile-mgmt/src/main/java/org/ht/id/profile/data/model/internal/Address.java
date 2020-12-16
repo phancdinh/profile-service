@@ -1,12 +1,12 @@
 package org.ht.id.profile.data.model.internal;
 
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
+@Builder
 public class Address {
     private String fullAddress;
     private String country;
@@ -14,8 +14,4 @@ public class Address {
     private String district;
     private String ward;
     private String other;
-
-    public Address(String fullAddress) {
-        this.fullAddress = fullAddress;
-    }
 }

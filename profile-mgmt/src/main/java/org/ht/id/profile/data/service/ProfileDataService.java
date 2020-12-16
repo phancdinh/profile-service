@@ -36,17 +36,17 @@ public class ProfileDataService {
     }
 
     public Profile create(String htId, String leadSource, String email, String phone, String password) {
-        Profile addedProfile = new Profile();
-        addedProfile.setHtId(htId);
-        addedProfile.setLeadSource(leadSource);
+        Profile.ProfileBuilder builder = Profile.builder();
+        builder.htId(htId)
+                .leadSource(leadSource);
         if (StringUtils.isEmpty(password)) {
-            addedProfile.setStatus(UserStatus.CREATED);
+            builder.status(UserStatus.CREATED);
         } else {
             UserData user = externalUserService.create(htId, email, phone, password);
-            addedProfile.setStatus(UserStatus.IN_ACTIVE);
-            addedProfile.setScimId(user.getId());
+            builder.status(UserStatus.IN_ACTIVE);
+            builder.scimId(user.getId());
         }
-        return profileRepository.insert(addedProfile);
+        return profileRepository.insert(builder.build());
     }
 
     public void deleteProfileByHtId(String htId) {
@@ -72,6 +72,6 @@ public class ProfileDataService {
             }
             p.setStatus(status);
             return profileRepository.save(p);
-        }).orElse(new Profile());
+        }).orElse(Profile.builder().build());
     }
 }

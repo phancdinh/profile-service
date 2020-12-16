@@ -1,20 +1,15 @@
 package org.ht.id.profile.data.model.internal;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@Builder
 public class UserName {
-
-    public UserName(String fullName) {
-        this.fullName = fullName;
-    }
-
     private String nickName;
     private String displayName;
     private String fullName;

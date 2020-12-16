@@ -10,8 +10,8 @@ import org.ht.id.profile.data.model.LegalInfo;
 import org.ht.id.profile.data.model.Profile;
 import org.ht.id.profile.data.service.LegalInfoDataService;
 import org.ht.id.profile.data.service.ProfileDataService;
-import org.ht.id.profile.helper.ProfileConverterHelper;
 import org.springframework.stereotype.Component;
+
 import java.util.Optional;
 
 @Component
@@ -20,7 +20,6 @@ import java.util.Optional;
 public class LegalInfoBizService {
     private final ProfileDataService profileDataService;
     private final LegalInfoDataService legalInfoDataService;
-    private final ProfileConverterHelper profileConverterHelper;
     private final ProfileMgtMessageProperties profileMgtMessageProperties;
 
     public LegalInfo create(String htId, LegalInfo createdInfo) throws DataNotExistingException, DataConflictingException {
@@ -35,7 +34,11 @@ public class LegalInfoBizService {
         if (legalInfoDataService.existsByHtCode(htCode)) {
             throw new DataConflictingException(profileMgtMessageProperties.getMessage("validation.legalInfo.isExisted", htId));
         }
-        return Optional.of(profileConverterHelper.convert(createdInfo, htCode))
+        return Optional.of(createdInfo)
+                .map(info -> {
+                    info.setHtCode(htCode);
+                    return info;
+                })
                 .map(legalInfoDataService::create)
                 .orElseThrow();
     }

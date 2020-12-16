@@ -28,7 +28,6 @@ public class LegalInfoController {
 
 
     @GetMapping(value = "/{htId}/legal-info")
-    @PreAuthorize(Role.LegalInfo.VIEW)
     public ResponseEntity<LegalInfoResponse> findOne(@PathVariable String htId) {
         LegalInfoResponse result = legalInfoFacade.findByHtId(htId);
         return ResponseEntity.ok(result);

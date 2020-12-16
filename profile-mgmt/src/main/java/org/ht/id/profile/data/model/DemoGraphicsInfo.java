@@ -1,8 +1,7 @@
 package org.ht.id.profile.data.model;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.bson.types.ObjectId;
 import org.ht.id.common.constant.DemoGraphicsAttribute;
@@ -17,8 +16,7 @@ import java.util.Date;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@Builder
 @Document(collection = "demographics_info")
 public class DemoGraphicsInfo {
     @Id

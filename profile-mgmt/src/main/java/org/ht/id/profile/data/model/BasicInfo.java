@@ -1,8 +1,7 @@
 package org.ht.id.profile.data.model;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.bson.types.ObjectId;
 import org.ht.id.profile.data.model.internal.Address;
@@ -20,8 +19,7 @@ import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@Builder
 @Document(collection = "basic_info")
 public class BasicInfo {
     @Id

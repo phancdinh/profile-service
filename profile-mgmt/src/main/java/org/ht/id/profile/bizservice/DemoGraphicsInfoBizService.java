@@ -12,6 +12,7 @@ import org.ht.id.profile.data.model.Profile;
 import org.ht.id.profile.data.service.DemoGraphicsInfoDataService;
 import org.ht.id.profile.data.service.ProfileDataService;
 import org.springframework.stereotype.Component;
+
 import java.util.Optional;
 
 @Component

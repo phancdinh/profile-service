@@ -3,19 +3,18 @@ package org.ht.id.profile.bizservice;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
+import org.ht.id.common.constant.UserStatus;
 import org.ht.id.common.exception.DataConflictingException;
 import org.ht.id.common.exception.DataNotExistingException;
-import org.ht.id.common.exception.WrongInputException;
-import org.ht.id.common.constant.UserStatus;
 import org.ht.id.profile.config.ProfileMgtMessageProperties;
 import org.ht.id.profile.data.model.BasicInfo;
 import org.ht.id.profile.data.model.Profile;
 import org.ht.id.profile.data.service.BasicInfoDataService;
 import org.ht.id.profile.data.service.ContactInfoDataService;
 import org.ht.id.profile.data.service.ProfileDataService;
-import org.ht.id.profile.helper.ProfileConverterHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
 import java.util.Optional;
 
 @Service
@@ -24,7 +23,6 @@ import java.util.Optional;
 public class ProfileBizService {
     private final ProfileDataService profileDataService;
     private final BasicInfoDataService basicInfoDataService;
-    private final ProfileConverterHelper profileConverterHelper;
     private final ContactInfoDataService contactInfoDataService;
     private final ProfileMgtMessageProperties profileMgtMessageProperties;
 
@@ -42,7 +40,11 @@ public class ProfileBizService {
             throw new DataConflictingException(error);
         }
 
-        return Optional.of(profileConverterHelper.convert(basicInfo, htCode))
+        return Optional.of(basicInfo)
+                .map(info -> {
+                    info.setHtCode(htCode);
+                    return info;
+                })
                 .map(basicInfoDataService::create)
                 .orElseThrow();
     }

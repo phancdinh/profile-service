@@ -1,8 +1,7 @@
 package org.ht.id.profile.data.model;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.bson.types.ObjectId;
 import org.ht.id.profile.data.model.internal.AddressContact;
@@ -19,9 +18,8 @@ import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Document(collection = "contact_info")
+@Builder
 public class ContactInfo {
     @Id
     private ObjectId id;

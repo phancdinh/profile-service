@@ -3,6 +3,7 @@ package org.ht.id.profileapi.dto.response;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,7 +17,7 @@ import static org.ht.id.common.constant.DateTime.DATETIME_PATTERN;
 
 @Getter
 @Setter
-@NoArgsConstructor
+@Builder
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class ContactInfoResponse {
 
