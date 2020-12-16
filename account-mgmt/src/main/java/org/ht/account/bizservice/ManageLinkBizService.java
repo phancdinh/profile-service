@@ -58,7 +58,8 @@ public class ManageLinkBizService {
         return url;
     }
     
-    public Account getActivationLink(String htId, String check) throws DataNotExistingException {
+    public Account validateActivationLink(String htId, String check) throws DataNotExistingException {
+        // TODO we must remove active and userCreated field.
         Account account = actDataService.findByHtId(htId)
                 .filter(p -> !p.isActive() && !p.isUserCreated() && p.getActivation() != null).orElseThrow(() -> {
                     String error = String.format("Account activation does not existed or actived with htId: %s", htId);

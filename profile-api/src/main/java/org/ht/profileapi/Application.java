@@ -14,7 +14,7 @@ import java.util.Arrays;
 @SpringBootApplication(scanBasePackages = {"org.ht.profileapi", "org.ht.email"})
 @EnableProfileMgmtModule
 @EnableAccountMgmtModule
-@EnableFeignClients(basePackages = "org.ht.account")
+@EnableFeignClients(basePackages = {"org.ht.externalUser", "org.ht.account.external.service.bitly"})
 public class Application {
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);

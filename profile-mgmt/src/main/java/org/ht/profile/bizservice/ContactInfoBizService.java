@@ -2,6 +2,7 @@ package org.ht.profile.bizservice;
 
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
+import org.ht.common.constant.UserStatus;
 import org.ht.profile.data.exception.DataConflictingException;
 import org.ht.profile.data.exception.DataNotExistingException;
 import org.ht.profile.data.model.ContactInfo;
@@ -64,15 +65,15 @@ public class ContactInfoBizService {
         contactInfoDataService.updatePrimaryEmail(htCode, email);
     }
 
-    public boolean existByEmailAndActive(String email) {
+    public boolean existByEmailAndStatusActive(String email) {
         List<ContactInfo> listContactInfo = contactInfoDataService.findByEmailAndPrimary(email);
 
         if (listContactInfo.isEmpty()) {
             return false;
         }
 
-        List<ObjectId> listHtCodes = listContactInfo.stream().map(b -> b.getHtCode()).collect(Collectors.toList());
+        List<ObjectId> listHtCodes = listContactInfo.stream().map(ContactInfo::getHtCode).collect(Collectors.toList());
 
-        return profileDataService.existsByHtCodesAndActive(listHtCodes, true);
+        return profileDataService.existsByHtCodesAndStatus(listHtCodes, UserStatus.ACTIVE);
     }
 }

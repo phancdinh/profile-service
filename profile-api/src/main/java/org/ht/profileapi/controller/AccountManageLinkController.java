@@ -31,7 +31,7 @@ public class AccountManageLinkController {
     public ResponseEntity<ActivationResponse> getActivationLink(
             @RequestParam(name = "htId", required = true) String htId,
             @RequestParam(name = "valid", required = true) String valid) {
-        return ResponseEntity.status(HttpStatus.OK).body(accMgmLinkService.getActivationLink(htId, valid));
+        return ResponseEntity.status(HttpStatus.OK).body(accMgmLinkService.activateAccount(htId, valid));
     }
 
     @PostMapping(value = "/invitation")

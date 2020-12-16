@@ -1,6 +1,8 @@
 package org.ht.profileapi.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Getter;
@@ -32,6 +34,7 @@ public class BasicInfoResponse {
 
     private String hometown;
 
+    @JsonProperty
     private String permanentAddress;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATETIME_PATTERN)

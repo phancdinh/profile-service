@@ -13,7 +13,6 @@ import org.ht.profile.data.model.BasicInfo;
 import org.ht.profile.data.model.ContactInfo;
 import org.ht.profile.data.model.LegalInfo;
 import org.ht.profile.data.model.Profile;
-import org.ht.profileapi.dto.request.AccountCreationRequest;
 import org.ht.profileapi.dto.request.BasicInfoCreateRequest;
 import org.ht.profileapi.dto.request.ProfileCreateRequest;
 import org.ht.profileapi.dto.request.internal.HierarchyContactRequest;
@@ -42,10 +41,12 @@ public class ProfileInfoFacade {
         try {
             return Optional.of(profileRequest)
                     .map(info -> profileInfoConverter.convertToEntity(profileRequest))
-                    .map(profileDto -> profileBizService.create(htId, profileDto))
+                    .map(profileDto -> profileBizService.createBasicInfo(htId, profileDto))
                     .map(profileDto -> profileInfoConverter.convertToResponse(profileDto, htId)).orElse(null);
         } catch (DataConflictingException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+        } catch (DataNotExistingException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
 
@@ -76,7 +77,7 @@ public class ProfileInfoFacade {
         ContactInfo contactInfo = profileInfoConverter.convertToEntity(profileRequest.getContactInfo());
         LegalInfo legalInfo = profileInfoConverter.convertToEntity(profileRequest.getLegalInfo());
         Profile profile = profileBizService.create(htId, profileRequest.getLeadSource());
-        profileBizService.create(htId, basicInfo);
+        profileBizService.createBasicInfo(htId, basicInfo);
         contactInfoBizService.create(htId, contactInfo);
         legalInfoBizService.create(htId, legalInfo);
         return profileInfoConverter.convertToResponse(profile);
@@ -96,10 +97,7 @@ public class ProfileInfoFacade {
                 .filter(HierarchyContactRequest::isPrimary)
                 .findFirst().orElse(new HierarchyContactRequest());
         String email = primaryEmail.getValue();
-        if (contactInfoBizService.existByEmailAndActive(email)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email had been used.");
-        }
-        if (!accountBizService.isValidForRegister(email)) {
+        if (contactInfoBizService.existByEmailAndStatusActive(email) || !accountBizService.isValidForRegister(email)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Email had been used.");
         }
     }

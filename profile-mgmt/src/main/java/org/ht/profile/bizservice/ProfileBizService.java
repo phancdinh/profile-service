@@ -1,7 +1,10 @@
 package org.ht.profile.bizservice;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
+import org.ht.common.constant.UserStatus;
+import org.ht.externalUser.data.UserData;
 import org.ht.profile.data.exception.DataConflictingException;
 import org.ht.profile.data.exception.DataNotExistingException;
 import org.ht.profile.data.model.BasicInfo;
@@ -16,33 +19,13 @@ import java.util.Optional;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ProfileBizService {
     private final ProfileDataService profileDataService;
     private final BasicInfoDataService basicInfoDataService;
     private final ProfileConverterHelper profileConverterHelper;
-    private final ContactInfoDataService contactInfoDataService;
 
-    public ProfileBizService(ProfileDataService profileDataService,
-                             BasicInfoDataService basicInfoDataService,
-                             ProfileConverterHelper profileConverterHelper,
-                             ContactInfoDataService contactInfoDataService) {
-        this.profileDataService = profileDataService;
-        this.basicInfoDataService = basicInfoDataService;
-        this.profileConverterHelper = profileConverterHelper;
-        this.contactInfoDataService = contactInfoDataService;
-    }
-
-    public Profile create(String htId, String primaryEmail, String primaryPhone, String leadSource) {
-
-        Profile createdProfile = profileDataService
-                .findByHtId(htId)
-                .orElseGet(() -> profileDataService.create(htId, leadSource));
-
-        contactInfoDataService.create(createdProfile.getHtCode(), primaryEmail, primaryPhone);
-        return createdProfile;
-    }
-
-    public BasicInfo create(String htId, BasicInfo basicInfo) throws DataConflictingException {
+    public BasicInfo createBasicInfo(String htId, BasicInfo basicInfo) throws DataConflictingException {
         ObjectId htCode = profileDataService.findByHtId(htId)
                 .map(Profile::getHtCode)
                 .orElseThrow(() -> {
@@ -84,12 +67,16 @@ public class ProfileBizService {
         return profileDataService.existsByHtId(htId);
     }
 
-    public Profile create(String hungthinhId, String leadSource) throws DataConflictingException {
-        if (profileDataService.existsByHtId(hungthinhId)) {
-            throw new DataConflictingException("HtID is already existed with value " + hungthinhId);
+    public Profile create(String htId, String leadSource) throws DataConflictingException {
+        return create(htId, leadSource, null, null, null);
+    }
+
+    public Profile create(String htId, String leadSource, String primaryEmail, String primaryPhone, String password) {
+        if (profileDataService.existsByHtId(htId)) {
+            throw new DataConflictingException("HtID is already existed with value " + htId);
         }
-        return Optional.of(hungthinhId)
-                .map(htId -> profileDataService.create(htId, leadSource))
+        return Optional.of(htId)
+                .map(id -> profileDataService.create(id, leadSource, primaryEmail, primaryPhone, password))
                 .orElseThrow();
     }
 
@@ -99,4 +86,13 @@ public class ProfileBizService {
         }
         profileDataService.deleteProfileByHtId(htId);
     }
+
+    public Profile updateStatus(String htId, UserStatus status) {
+        return updateStatus(htId, status, null, null, null);
+    }
+
+    public Profile updateStatus(String htId, UserStatus status, String email, String phone, String password) {
+        return profileDataService.updateStatus(htId, status, email, phone, password);
+    }
+
 }

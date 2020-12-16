@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 @Configuration
-@ComponentScan("org.ht.profile")
+@ComponentScan({"org.ht.profile", "org.ht.externalUser"})
 @Import(ProfileDataSourceConfig.class)
 public class ProfileModuleConfiguration {
 
