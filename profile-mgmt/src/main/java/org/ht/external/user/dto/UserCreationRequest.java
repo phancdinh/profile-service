@@ -1,4 +1,4 @@
-package org.ht.externalUser.dto;
+package org.ht.external.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.ht.externalUser.contants.WSO2Params.EXTENSIONS;
+import static org.ht.external.user.contants.WSO2Params.EXTENSIONS;
 
 @Getter
 @Setter

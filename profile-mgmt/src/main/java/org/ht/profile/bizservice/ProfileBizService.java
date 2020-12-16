@@ -77,15 +77,12 @@ public class ProfileBizService {
         if (profileDataService.existsByHtId(htId)) {
             throw new DataConflictingException("HtID is already existed with value " + htId);
         }
-
-        if (StringUtils.isEmpty(primaryEmail) && StringUtils.isEmpty(primaryPhone)) {
-            throw new UserInputException("Register primary email or primary phone must be entered");
-        }
-
         return Optional.of(htId)
                 .map(id -> profileDataService.create(id, leadSource, primaryEmail, primaryPhone, password))
                 .map(t -> {
-                    contactInfoDataService.create(t.getHtCode(), primaryEmail, primaryPhone);
+                    if (!StringUtils.isEmpty(primaryEmail) || !StringUtils.isEmpty(primaryPhone)) {
+                        contactInfoDataService.create(t.getHtCode(), primaryEmail, primaryPhone);
+                    }
                     return t;
                 })
                 .orElseThrow();

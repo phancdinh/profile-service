@@ -87,6 +87,7 @@ public class ProfileInfoConverter {
     public ProfileResponse convertToResponse(Profile profile) {
         ProfileResponse response = new ProfileResponse();
         response.setHtId(profile.getHtId());
+        response.setCreatedAt(profile.getCreatedAt());
         return response;
     }
 

@@ -1,8 +1,8 @@
-package org.ht.externalUser.data;
+package org.ht.external.user.data;
 
-import org.ht.externalUser.config.UserIdentityClientConfiguration;
-import org.ht.externalUser.dto.UserAccountUnlockRequest;
-import org.ht.externalUser.dto.UserCreationRequest;
+import org.ht.external.user.config.UserIdentityClientConfiguration;
+import org.ht.external.user.dto.UserCreationRequest;
+import org.ht.external.user.dto.UserAccountUnlockRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;

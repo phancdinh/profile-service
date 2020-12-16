@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Slf4j
-public class UniqueContactValidator implements ConstraintValidator<UniqueContactValue, List> {
+public class UniqueContactValueValidator implements ConstraintValidator<UniqueContactValue, List> {
     @Override
     public boolean isValid(List hierarchyContactRequests, ConstraintValidatorContext constraintValidatorContext) {
         return Optional.ofNullable(hierarchyContactRequests)

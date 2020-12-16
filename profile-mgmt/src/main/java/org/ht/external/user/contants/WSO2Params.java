@@ -1,4 +1,4 @@
-package org.ht.externalUser.contants;
+package org.ht.external.user.contants;
 
 public interface WSO2Params {
     String EXTENSIONS = "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User";
