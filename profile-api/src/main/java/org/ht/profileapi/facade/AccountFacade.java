@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.ht.account.bizservice.AccountBizService;
 import org.ht.account.bizservice.ManageLinkBizService;
+import org.ht.account.config.AccountMgmtProperties;
 import org.ht.account.data.model.Account;
 import org.ht.common.constant.UserStatus;
 import org.ht.email.EmailSenderType;
@@ -13,9 +14,11 @@ import org.ht.profile.bizservice.IdGeneratorBizService;
 import org.ht.profile.bizservice.ProfileBizService;
 import org.ht.profile.data.exception.DataNotExistingException;
 import org.ht.profile.data.model.Profile;
+import org.ht.profileapi.config.MessageApiProperties;
 import org.ht.profileapi.config.ProfileApiProperties;
 import org.ht.profileapi.dto.request.AccountCreationRequest;
 import org.ht.profileapi.dto.response.AccountResponse;
+import org.ht.profileapi.dto.response.ResetPasswordResponse;
 import org.ht.profileapi.facade.converter.AccountConverter;
 import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
@@ -40,6 +43,8 @@ public class AccountFacade {
     private final ManageLinkBizService manageLinkBizService;
     private final EmailService emailService;
     private final ProfileApiProperties profileApiProperties;
+    private final AccountMgmtProperties accountApiProperties;
+    private final MessageApiProperties messageApiProperties;
 
     public AccountResponse create(AccountCreationRequest creationRequest) {
         validateWhenRegister(creationRequest);
@@ -110,5 +115,29 @@ public class AccountFacade {
             return true;
         }
         return !accountBizService.isValidForRegister(email);
+    }
+
+    public ResetPasswordResponse resetPassword(String customerEmail){
+        boolean isValidEmail= validEmailForResetPassword(customerEmail);
+        if(isValidEmail){
+            sendResetPasswordEmail(customerEmail);
+        }
+        return new ResetPasswordResponse(isValidEmail);
+    }
+
+    private boolean validEmailForResetPassword(String customerEmail) {
+        return contactInfoBizService.existByEmailAndStatusActive(customerEmail);
+    }
+
+    private void sendResetPasswordEmail(String email) {
+        CompletableFuture.runAsync(() -> {
+            try {
+                emailService.send(profileApiProperties.getMailFrom(), email,
+                        messageApiProperties.getCustomMessage("mail.resetPassword.emailSubject"), "",
+                        profileApiProperties.getMailFrom(), accountApiProperties.getResetPasswordLink(), EmailSenderType.HTML);
+            } catch (MessagingException | UnsupportedEncodingException e) {
+                log.error(String.format("Failed to send the reset password email", e.getMessage()));
+            }
+        });
     }
 }
