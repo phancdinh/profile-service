@@ -11,10 +11,10 @@ import org.springframework.context.annotation.Bean;
 
 import java.util.Arrays;
 
-@SpringBootApplication(scanBasePackages = {"org.ht.profileapi", "org.ht.email"})
+@SpringBootApplication(scanBasePackages = {"org.ht.id.profileapi", "org.ht.id.email"})
 @EnableProfileMgmtModule
 @EnableAccountMgmtModule
-@EnableFeignClients(basePackages = {"org.ht.external.user", "org.ht.account.external.service.bitly"})
+@EnableFeignClients(basePackages = {"org.ht.id.external.user", "org.ht.id.account.external.service.bitly"})
 public class Application {
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);

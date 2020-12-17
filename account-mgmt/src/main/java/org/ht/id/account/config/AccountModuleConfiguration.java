@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 @Configuration
-@ComponentScan("org.ht.account")
+@ComponentScan("org.ht.id.account")
 @Import(AccountDataSourceConfig.class)
 public class AccountModuleConfiguration {
 
