@@ -8,8 +8,8 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 @Configuration
 @RequiredArgsConstructor
-@EnableMongoRepositories(basePackages = {"org.ht.profile.data.repository"})
+@EnableMongoRepositories(basePackages = {"org.ht.id.profile.data.repository"})
 @EnableMongoAuditing
-@EntityScan("org.ht.profile.data.model")
+@EntityScan("org.ht.id.profile.data.model")
 public class ProfileDataSourceConfig {
 }
