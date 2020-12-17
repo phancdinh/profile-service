@@ -3,8 +3,8 @@ package org.ht.id.profileapi.facade;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.ht.id.account.bizservice.ActivationBizService;
-import org.ht.id.account.exception.DataNotExistingException;
 import org.ht.id.common.constant.UserStatus;
+import org.ht.id.common.exception.DataNotExistingException;
 import org.ht.id.profile.bizservice.ContactInfoBizService;
 import org.ht.id.profile.bizservice.ProfileBizService;
 import org.ht.id.profileapi.dto.request.ActivationCreateRequest;
@@ -13,9 +13,7 @@ import org.ht.id.profileapi.dto.response.ActivationCreateResponse;
 import org.ht.id.profileapi.dto.response.ActivationUpdateResponse;
 import org.ht.id.profileapi.facade.converter.ActivationConverter;
 import org.springframework.stereotype.Component;
-
 import java.util.Optional;
-
 import static java.util.function.Predicate.not;
 
 @Component
@@ -30,13 +28,13 @@ public class ActivationFacade {
 
     public ActivationCreateResponse createActivation(ActivationCreateRequest activationCreateRequest) {
 
-        return Optional.of(activationCreateRequest).map(requestDto -> activationConverter.convertToEntity(requestDto))
+        return Optional.of(activationCreateRequest).map(activationConverter::convertToEntity)
                 .filter(not(activation -> activationBizService.existedActivation(activation.getEmail())
                         || contactInfoBizService.existByEmailAndStatusActive(activation.getEmail())))
-                .map(activation -> activationBizService.create(activation))
+                .map(activationBizService::create)
                 .map(activation -> activationConverter.convertToActivationCreateResponse(activation,
                         activationBizService.generateActivationLink(activation)))
-                .orElseThrow(() -> new DataNotExistingException());
+                .orElseThrow(() -> new DataNotExistingException(""));
     }
 
     public ActivationUpdateResponse updateActivation(ActivationUpdateRequest activationUpdateRequest) {
@@ -44,9 +42,9 @@ public class ActivationFacade {
         return Optional.of(activationUpdateRequest)
                 .map(activationRequest -> activationBizService.findById(activationRequest.getId()))
                 .filter(activation -> activationBizService.isValidActivation(activation, activationUpdateRequest.getValue()))
-                .map(activation -> activationBizService.update(activation))
+                .map(activationBizService::update)
                 .filter(not(activation -> profileBizService.updateStatus(activation.getHtId(), UserStatus.ACTIVE).isInactivated()))
-                .map(activation -> activationConverter.convertToActivationUpdateResponse(activation))
-                .orElseThrow(() -> new DataNotExistingException());
+                .map(activationConverter::convertToActivationUpdateResponse)
+                .orElseThrow(() -> new DataNotExistingException(""));
     }
 }

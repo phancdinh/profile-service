@@ -2,9 +2,8 @@ package org.ht.id.account.external.service.bitly;
 
 import org.ht.id.account.dto.BitlyShortenLinkCreationRequest;
 import org.ht.id.account.dto.BitlyShortenLinkCreationResponse;
-import org.ht.id.account.exception.ServiceUnavailableException;
+import org.ht.id.common.exception.ServiceUnavailableException;
 import org.springframework.stereotype.Service;
-
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -29,6 +28,5 @@ public class BitlyLinkService {
             throw new ServiceUnavailableException(he.toString());
         }
         return result;
-
     }
 }

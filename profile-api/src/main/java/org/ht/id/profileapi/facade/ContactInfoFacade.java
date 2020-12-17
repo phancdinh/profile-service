@@ -2,18 +2,15 @@ package org.ht.id.profileapi.facade;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.ht.id.common.exception.InactivatedAccountException;
 import org.ht.id.profile.bizservice.ContactInfoBizService;
 import org.ht.id.profile.bizservice.ProfileBizService;
-import org.ht.id.profile.data.exception.DataConflictingException;
-import org.ht.id.profile.data.exception.DataNotExistingException;
 import org.ht.id.profileapi.config.MessageApiProperties;
 import org.ht.id.profileapi.dto.request.ContactInfoCreateRequest;
 import org.ht.id.profileapi.dto.response.ContactInfoResponse;
 import org.ht.id.profileapi.dto.response.internal.HierarchyContactResponse;
 import org.ht.id.profileapi.facade.converter.ProfileInfoConverter;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
@@ -28,39 +25,23 @@ public class ContactInfoFacade {
     private final MessageApiProperties messageApiProperties;
 
     public ContactInfoResponse create(String htId, ContactInfoCreateRequest createRequest) {
-        try {
-            return Optional.of(createRequest)
-                    .map(info -> profileInfoConverter.convertToEntity(info))
-                    .map(contactInfoDto -> contactInfoBizService.create(htId, contactInfoDto))
-                    .map(contactInfoDto -> profileInfoConverter.convertToResponse(contactInfoDto, htId)).orElse(null);
-        } catch (DataConflictingException e) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
-        } catch (DataNotExistingException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+        return Optional.of(createRequest)
+                .map(profileInfoConverter::convertToEntity)
+                .map(contactInfoDto -> contactInfoBizService.create(htId, contactInfoDto))
+                .map(contactInfoDto -> profileInfoConverter.convertToResponse(contactInfoDto, htId)).orElse(null);
     }
 
     public ContactInfoResponse findByHtId(String htId) {
-        try {
-            return profileInfoConverter.convertToResponse(contactInfoBizService.findByHtId(htId), htId);
-        } catch (DataNotExistingException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+        return profileInfoConverter.convertToResponse(contactInfoBizService.findByHtId(htId), htId);
     }
 
     public HierarchyContactResponse createContactEmail(String htId, String email) {
-        try {
-            var userProfile = profileBizService.findProfile(htId);
-            if (userProfile.isInactivated()) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, messageApiProperties.getMessage("validation.account.isNotActivated"));
-            }
-
-            var contactEmail = contactInfoBizService.createContactEmail(userProfile.getHtCode(), email);
-            return profileInfoConverter.convertToResponse(contactEmail);
-        } catch (DataNotExistingException ex1) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex1.getMessage());
-        } catch (DataConflictingException ex2) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, ex2.getMessage());
-        }
+        return Optional.of(htId).map(profileBizService::findProfile)
+                .filter(c -> !c.isInactivated())
+                .map(c -> contactInfoBizService.createContactEmail(c.getHtCode(), email))
+                .map(profileInfoConverter::convertToResponse)
+                .orElseThrow(() -> {
+                    throw new InactivatedAccountException(messageApiProperties.getMessage("validation.account.isNotActivated"));
+                });
     }
 }

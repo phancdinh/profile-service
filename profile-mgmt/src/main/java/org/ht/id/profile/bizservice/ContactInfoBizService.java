@@ -4,17 +4,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.ht.id.common.constant.UserStatus;
+import org.ht.id.common.exception.DataConflictingException;
+import org.ht.id.common.exception.DataNotExistingException;
 import org.ht.id.profile.config.ProfileMgtMessageProperties;
 import org.ht.id.profile.helper.ProfileConverterHelper;
-import org.ht.id.profile.data.exception.DataConflictingException;
-import org.ht.id.profile.data.exception.DataNotExistingException;
 import org.ht.id.profile.data.model.ContactInfo;
 import org.ht.id.profile.data.model.Profile;
 import org.ht.id.profile.data.model.internal.HierarchyContact;
 import org.ht.id.profile.data.service.ContactInfoDataService;
 import org.ht.id.profile.data.service.ProfileDataService;
 import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -73,7 +72,6 @@ public class ContactInfoBizService {
         }
 
         List<ObjectId> listHtCodes = listContactInfo.stream().map(ContactInfo::getHtCode).collect(Collectors.toList());
-
         return profileDataService.existsByHtCodesAndStatus(listHtCodes, UserStatus.ACTIVE);
     }
 

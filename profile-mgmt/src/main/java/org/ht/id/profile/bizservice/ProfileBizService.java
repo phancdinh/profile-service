@@ -3,10 +3,11 @@ package org.ht.id.profile.bizservice;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
+import org.ht.id.common.exception.DataConflictingException;
+import org.ht.id.common.exception.DataNotExistingException;
+import org.ht.id.common.exception.WrongInputException;
 import org.ht.id.common.constant.UserStatus;
 import org.ht.id.profile.config.ProfileMgtMessageProperties;
-import org.ht.id.profile.data.exception.DataConflictingException;
-import org.ht.id.profile.data.exception.DataNotExistingException;
 import org.ht.id.profile.data.model.BasicInfo;
 import org.ht.id.profile.data.model.Profile;
 import org.ht.id.profile.data.service.BasicInfoDataService;
@@ -15,7 +16,6 @@ import org.ht.id.profile.data.service.ProfileDataService;
 import org.ht.id.profile.helper.ProfileConverterHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-
 import java.util.Optional;
 
 @Service
@@ -78,12 +78,15 @@ public class ProfileBizService {
         if (profileDataService.existsByHtId(htId)) {
             throw new DataConflictingException(profileMgtMessageProperties.getMessageWithArgs("validation.htId.isExisted", htId));
         }
+
+        if (StringUtils.isEmpty(primaryEmail) && StringUtils.isEmpty(primaryPhone)) {
+            throw new WrongInputException("Register primary email or primary phone must be entered");
+        }
+
         return Optional.of(htId)
                 .map(id -> profileDataService.create(id, leadSource, primaryEmail, primaryPhone, password))
                 .map(t -> {
-                    if (!StringUtils.isEmpty(primaryEmail) || !StringUtils.isEmpty(primaryPhone)) {
-                        contactInfoDataService.create(t.getHtCode(), primaryEmail, primaryPhone);
-                    }
+                    contactInfoDataService.create(t.getHtCode(), primaryEmail, primaryPhone);
                     return t;
                 })
                 .orElseThrow();

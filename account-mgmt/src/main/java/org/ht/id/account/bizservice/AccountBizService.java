@@ -2,13 +2,12 @@ package org.ht.id.account.bizservice;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.ht.id.common.exception.AccountRegisterFailureException;
 import org.ht.id.account.data.model.Account;
 import org.ht.id.account.data.service.AccountDataService;
-import org.ht.id.account.exception.AccountRegisterFailureException;
-import org.ht.id.account.exception.DataNotExistingException;
 import org.ht.id.account.config.AccountMgtMessageProperties;
+import org.ht.id.common.exception.DataNotExistingException;
 import org.springframework.stereotype.Component;
-
 import java.util.Optional;
 
 @Component
