@@ -1,6 +1,7 @@
 package org.ht.profileapi.handler;
 
 import org.ht.account.exception.AccountRegisterFailureException;
+import org.ht.common.exception.UserInputException;
 import org.ht.profileapi.dto.response.GenericResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -17,12 +18,12 @@ import java.util.List;
 @ControllerAdvice
 public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(AccountRegisterFailureException.class)
-    public final ResponseEntity<Object> handleAccountRegisterException(AccountRegisterFailureException ex, WebRequest request) {
+    @ExceptionHandler({AccountRegisterFailureException.class, UserInputException.class})
+    public final ResponseEntity<Object> handleAccountRegisterException(RuntimeException ex, WebRequest request) {
         List<String> details = new ArrayList<>();
         details.add(ex.getLocalizedMessage());
         GenericResponse response = new GenericResponse();
-        response.setFailure(HttpStatus.BAD_REQUEST, "Account registration failed", details);
+        response.setFailure(HttpStatus.BAD_REQUEST, ex.getMessage(), details);
         return ResponseEntity.badRequest().body(response);
     }
 

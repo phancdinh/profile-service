@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.ht.common.constant.UserStatus;
-import org.ht.externalUser.data.UserData;
+import org.ht.common.exception.UserInputException;
 import org.ht.profile.data.exception.DataConflictingException;
 import org.ht.profile.data.exception.DataNotExistingException;
 import org.ht.profile.data.model.BasicInfo;
@@ -14,6 +14,7 @@ import org.ht.profile.data.service.ContactInfoDataService;
 import org.ht.profile.data.service.ProfileDataService;
 import org.ht.profile.helper.ProfileConverterHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.Optional;
 
@@ -24,6 +25,7 @@ public class ProfileBizService {
     private final ProfileDataService profileDataService;
     private final BasicInfoDataService basicInfoDataService;
     private final ProfileConverterHelper profileConverterHelper;
+    private final ContactInfoDataService contactInfoDataService;
 
     public BasicInfo createBasicInfo(String htId, BasicInfo basicInfo) throws DataConflictingException {
         ObjectId htCode = profileDataService.findByHtId(htId)
@@ -75,8 +77,17 @@ public class ProfileBizService {
         if (profileDataService.existsByHtId(htId)) {
             throw new DataConflictingException("HtID is already existed with value " + htId);
         }
+
+        if (StringUtils.isEmpty(primaryEmail) && StringUtils.isEmpty(primaryPhone)) {
+            throw new UserInputException("Register primary email or primary phone must be entered");
+        }
+
         return Optional.of(htId)
                 .map(id -> profileDataService.create(id, leadSource, primaryEmail, primaryPhone, password))
+                .map(t -> {
+                    contactInfoDataService.create(t.getHtCode(), primaryEmail, primaryPhone);
+                    return t;
+                })
                 .orElseThrow();
     }
 
@@ -94,5 +105,4 @@ public class ProfileBizService {
     public Profile updateStatus(String htId, UserStatus status, String email, String phone, String password) {
         return profileDataService.updateStatus(htId, status, email, phone, password);
     }
-
 }

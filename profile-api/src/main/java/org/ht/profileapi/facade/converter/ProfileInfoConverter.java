@@ -26,6 +26,7 @@ import org.ht.profileapi.dto.response.ContactInfoResponse;
 import org.ht.profileapi.dto.response.DemoGraphicsInfoResponse;
 import org.ht.profileapi.dto.response.LegalInfoResponse;
 import org.ht.profileapi.dto.response.ProfileResponse;
+import org.ht.profileapi.dto.response.internal.HierarchyContactResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -86,6 +87,15 @@ public class ProfileInfoConverter {
     public ProfileResponse convertToResponse(Profile profile) {
         ProfileResponse response = new ProfileResponse();
         response.setHtId(profile.getHtId());
+        return response;
+    }
+
+    public HierarchyContactResponse convertToResponse(HierarchyContact hierarchyContact) {
+        HierarchyContactResponse response = new HierarchyContactResponse();
+        response.setPrimary(hierarchyContact.isPrimary());
+        response.setTags(hierarchyContact.getTags());
+        response.setValue(hierarchyContact.getValue());
+        response.setVerified(hierarchyContact.isVerified());
         return response;
     }
 

@@ -12,7 +12,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
-
 import java.util.Date;
 
 @Getter
@@ -41,4 +40,7 @@ public class Profile {
     @LastModifiedDate
     private Date lastModifiedDate;
 
+    public boolean isInactivated() {
+        return !UserStatus.ACTIVE.equals(status);
+    }
 }

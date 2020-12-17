@@ -7,7 +7,6 @@ import org.ht.account.exception.AccountRegisterFailureException;
 import org.ht.account.exception.DataNotExistingException;
 import org.springframework.stereotype.Component;
 
-import javax.swing.text.html.Option;
 import java.util.Date;
 import java.util.Optional;
 
