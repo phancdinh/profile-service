@@ -1,14 +1,12 @@
 package org.ht.profileapi.controller;
 
 import org.ht.common.constant.DemoGraphicsAttribute;
-import org.ht.profileapi.authority.Role;
 import org.ht.profileapi.dto.request.DemoGraphicsInfoCreateRequest;
 import org.ht.profileapi.dto.request.DemoGraphicsInfoUpdateRequest;
 import org.ht.profileapi.dto.response.DemoGraphicsInfoResponse;
 import org.ht.profileapi.facade.DemoGraphicsInfoFacade;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,14 +31,12 @@ public class DemoGraphicsInfoController {
 
     // API For Marital
     @GetMapping(value = "/{htId}/marital-status")
-    @PreAuthorize(Role.DemoGraphics.VIEW)
     public ResponseEntity<DemoGraphicsInfoResponse> findMarital(@PathVariable String htId) {
         DemoGraphicsInfoResponse p = demoGraphicsInfoBizService.findByHtIdAndAttribute(htId, DemoGraphicsAttribute.MARITAL_STATUS);
         return ResponseEntity.ok(p);
     }
 
     @PostMapping(value = {"/{htId}/marital-status"})
-    @PreAuthorize(Role.DemoGraphics.MANAGE)
     public ResponseEntity<DemoGraphicsInfoResponse> createMarital(@PathVariable String htId,
                                                                   @Valid @RequestBody DemoGraphicsInfoCreateRequest request) {
         DemoGraphicsInfoResponse createdProfile = demoGraphicsInfoBizService.create(htId, DemoGraphicsAttribute.MARITAL_STATUS, request);
@@ -48,7 +44,6 @@ public class DemoGraphicsInfoController {
     }
 
     @PutMapping(value = "/{htId}/marital-status")
-    @PreAuthorize(Role.DemoGraphics.MANAGE)
     public ResponseEntity<DemoGraphicsInfoResponse> updateMarital(@PathVariable String htId,
                                                                   @Valid @RequestBody DemoGraphicsInfoUpdateRequest request) {
         DemoGraphicsInfoResponse updatedProfile = demoGraphicsInfoBizService.update(htId, DemoGraphicsAttribute.MARITAL_STATUS, request);
@@ -56,7 +51,6 @@ public class DemoGraphicsInfoController {
     }
 
     @DeleteMapping(value = "/{htId}/marital-status")
-    @PreAuthorize(Role.DemoGraphics.MANAGE)
     public ResponseEntity<Void> deleteMarital(@PathVariable String htId) {
         demoGraphicsInfoBizService.delete(htId, DemoGraphicsAttribute.MARITAL_STATUS);
         return ResponseEntity.noContent().build();
@@ -64,14 +58,12 @@ public class DemoGraphicsInfoController {
 
     // API For Customer Type
     @GetMapping(value = "/{htId}/customer-type-status")
-    @PreAuthorize(Role.DemoGraphics.VIEW)
     public ResponseEntity<DemoGraphicsInfoResponse> findCustomerType(@PathVariable String htId) {
         DemoGraphicsInfoResponse p = demoGraphicsInfoBizService.findByHtIdAndAttribute(htId, DemoGraphicsAttribute.CUSTOMER_TYPE_STATUS);
         return ResponseEntity.ok(p);
     }
 
     @PostMapping(value = {"/{htId}/customer-type-status"})
-    @PreAuthorize(Role.DemoGraphics.MANAGE)
     public ResponseEntity<DemoGraphicsInfoResponse> createCustomerType(@PathVariable String htId,
                                                                        @Valid @RequestBody DemoGraphicsInfoCreateRequest request) {
         DemoGraphicsInfoResponse createdProfile = demoGraphicsInfoBizService.create(htId, DemoGraphicsAttribute.CUSTOMER_TYPE_STATUS, request);
@@ -79,7 +71,6 @@ public class DemoGraphicsInfoController {
     }
 
     @PutMapping(value = "/{htId}/customer-type-status")
-    @PreAuthorize(Role.DemoGraphics.MANAGE)
     public ResponseEntity<DemoGraphicsInfoResponse> updateCustomerType(@PathVariable String htId,
                                                                        @Valid @RequestBody DemoGraphicsInfoUpdateRequest request) {
         DemoGraphicsInfoResponse updatedProfile = demoGraphicsInfoBizService.update(htId, DemoGraphicsAttribute.CUSTOMER_TYPE_STATUS, request);
@@ -87,7 +78,6 @@ public class DemoGraphicsInfoController {
     }
 
     @DeleteMapping(value = "/{htId}/customer-type-status")
-    @PreAuthorize(Role.DemoGraphics.MANAGE)
     public ResponseEntity<Void> deleteCustomerType(@PathVariable String htId) {
         demoGraphicsInfoBizService.delete(htId, DemoGraphicsAttribute.CUSTOMER_TYPE_STATUS);
         return ResponseEntity.noContent().build();

@@ -34,7 +34,6 @@ public class LegalInfoController {
     }
 
     @PostMapping(value = {"/{htId}/legal-info"})
-    @PreAuthorize(Role.LegalInfo.MANAGE)
     public ResponseEntity<LegalInfoResponse> createLegalInfo(@PathVariable String htId,
                                                              @Valid @RequestBody LegalInfoCreateRequest request) {
         LegalInfoResponse result = legalInfoFacade.create(htId, request);
