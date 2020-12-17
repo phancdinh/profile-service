@@ -67,7 +67,7 @@ public class ManageLinkBizService {
                     return new DataNotExistingException(error);
                 });
         // Check activation date is still valid and correct link for this htid
-        if (isLinkExpire(account) && !check.equals(getMd5Activation(account))) {
+        if (isLinkExpire(account) || !check.equals(getMd5Activation(account))) {
             String error = String.format("Account activation does not existed or actived with htId: %s", htId);
             log.error(error);
             throw new DataNotExistingException(error);
