@@ -1,21 +1,21 @@
-package org.ht.externalUser.service.impl;
+package org.ht.external.user.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.ht.externalUser.data.UserData;
-import org.ht.externalUser.data.UserIdentityClient;
-import org.ht.externalUser.dto.PatchUpdateData;
-import org.ht.externalUser.dto.UserAccountUnlockRequest;
-import org.ht.externalUser.dto.UserCreationRequest;
-import org.ht.externalUser.service.ExternalUserService;
+import org.ht.external.user.data.UserData;
+import org.ht.external.user.data.UserIdentityClient;
+import org.ht.external.user.dto.PatchUpdateData;
+import org.ht.external.user.dto.UserAccountUnlockRequest;
+import org.ht.external.user.dto.UserCreationRequest;
+import org.ht.external.user.service.ExternalUserService;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.Map;
 
-import static org.ht.externalUser.contants.WSO2Params.ACCOUNT_LOCKED;
-import static org.ht.externalUser.contants.WSO2Params.EXTENSIONS;
-import static org.ht.externalUser.contants.WSO2Params.OP_REPLACE;
-import static org.ht.externalUser.contants.WSO2Params.VERIFY_EMAIL;
+import static org.ht.external.user.contants.WSO2Params.ACCOUNT_LOCKED;
+import static org.ht.external.user.contants.WSO2Params.EXTENSIONS;
+import static org.ht.external.user.contants.WSO2Params.OP_REPLACE;
+import static org.ht.external.user.contants.WSO2Params.VERIFY_EMAIL;
 
 @Service
 @RequiredArgsConstructor

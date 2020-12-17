@@ -1,4 +1,4 @@
-package org.ht.externalUser.data;
+package org.ht.external.user.data;
 
 import lombok.Getter;
 import lombok.Setter;

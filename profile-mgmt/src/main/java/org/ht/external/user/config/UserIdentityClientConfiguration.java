@@ -1,4 +1,4 @@
-package org.ht.externalUser.config;
+package org.ht.external.user.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

@@ -1,4 +1,4 @@
-package org.ht.externalUser.dto;
+package org.ht.external.user.dto;
 
 import lombok.Getter;
 import lombok.Setter;

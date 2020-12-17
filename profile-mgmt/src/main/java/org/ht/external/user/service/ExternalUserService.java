@@ -1,7 +1,7 @@
-package org.ht.externalUser.service;
+package org.ht.external.user.service;
 
 
-import org.ht.externalUser.data.UserData;
+import org.ht.external.user.data.UserData;
 
 public interface ExternalUserService {
     UserData create(String username, String email, String phone, String password);

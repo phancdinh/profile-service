@@ -1,6 +1,6 @@
 package org.ht.profileapi.validator.constraint;
 
-import org.ht.profileapi.validator.UniqueContactValueValidator;
+import org.ht.profileapi.validator.ContactInfoRequiredValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -11,9 +11,9 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = UniqueContactValueValidator.class)
-public @interface UniqueContactValue {
-    String message() default "Value is duplicated.";
+@Constraint(validatedBy = ContactInfoRequiredValidator.class)
+public @interface ContactInfoRequired {
+    String message() default "Please input at least 1 primary contact";
 
     Class<?>[] groups() default {};
 
