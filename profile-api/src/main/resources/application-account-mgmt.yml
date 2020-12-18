@@ -3,6 +3,7 @@ account-mgmt:
     activation:
       default-link: https://app-profile-dev.hungthinhcorp.com.vn/account/active
       expire-period-days: 10
+      expire-period-duration: "PT10M"
       email-subject: "Kích hoạt tài khoản đăng ký"
     invitation:
       default-link: https://app-profile-dev.hungthinhcorp.com.vn/account/register

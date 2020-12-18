@@ -1,13 +1,6 @@
 package org.ht.id.account.bizservice;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-
-import org.apache.commons.lang3.time.DateUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.ht.id.account.config.AccountMgmtProperties;
 import org.ht.id.account.config.BitlyApiProperties;
 import org.ht.id.account.data.model.Account;
@@ -18,8 +11,11 @@ import org.ht.id.account.exception.DataNotExistingException;
 import org.ht.id.account.exception.ServiceUnavailableException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.DigestUtils;
-
-import lombok.extern.slf4j.Slf4j;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 @Slf4j
@@ -49,7 +45,7 @@ public class ManageLinkBizService {
 
         Activation actLink = new Activation();
         actLink.setCreatedAt(new Date());
-        actLink.setExpiredAt(DateUtils.addDays(new Date(), accountApiProperties.getActivationExpirePeriodDays()));
+        actLink.setExpiredAt(accountApiProperties.getActivationExpiryDate());
         account.setActivation(actLink);
         actDataService.update(account);
 
