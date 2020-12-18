@@ -13,6 +13,7 @@ import org.ht.id.profileapi.facade.converter.ProfileInfoConverter;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
+
 import java.util.Optional;
 
 @Component

@@ -3,13 +3,13 @@ package org.ht.id.profileapi.facade;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.ht.id.account.bizservice.AccountBizService;
-import org.ht.id.account.bizservice.ManageLinkBizService;
+import org.ht.id.account.bizservice.ActivationBizService;
 import org.ht.id.account.config.AccountMgmtProperties;
 import org.ht.id.account.data.model.Account;
+import org.ht.id.account.data.model.Activation;
 import org.ht.id.common.constant.UserStatus;
 import org.ht.id.email.EmailSenderType;
 import org.ht.id.email.EmailService;
-import org.ht.id.profileapi.facade.converter.AccountConverter;
 import org.ht.id.profile.bizservice.ContactInfoBizService;
 import org.ht.id.profile.bizservice.IdGeneratorBizService;
 import org.ht.id.profile.bizservice.ProfileBizService;
@@ -20,6 +20,8 @@ import org.ht.id.profileapi.config.ProfileApiProperties;
 import org.ht.id.profileapi.dto.request.AccountCreationRequest;
 import org.ht.id.profileapi.dto.response.AccountResponse;
 import org.ht.id.profileapi.dto.response.ResetPasswordResponse;
+import org.ht.id.profileapi.facade.converter.AccountConverter;
+import org.ht.id.profileapi.facade.converter.ActivationConverter;
 import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -31,6 +33,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
+import static java.util.function.Predicate.not;
+
 @Component
 @Slf4j
 @RequiredArgsConstructor
@@ -38,10 +42,14 @@ public class AccountFacade {
     private final AccountBizService accountBizService;
     private final ProfileBizService profileBizService;
     private final ContactInfoBizService contactInfoBizService;
-    private final AccountConverter accountConverter;
+    private final ActivationBizService activationBizService;
     private final IdGeneratorBizService idGeneratorBizService;
-    private final ManageLinkBizService manageLinkBizService;
     private final EmailService emailService;
+
+    private final AccountConverter accountConverter;
+    private final ActivationConverter activationConverter;
+
+
     private final ProfileApiProperties profileApiProperties;
     private final AccountMgmtProperties accountApiProperties;
     private final MessageApiProperties messageApiProperties;
@@ -58,16 +66,24 @@ public class AccountFacade {
         var htId = stringProfilePair.getFirst();
         var profile = stringProfilePair.getSecond();
 
-        // 2. Create a account
+        // 2. Create a account, this will be check 
         var accountResponse = Optional.of(creationRequest)
                 .map(account -> accountConverter.convertToEntity(creationRequest, Account.class))
                 .map(account -> accountBizService.createOrUpdate(htId, account))
                 .map(account -> accountConverter.convertToResponse(account, AccountResponse.class))
                 .orElseThrow();
 
-        // 3. Send the activation link to our customer
-        var activationLink = manageLinkBizService.generateActivationLink(htId);
+        //3.Generate activation and send activation link to email
+        Activation activation = Optional.of(creationRequest)
+                .map(request -> activationConverter.convertToEntity(request, htId))
+                .filter(not(a -> activationBizService.existedActivation(a.getEmail())
+                        || contactInfoBizService.existByEmailAndStatusActive(a.getEmail())))
+                .map(a -> activationBizService.create(a))
+                .orElseThrow();
+
+        String activationLink = activationBizService.generateActivationLink(activation);
         sendActivationEmail(activationLink, creationRequest.getEmail());
+
         accountResponse.setLeadSource(profile.getLeadSource());
         return accountResponse;
     }
@@ -111,15 +127,12 @@ public class AccountFacade {
     }
 
     public boolean checkEmailHasRegistered(String email) {
-        if (contactInfoBizService.existByEmailAndStatusActive(email)) {
-            return true;
-        }
-        return !accountBizService.isValidForRegister(email);
+        return contactInfoBizService.existByEmailAndStatusActive(email) || activationBizService.existedActivation(email);
     }
 
-    public ResetPasswordResponse resetPassword(String customerEmail){
-        boolean isValidEmail= validEmailForResetPassword(customerEmail);
-        if(isValidEmail){
+    public ResetPasswordResponse resetPassword(String customerEmail) {
+        boolean isValidEmail = validEmailForResetPassword(customerEmail);
+        if (isValidEmail) {
             sendResetPasswordEmail(customerEmail);
         }
         return new ResetPasswordResponse(isValidEmail);

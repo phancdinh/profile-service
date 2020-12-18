@@ -13,7 +13,7 @@ import javax.annotation.Resource;
 @Component
 public class ProfileConverterHelper {
 
-    @Resource(name="profileMapper")
+    @Resource(name = "profileMapper")
     private final ModelMapper profileMapper;
 
     public ProfileConverterHelper(ModelMapper profileMapper) {

@@ -10,9 +10,5 @@ import java.util.Optional;
 public interface AccountRepository extends MongoRepository<Account, String> {
     Optional<Account> findByHtId(String htId);
 
-    boolean existsByEmail(String email);
-
-    Optional<Account> findByEmailAndActive(String email, boolean active);
-
     boolean existsByHtId(String htId);
 }

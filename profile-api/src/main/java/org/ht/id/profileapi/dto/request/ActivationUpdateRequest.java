@@ -6,8 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.bson.types.ObjectId;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 @Getter
@@ -15,8 +15,13 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-public class ContactEmailCreateRequest {
-    @NotBlank(message = "Email is mandatory")
-    @Email(message = "Email is invalid")
+public class ActivationUpdateRequest {
+
+    @NotBlank(message = "id is mandatory")
+    private ObjectId id;
+
+    @NotBlank(message = "Value check is mandatory")
     private String value;
+
+
 }

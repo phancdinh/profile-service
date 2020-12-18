@@ -1,8 +1,8 @@
 package org.ht.id.profileapi.facade;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.ht.id.account.bizservice.AccountBizService;
+import java.util.Optional;
+
+import org.ht.id.account.bizservice.ActivationBizService;
 import org.ht.id.profile.bizservice.ContactInfoBizService;
 import org.ht.id.profile.bizservice.IdGeneratorBizService;
 import org.ht.id.profile.bizservice.LegalInfoBizService;
@@ -23,7 +23,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
@@ -34,7 +35,7 @@ public class ProfileInfoFacade {
     private final ContactInfoBizService contactInfoBizService;
     private final LegalInfoBizService legalInfoBizService;
     private final ProfileInfoConverter profileInfoConverter;
-    private final AccountBizService accountBizService;
+    private final ActivationBizService activationBizService;
     private final IdGeneratorBizService idGeneratorBizService;
 
     public BasicInfoResponse create(String htId, BasicInfoCreateRequest profileRequest) {
@@ -97,7 +98,7 @@ public class ProfileInfoFacade {
                 .filter(HierarchyContactRequest::isPrimary)
                 .findFirst().orElse(new HierarchyContactRequest());
         String email = primaryEmail.getValue();
-        if (contactInfoBizService.existByEmailAndStatusActive(email) || !accountBizService.isValidForRegister(email)) {
+        if (contactInfoBizService.existByEmailAndStatusActive(email) || activationBizService.existedActivation(email)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Email had been used.");
         }
     }

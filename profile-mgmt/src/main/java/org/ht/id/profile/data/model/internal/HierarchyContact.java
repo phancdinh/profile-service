@@ -19,6 +19,7 @@ public class HierarchyContact {
         this.primary = primary;
         this.tags = Collections.emptySet();
     }
+
     private String value;
     private boolean primary;
     private Set<ContactTag> tags;

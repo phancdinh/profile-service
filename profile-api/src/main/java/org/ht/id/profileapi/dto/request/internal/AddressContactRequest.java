@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.ht.id.common.constant.ContactTag;
+
 import java.util.Set;
 
 @Getter

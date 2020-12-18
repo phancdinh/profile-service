@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 @Getter
@@ -15,8 +14,11 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-public class ContactEmailCreateRequest {
-    @NotBlank(message = "Email is mandatory")
-    @Email(message = "Email is invalid")
-    private String value;
+public class InvitationCreateRequest {
+
+    @NotBlank(message = "Htid is mandatory")
+    private String htId;
+
+    @NotBlank(message = "Contact is mandatory")
+    private String contact;
 }

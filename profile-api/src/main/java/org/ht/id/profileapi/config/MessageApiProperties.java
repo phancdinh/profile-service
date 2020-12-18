@@ -14,7 +14,7 @@ public class MessageApiProperties {
         this.messageSource = messageSource;
     }
 
-    public String getCustomMessage(String message){
+    public String getCustomMessage(String message) {
         return messageSource.getMessage(message, null, Locale.getDefault());
     }
 }
