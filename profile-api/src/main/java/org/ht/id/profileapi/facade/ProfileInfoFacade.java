@@ -13,6 +13,7 @@ import org.ht.id.profile.data.model.BasicInfo;
 import org.ht.id.profile.data.model.ContactInfo;
 import org.ht.id.profile.data.model.LegalInfo;
 import org.ht.id.profile.data.model.Profile;
+import org.ht.id.profileapi.config.MessageApiProperties;
 import org.ht.id.profileapi.dto.request.BasicInfoCreateRequest;
 import org.ht.id.profileapi.dto.request.ProfileCreateRequest;
 import org.ht.id.profileapi.dto.request.internal.HierarchyContactRequest;
@@ -37,6 +38,7 @@ public class ProfileInfoFacade {
     private final ProfileInfoConverter profileInfoConverter;
     private final ActivationBizService activationBizService;
     private final IdGeneratorBizService idGeneratorBizService;
+    private final MessageApiProperties messageApiProperties;
 
     public BasicInfoResponse create(String htId, BasicInfoCreateRequest profileRequest) {
         try {
@@ -99,7 +101,7 @@ public class ProfileInfoFacade {
                 .findFirst().orElse(new HierarchyContactRequest());
         String email = primaryEmail.getValue();
         if (contactInfoBizService.existByEmailAndStatusActive(email) || activationBizService.existedActivation(email)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email had been used.");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, messageApiProperties.getMessage("validation.register.mailRegistered"));
         }
     }
 

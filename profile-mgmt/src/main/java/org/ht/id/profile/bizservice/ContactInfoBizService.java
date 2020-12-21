@@ -1,8 +1,11 @@
 package org.ht.id.profile.bizservice;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.ht.id.common.constant.UserStatus;
+import org.ht.id.profile.config.MessageApiProperties;
+import org.ht.id.profile.helper.ProfileConverterHelper;
 import org.ht.id.profile.data.exception.DataConflictingException;
 import org.ht.id.profile.data.exception.DataNotExistingException;
 import org.ht.id.profile.data.model.ContactInfo;
@@ -19,29 +22,25 @@ import java.util.stream.Collectors;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class ContactInfoBizService {
 
     private final ProfileDataService profileDataService;
     private final ContactInfoDataService contactInfoDataService;
     private final ProfileConverterHelper profileConverterHelper;
-
-    public ContactInfoBizService(ProfileDataService profileDataService, ContactInfoDataService contactInfoDataService, ProfileConverterHelper profileConverterHelper) {
-        this.profileDataService = profileDataService;
-        this.contactInfoDataService = contactInfoDataService;
-        this.profileConverterHelper = profileConverterHelper;
-    }
+    private final MessageApiProperties messageApiProperties;
 
     public ContactInfo create(String htId, ContactInfo contactInfo) throws DataConflictingException, DataNotExistingException {
         ObjectId htCode = profileDataService.findByHtId(htId)
                 .map(Profile::getHtCode)
                 .orElseThrow(() -> {
-                    String error = String.format("Profile is not existed with htId: %s", htId);
+                    String error = messageApiProperties.getMessageWithArgs("validation.profile.isNotExisted", htId);
                     log.error(error);
                     return new DataNotExistingException(error);
                 });
 
         if (contactInfoDataService.existsByHtCode(htCode)) {
-            throw new DataConflictingException(String.format("Contact info is already existed with %s", htId));
+            throw new DataConflictingException(messageApiProperties.getMessageWithArgs("validation.contact.existed", htId));
         }
         return Optional.of(profileConverterHelper.convert(contactInfo, htCode))
                 .map(contactInfoDataService::create)
@@ -51,7 +50,7 @@ public class ContactInfoBizService {
     public ContactInfo findByHtId(String htId) throws DataNotExistingException {
 
         Profile profile = profileDataService.findByHtId(htId).orElseThrow(() -> {
-            throw new DataNotExistingException(String.format("Profile is not existed with htId: %s", htId));
+            throw new DataNotExistingException(messageApiProperties.getMessageWithArgs("validation.profile.isNotExisted", htId));
         });
 
         return findByHtCode(profile.getHtCode());
@@ -60,7 +59,7 @@ public class ContactInfoBizService {
     private ContactInfo findByHtCode(ObjectId htCode) {
         return Optional.of(htCode)
                 .flatMap(contactInfoDataService::findByHtCode)
-                .orElseThrow(() -> new DataNotExistingException(String.format("Contact info is not existed htCode: %s", htCode)));
+                .orElseThrow(() -> new DataNotExistingException(messageApiProperties.getMessageWithArgs("validation.contact.isNotExist", htCode.toString())));
     }
 
     public void updatePrimaryEmail(ObjectId htCode, String email) {
@@ -83,8 +82,8 @@ public class ContactInfoBizService {
 
         ContactInfo contactInfo = findByHtCode(htCode);
         if (contactInfo.getEmails().stream().anyMatch(e -> e.getValue().equalsIgnoreCase(email))) {
-            log.error(String.format("Email %s has already existed in the current contact htCode=%s", email, htCode));
-            throw new DataConflictingException("Email has already existed");
+            log.error(messageApiProperties.getMessageWithArgs("validation.contact.existed", htCode.toString()));
+            throw new DataConflictingException(messageApiProperties.getMessage("validation.contact.emailRegistered"));
         }
         return contactInfoDataService.createContactEmail(htCode, email).orElseThrow();
     }

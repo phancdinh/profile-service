@@ -1,22 +1,22 @@
 package org.ht.id.account.bizservice;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.ht.id.account.data.model.Account;
 import org.ht.id.account.data.service.AccountDataService;
 import org.ht.id.account.exception.AccountRegisterFailureException;
 import org.ht.id.account.exception.DataNotExistingException;
+import org.ht.id.account.config.MessageApiProperties;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class AccountBizService {
     private final AccountDataService accountDataService;
-
-    public AccountBizService(AccountDataService accountDataService) {
-        this.accountDataService = accountDataService;
-    }
+    private final MessageApiProperties messageApiProperties;
 
     public Account createOrUpdate(String htId, Account creationAccount) throws AccountRegisterFailureException {
 
@@ -32,7 +32,7 @@ public class AccountBizService {
 
     public Account findAccount(String htId) {
         return accountDataService.findByHtId(htId).orElseThrow(() -> {
-            String error = String.format("Account is not existed with htId: %s", htId);
+            String error = messageApiProperties.getMessageWithArgs("validation.account.isNotExisted", htId);
             log.error(error);
             throw new DataNotExistingException(error);
         });
