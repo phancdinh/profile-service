@@ -8,13 +8,13 @@ import org.springframework.stereotype.Component;
 @Getter
 public class BitlyApiProperties {
 
-      @Value("${account-mgmt.bitly.token}")
-      private String token;
+    @Value("${account-mgmt.bitly.token}")
+    private String token;
 
-      @Value("${account-mgmt.bitly.name}")
-      private String serviceName;
+    @Value("${account-mgmt.bitly.name}")
+    private String serviceName;
 
-      private String groupName;
+    private String groupName;
 
 }
 

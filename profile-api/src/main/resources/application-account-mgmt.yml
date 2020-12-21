@@ -1,16 +1,16 @@
 account-mgmt:
   configuration:
     activation:
-      default-link: https://app-profile-dev.hungthinhcorp.com.vn/account/active
-      expire-period-days: 10
-      expire-period-duration: "PT10M"
+      default-link: https://app-profile-dev.hungthinhcorp.com.vn/account/active?id=%s&value=%s
+      expire-period-days: 10 #This is default number days that set for expire days from current.
+      expire-period-duration: "PT10M" #The sections have suffixes in ASCII of "D", "H", "M" and "S" for Days, Hours, Minutes, Seconds (Ex: P2DT3H4M)
       email-subject: "Kích hoạt tài khoản đăng ký"
     invitation:
-      default-link: https://app-profile-dev.hungthinhcorp.com.vn/account/register
+      default-link: https://app-profile-dev.hungthinhcorp.com.vn/account/register?id=%s&value=%s
     reset-password:
       default-link: https://app-profile-dev.hungthinhcorp.com.vn/account/reset-password
   bitly:
     name: bit.ly
     server: https://api-ssl.bitly.com
     shorten-link: /v4/shorten
-    token: ${BITLY_ACCESS_TOKEN}
+    token: ${BITLY_ACCESS_TOKEN} #This is BREARER token of bitly account

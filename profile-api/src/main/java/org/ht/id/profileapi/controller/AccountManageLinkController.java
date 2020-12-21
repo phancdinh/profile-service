@@ -1,51 +1,46 @@
 package org.ht.id.profileapi.controller;
 
-import org.ht.id.profileapi.dto.response.ActivationResponse;
-import org.ht.id.profileapi.dto.response.InvitationResponse;
-import org.ht.id.profileapi.facade.AccountManageLinkFacade;
+import lombok.AllArgsConstructor;
+import org.ht.id.profileapi.dto.request.ActivationCreateRequest;
+import org.ht.id.profileapi.dto.request.ActivationUpdateRequest;
+import org.ht.id.profileapi.dto.request.InvitationCreateRequest;
+import org.ht.id.profileapi.dto.request.InvitationUpdateRequest;
+import org.ht.id.profileapi.dto.response.ActivationCreateResponse;
+import org.ht.id.profileapi.dto.response.ActivationUpdateResponse;
+import org.ht.id.profileapi.dto.response.InvitationCreateResponse;
+import org.ht.id.profileapi.dto.response.InvitationUpdateResponse;
+import org.ht.id.profileapi.facade.ActivationFacade;
+import org.ht.id.profileapi.facade.InvitationFacade;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "api/accounts")
+@AllArgsConstructor
 public class AccountManageLinkController {
 
-    private final AccountManageLinkFacade accMgmLinkService;
-
-    public AccountManageLinkController(AccountManageLinkFacade accMgmLinkService) {
-        this.accMgmLinkService = accMgmLinkService;
-    }
+    private final ActivationFacade activationService;
+    private final InvitationFacade invitationService;
 
     @PostMapping(value = "/activation")
-    public ResponseEntity<ActivationResponse> generateActivationLink(
-            @RequestParam(name = "htId", required = true) String htId) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(accMgmLinkService.generateActivationLink(htId));
+    public ResponseEntity<ActivationCreateResponse> createActivation(@RequestBody ActivationCreateRequest activationCreateRequest) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(activationService.createActivation(activationCreateRequest));
     }
 
-    @GetMapping(value = "/activation")
-    public ResponseEntity<ActivationResponse> getActivationLink(
-            @RequestParam(name = "htId", required = true) String htId,
-            @RequestParam(name = "valid", required = true) String valid) {
-        return ResponseEntity.status(HttpStatus.OK).body(accMgmLinkService.activateAccount(htId, valid));
+    @PutMapping(value = "/activation")
+    public ResponseEntity<ActivationUpdateResponse> updateActivation(@RequestBody ActivationUpdateRequest activationUpdateRequest) {
+        return ResponseEntity.status(HttpStatus.OK).body(activationService.updateActivation(activationUpdateRequest));
     }
 
     @PostMapping(value = "/invitation")
-    public ResponseEntity<InvitationResponse> generateInvitationLink(
-            @RequestParam(name = "htId", required = true) String htId,
-            @RequestParam(name = "contact", required = true) String contact) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(accMgmLinkService.generateInvitationLink(htId, contact));
+    public ResponseEntity<InvitationCreateResponse> createInvitation(@RequestBody InvitationCreateRequest invitationCreateRequest) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(invitationService.createInvitation(invitationCreateRequest));
     }
 
-    @GetMapping(value = "/invitation")
-    public ResponseEntity<InvitationResponse> getInvitationLink(
-            @RequestParam(name = "htId", required = true) String htId,
-            @RequestParam(name = "valid", required = true) String valid) {
-        return ResponseEntity.status(HttpStatus.OK).body(accMgmLinkService.getInvitationLink(htId, valid));
+    @PutMapping(value = "/invitation")
+    public ResponseEntity<InvitationUpdateResponse> updateInvitation(@RequestBody InvitationUpdateRequest invitationUpdateRequest) {
+        return ResponseEntity.status(HttpStatus.OK).body(invitationService.updateInvitation(invitationUpdateRequest));
     }
 
 }

@@ -1,11 +1,11 @@
 package org.ht.id.profileapi.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
@@ -14,16 +14,14 @@ import static org.ht.id.common.constant.DateTime.DATETIME_PATTERN;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-public class AccountResponse {
-    @JsonIgnore
-    private String id;
+@AllArgsConstructor
+@Builder
+public class InvitationCreateResponse {
+
     private String htId;
-    private String email;
-    private boolean active;
-    private String leadSource;
+    private String url;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATETIME_PATTERN)
-    private Date lastModifiedDate;
+    private Date createDate;
 }

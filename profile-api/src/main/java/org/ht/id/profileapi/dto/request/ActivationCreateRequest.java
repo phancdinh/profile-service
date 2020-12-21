@@ -15,8 +15,16 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-public class ContactEmailCreateRequest {
+public class ActivationCreateRequest {
+
     @NotBlank(message = "Email is mandatory")
     @Email(message = "Email is invalid")
-    private String value;
+    private String email;
+
+    @NotBlank(message = "Phone is mandatory")
+    private String phone;
+
+    private String htId;
+
+
 }

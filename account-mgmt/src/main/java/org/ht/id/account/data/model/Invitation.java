@@ -1,22 +1,36 @@
-package org.ht.id.account.data.model.internal;
+package org.ht.id.account.data.model;
 
 import java.util.Date;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Activation {
+@Builder
+public class Invitation {
 
+    @Id
+    @ToString.Exclude
+    private ObjectId id;
+
+    @Indexed(unique = true)
+    private String htId;
+
+    private String mainContact;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @CreatedDate
@@ -24,10 +38,6 @@ public class Activation {
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @LastModifiedDate
-    private Date confirmedAt;
-
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    @CreatedDate
-    private Date expiredAt;
+    private Date lastModifiedDate;
 
 }

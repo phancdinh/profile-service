@@ -1,12 +1,10 @@
 package org.ht.id.account.data.service;
 
-import static java.util.function.Predicate.not;
-
-import java.util.Optional;
-
 import org.ht.id.account.data.model.Account;
 import org.ht.id.account.data.repository.AccountRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class AccountDataService {
@@ -18,7 +16,6 @@ public class AccountDataService {
 
     public Account create(Account account) {
         return Optional.ofNullable(account)
-                .filter(not(o -> accountRepository.existsByEmail(o.getEmail())))
                 .map(accountRepository::insert)
                 .orElseThrow();
     }
@@ -31,14 +28,6 @@ public class AccountDataService {
 
     public Optional<Account> findByHtId(String htId) {
         return Optional.ofNullable(htId).flatMap(accountRepository::findByHtId);
-    }
-
-    public boolean existsByEmail(String email) {
-        return Optional.ofNullable(email).map(accountRepository::existsByEmail).orElse(false);
-    }
-
-    public Optional<Account> findByEmailAndActive(String email, boolean active) {
-        return accountRepository.findByEmailAndActive(email, active);
     }
 
     public boolean existsByHtId(String htId) {

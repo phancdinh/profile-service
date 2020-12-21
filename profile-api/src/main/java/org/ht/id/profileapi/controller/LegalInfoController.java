@@ -1,9 +1,11 @@
 package org.ht.id.profileapi.controller;
 
+import javax.validation.Valid;
+
 import org.ht.id.profileapi.authority.Role;
+import org.ht.id.profileapi.dto.request.LegalInfoCreateRequest;
 import org.ht.id.profileapi.dto.response.LegalInfoResponse;
 import org.ht.id.profileapi.facade.LegalInfoFacade;
-import org.ht.id.profileapi.dto.request.LegalInfoCreateRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = "api/profiles")

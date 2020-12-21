@@ -18,7 +18,7 @@ import org.springframework.web.util.WebUtils;
 @ControllerAdvice
 public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler({ AccountRegisterFailureException.class, DataNotExistingException.class,
+    @ExceptionHandler({AccountRegisterFailureException.class, DataNotExistingException.class,
             ServiceUnavailableException.class, UserInputException.class})
 
     @Nullable
@@ -57,7 +57,7 @@ public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, @Nullable Object body, HttpHeaders headers,
-            HttpStatus status, WebRequest request) {
+                                                             HttpStatus status, WebRequest request) {
 
         if (HttpStatus.INTERNAL_SERVER_ERROR.equals(status)) {
             request.setAttribute(WebUtils.ERROR_EXCEPTION_ATTRIBUTE, ex, WebRequest.SCOPE_REQUEST);
