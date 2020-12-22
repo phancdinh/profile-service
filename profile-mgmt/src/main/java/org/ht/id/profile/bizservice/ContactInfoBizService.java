@@ -32,13 +32,13 @@ public class ContactInfoBizService {
         ObjectId htCode = profileDataService.findByHtId(htId)
                 .map(Profile::getHtCode)
                 .orElseThrow(() -> {
-                    String error = profileMgtMessageProperties.getMessageWithArgs("validation.profile.isNotExisted", htId);
+                    String error = profileMgtMessageProperties.getMessage("validation.profile.isNotExisted", htId);
                     log.error(error);
                     return new DataNotExistingException(error);
                 });
 
         if (contactInfoDataService.existsByHtCode(htCode)) {
-            throw new DataConflictingException(profileMgtMessageProperties.getMessageWithArgs("validation.contact.existed", htId));
+            throw new DataConflictingException(profileMgtMessageProperties.getMessage("validation.contact.existed", htId));
         }
         return Optional.of(profileConverterHelper.convert(contactInfo, htCode))
                 .map(contactInfoDataService::create)
@@ -48,7 +48,7 @@ public class ContactInfoBizService {
     public ContactInfo findByHtId(String htId) throws DataNotExistingException {
 
         Profile profile = profileDataService.findByHtId(htId).orElseThrow(() -> {
-            throw new DataNotExistingException(profileMgtMessageProperties.getMessageWithArgs("validation.profile.isNotExisted", htId));
+            throw new DataNotExistingException(profileMgtMessageProperties.getMessage("validation.profile.isNotExisted", htId));
         });
 
         return findByHtCode(profile.getHtCode());
@@ -57,7 +57,7 @@ public class ContactInfoBizService {
     private ContactInfo findByHtCode(ObjectId htCode) {
         return Optional.of(htCode)
                 .flatMap(contactInfoDataService::findByHtCode)
-                .orElseThrow(() -> new DataNotExistingException(profileMgtMessageProperties.getMessageWithArgs("validation.contact.isNotExist", htCode.toString())));
+                .orElseThrow(() -> new DataNotExistingException(profileMgtMessageProperties.getMessage("validation.contact.isNotExist", htCode.toString())));
     }
 
     public void updatePrimaryEmail(ObjectId htCode, String email) {
@@ -78,7 +78,7 @@ public class ContactInfoBizService {
     public HierarchyContact createContactEmail(ObjectId htCode, String email) {
 
         if (anyEmailWithHtCode(htCode, email)) {
-            log.error(profileMgtMessageProperties.getMessageWithArgs("validation.contact.existed", htCode.toString()));
+            log.error(profileMgtMessageProperties.getMessage("validation.contact.existed", htCode.toString()));
             throw new DataConflictingException(profileMgtMessageProperties.getMessage("validation.contact.emailRegistered"));
         }
         return contactInfoDataService.createContactEmail(htCode, email).orElseThrow();

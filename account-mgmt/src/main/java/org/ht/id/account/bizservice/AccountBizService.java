@@ -31,7 +31,7 @@ public class AccountBizService {
 
     public Account findAccount(String htId) {
         return accountDataService.findByHtId(htId).orElseThrow(() -> {
-            String error = accountMgtMessageProperties.getMessageWithArgs("validation.account.isNotExisted", htId);
+            String error = accountMgtMessageProperties.getMessage("validation.account.isNotExisted", htId);
             log.error(error);
             throw new DataNotExistingException(error);
         });

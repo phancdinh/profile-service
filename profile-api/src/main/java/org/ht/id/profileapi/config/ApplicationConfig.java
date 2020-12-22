@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import java.util.Locale;
 import java.util.Optional;
@@ -32,6 +34,14 @@ public class ApplicationConfig {
         Locale locale = new Locale("vn", "VN");
         messageSource.setDefaultLocale(locale);
         return messageSource;
+    }
+
+    @Bean
+    public LocaleResolver localeResolver() {
+        SessionLocaleResolver localeResolver = new SessionLocaleResolver();
+        Locale locale = new Locale("vn", "VN");
+        localeResolver.setDefaultLocale(locale);
+        return localeResolver;
     }
 
     @Bean

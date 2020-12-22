@@ -16,10 +16,10 @@ import javax.validation.constraints.NotBlank;
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class ActivationUpdateRequest {
 
-    @NotBlank(message = "id is mandatory")
+    @NotBlank(message = "{validation.htId.required}")
     private String id;
 
-    @NotBlank(message = "Value check is mandatory")
+    @NotBlank(message = "{validation.value.check.required}")
     private String value;
 
 

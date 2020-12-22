@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.Optional;
+
 import org.ht.id.account.config.AccountMgmtProperties;
 import org.ht.id.account.config.AccountMgtMessageProperties;
 import org.ht.id.account.config.BitlyApiProperties;
@@ -41,10 +42,10 @@ public class InvitationBizService {
 
     public Invitation findById(String id) {
         return invitationDataService.findById(id).orElseThrow(() -> {
-                String error = accountMgtMessageProperties.getMessageWithArgs("validate.invitation.not.existed", id);
-                log.error(error);
-                throw new DataNotExistingException(error);
-                });
+            String error = accountMgtMessageProperties.getMessage("validation.invitation.not.existed", id);
+            log.error(error);
+            throw new DataNotExistingException(error);
+        });
     }
 
     public String generateInvitationLink(Invitation invitation) throws DataNotExistingException {
@@ -69,7 +70,7 @@ public class InvitationBizService {
         try {
             return EncryptUtil.md5(invitation.getId().toString(), invitation.getHtId(), invitation.getCreatedAt().toString());
         } catch (UnsupportedEncodingException | NoSuchAlgorithmException e) {
-            throw new EncryptFailureException("Could not create invitation code");
+            throw new EncryptFailureException(accountMgtMessageProperties.getMessage("validation.activation.not.createdCode"));
         }
     }
 }

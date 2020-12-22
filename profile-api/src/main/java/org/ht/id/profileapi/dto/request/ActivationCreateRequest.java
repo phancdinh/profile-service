@@ -17,11 +17,11 @@ import javax.validation.constraints.NotBlank;
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class ActivationCreateRequest {
 
-    @NotBlank(message = "Email is mandatory")
-    @Email(message = "Email is invalid")
+    @NotBlank(message = "{validation.account.email.required}")
+    @Email(message = "{validation.account.email.isNotValid}")
     private String email;
 
-    @NotBlank(message = "Phone is mandatory")
+    @NotBlank(message = "{validation.activation.phone.required}")
     private String phone;
 
     private String htId;

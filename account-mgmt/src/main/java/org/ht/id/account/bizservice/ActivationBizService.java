@@ -39,7 +39,7 @@ public class ActivationBizService {
 
     public Activation findById(String id) {
         return activationDataService.findById(id).orElseThrow(() -> {
-            String error = accountMgtMessageProperties.getMessageWithArgs("validate.activation.not.existed", id);
+            String error = accountMgtMessageProperties.getMessage("validation.activation.not.existed", id);
             log.error(error);
             throw new DataNotExistingException(error);
         });

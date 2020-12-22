@@ -27,14 +27,14 @@ public class DemoGraphicsInfoBizService {
         ObjectId htCode = profileDataService.findByHtId(htId)
                 .map(Profile::getHtCode)
                 .orElseThrow(() -> {
-                    String error = profileMgtMessageProperties.getMessageWithArgs("validation.profile.isNotExisted", htId);
+                    String error = profileMgtMessageProperties.getMessage("validation.profile.isNotExisted", htId);
                     log.error(error);
                     return new DataNotExistingException(error);
                 });
         DemoGraphicsAttribute demoGraphicsInfoAttribute = demoGraphicsInfo.getAttribute();
         boolean isExisting = demoGraphicsInfoDataService.existingDemoGraphicsInfo(htCode, demoGraphicsInfoAttribute);
         if (isExisting) {
-            throw new DataConflictingException(profileMgtMessageProperties.getMessageWithArgs("validation.demographics.isExisted", demoGraphicsInfo.getAttribute().toString()));
+            throw new DataConflictingException(profileMgtMessageProperties.getMessage("validation.demographics.isExisted", demoGraphicsInfo.getAttribute().toString()));
         }
         return Optional.of(demoGraphicsInfo)
                 .map(info -> {
@@ -43,18 +43,18 @@ public class DemoGraphicsInfoBizService {
                     return demoGraphicsInfo;
                 })
                 .map(demoGraphicsInfoDataService::insert)
-                .orElseThrow(() -> new DataNotExistingException(profileMgtMessageProperties.getMessageWithArgs("validation.demographics.isNotExisted", demoGraphicsInfoAttribute.toString())));
+                .orElseThrow(() -> new DataNotExistingException(profileMgtMessageProperties.getMessage("validation.demographics.isNotExisted", demoGraphicsInfoAttribute.toString())));
     }
 
     public DemoGraphicsInfo findByHtIdAndAttribute(String htId, DemoGraphicsAttribute demoGraphicsInfoAttribute) {
         Optional<Profile> profileOptional = profileDataService.findByHtId(htId);
         if (profileOptional.isEmpty()) {
-            throw new DataNotExistingException(profileMgtMessageProperties.getMessageWithArgs("validation.profile.isNotExisted", htId));
+            throw new DataNotExistingException(profileMgtMessageProperties.getMessage("validation.profile.isNotExisted", htId));
         }
         return profileOptional
                 .flatMap(existingProfile ->
                         demoGraphicsInfoDataService.findByHtIdAndAttribute(existingProfile.getHtCode(), demoGraphicsInfoAttribute))
-                .orElseThrow(() -> new DataNotExistingException(profileMgtMessageProperties.getMessageWithArgs("validation.demographics.isNotExisted", demoGraphicsInfoAttribute.toString())));
+                .orElseThrow(() -> new DataNotExistingException(profileMgtMessageProperties.getMessage("validation.demographics.isNotExisted", demoGraphicsInfoAttribute.toString())));
     }
 
     public DemoGraphicsInfo update(String htId,
@@ -62,7 +62,7 @@ public class DemoGraphicsInfoBizService {
 
         Optional<Profile> profileOptional = profileDataService.findByHtId(htId);
         if (profileOptional.isEmpty()) {
-            throw new DataNotExistingException(profileMgtMessageProperties.getMessageWithArgs("validation.profile.isNotExisted", htId));
+            throw new DataNotExistingException(profileMgtMessageProperties.getMessage("validation.profile.isNotExisted", htId));
         }
         DemoGraphicsAttribute demoGraphicsInfoAttribute = updateRequest.getAttribute();
         return profileOptional
@@ -74,7 +74,7 @@ public class DemoGraphicsInfoBizService {
                 })
                 .map(demoGraphicsInfoDataService::save)
                 .orElseThrow(() -> new DataNotExistingException(
-                        profileMgtMessageProperties.getMessageWithArgs("validation.demographics.isNotExistedOrUpdate", demoGraphicsInfoAttribute.toString())));
+                        profileMgtMessageProperties.getMessage("validation.demographics.isNotExistedOrUpdate", demoGraphicsInfoAttribute.toString())));
     }
 
     public void delete(String htId,
@@ -82,7 +82,7 @@ public class DemoGraphicsInfoBizService {
 
         Optional<Profile> profileOptional = profileDataService.findByHtId(htId);
         if (profileOptional.isEmpty()) {
-            throw new DataNotExistingException(profileMgtMessageProperties.getMessageWithArgs("validation.profile.isNotExisted", htId));
+            throw new DataNotExistingException(profileMgtMessageProperties.getMessage("validation.profile.isNotExisted", htId));
         }
 
         profileOptional
