@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface ContactInfoRepository extends MongoRepository<ContactInfo, String> {
     Optional<ContactInfo> findByHtCode(ObjectId htCode);
 
-    @Query("{$and: [{\"emails.value\": ?0}, {\"emails.primary\": true} ] }")
+    @Query("{\"emails\": {$elemMatch: {\"value\": ?0, \"primary\": true} }}")
     List<ContactInfo> findByEmailAndPrimary(String email);
 
     boolean existsByHtCode(ObjectId htCode);
