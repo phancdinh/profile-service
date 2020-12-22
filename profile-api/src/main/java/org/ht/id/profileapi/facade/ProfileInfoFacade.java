@@ -95,13 +95,18 @@ public class ProfileInfoFacade {
     }
 
     private void validateWhenAddProfile(ProfileCreateRequest creationRequest) {
-        HierarchyContactRequest primaryEmail = creationRequest.getContactInfo().getEmails()
-                .stream()
-                .filter(HierarchyContactRequest::isPrimary)
-                .findFirst().orElse(new HierarchyContactRequest());
-        String email = primaryEmail.getValue();
-        if (contactInfoBizService.existByEmailAndStatusActive(email) || activationBizService.existedActivation(email)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, messageApiProperties.getMessage("validation.register.mailRegistered"));
+        HierarchyContactRequest primaryEmail =
+                Optional.ofNullable(creationRequest.getContactInfo())
+                        .flatMap(c -> Optional.ofNullable(c.getEmails())
+                        .flatMap(emails -> emails.stream()
+                                .filter(HierarchyContactRequest::isPrimary)
+                                .findFirst()))
+                        .orElse(null);
+        if (primaryEmail != null) {
+            String email = primaryEmail.getValue();
+            if (contactInfoBizService.existByEmailAndStatusActive(email) || activationBizService.existedActivation(email)) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, messageApiProperties.getMessage("validation.register.mailRegistered"));
+            }
         }
     }
 
