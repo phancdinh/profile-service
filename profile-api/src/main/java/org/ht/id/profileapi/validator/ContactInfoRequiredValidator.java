@@ -2,6 +2,7 @@ package org.ht.id.profileapi.validator;
 
 import lombok.extern.slf4j.Slf4j;
 import org.ht.id.profileapi.dto.request.ContactInfoCreateRequest;
+import org.ht.id.profileapi.dto.request.internal.AddressContactRequest;
 import org.ht.id.profileapi.dto.request.internal.HierarchyContactRequest;
 import org.ht.id.profileapi.validator.constraint.ContactInfoRequired;
 
@@ -27,10 +28,10 @@ public class ContactInfoRequiredValidator implements ConstraintValidator<Contact
                                     .filter(HierarchyContactRequest::isPrimary)
                                     .count()
                             ).orElse(0L);
-                    long postalAddressCount = Optional.ofNullable(contact.getPhoneNumbers())
+                    long postalAddressCount = Optional.ofNullable(contact.getPostalAddresses())
                             .map(address -> address
                                     .stream()
-                                    .filter(HierarchyContactRequest::isPrimary)
+                                    .filter(AddressContactRequest::isPrimary)
                                     .count()
                             ).orElse(0L);
                     return !(emailCount == 0 && phoneCount == 0 && postalAddressCount == 0);
