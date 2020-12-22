@@ -114,7 +114,7 @@ public class AccountFacade {
                         profileApiProperties.getActivationEmailSubject(), "", profileApiProperties.getMailFrom(),
                         activationLink, EmailSenderType.HTML);
             } catch (MessagingException | UnsupportedEncodingException e) {
-                log.error(String.format("Failed to send the activation email to %s", customerEmail));
+                log.error(messageApiProperties.getMessageWithArgs("mail.activation.emailSentFailed", customerEmail));
             }
         });
     }
@@ -122,7 +122,7 @@ public class AccountFacade {
     private void validateWhenRegister(AccountCreationRequest creationRequest) {
         String email = creationRequest.getEmail();
         if (checkEmailHasRegistered(email)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email had been used.");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, messageApiProperties.getMessage("validation.register.mailRegistered"));
         }
     }
 
@@ -146,10 +146,10 @@ public class AccountFacade {
         CompletableFuture.runAsync(() -> {
             try {
                 emailService.send(profileApiProperties.getMailFrom(), email,
-                        messageApiProperties.getCustomMessage("mail.resetPassword.emailSubject"), "",
+                        messageApiProperties.getMessage("mail.resetPassword.emailSubject"), "",
                         profileApiProperties.getMailFrom(), accountApiProperties.getResetPasswordLink(), EmailSenderType.HTML);
             } catch (MessagingException | UnsupportedEncodingException e) {
-                log.error(String.format("Failed to send the reset password email", e.getMessage()));
+                log.error(String.format(messageApiProperties.getMessage("mail.resetPassword.emailSentFailed"), e.getMessage()));
             }
         });
     }

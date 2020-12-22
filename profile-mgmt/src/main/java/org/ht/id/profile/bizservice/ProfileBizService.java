@@ -2,8 +2,10 @@ package org.ht.id.profile.bizservice;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.bridge.Message;
 import org.bson.types.ObjectId;
 import org.ht.id.common.constant.UserStatus;
+import org.ht.id.profile.config.MessageApiProperties;
 import org.ht.id.profile.data.exception.DataConflictingException;
 import org.ht.id.profile.data.exception.DataNotExistingException;
 import org.ht.id.profile.data.model.BasicInfo;
@@ -25,18 +27,19 @@ public class ProfileBizService {
     private final BasicInfoDataService basicInfoDataService;
     private final ProfileConverterHelper profileConverterHelper;
     private final ContactInfoDataService contactInfoDataService;
+    private final MessageApiProperties messageApiProperties;
 
     public BasicInfo createBasicInfo(String htId, BasicInfo basicInfo) throws DataConflictingException {
         ObjectId htCode = profileDataService.findByHtId(htId)
                 .map(Profile::getHtCode)
                 .orElseThrow(() -> {
-                    String error = String.format("Profile is not existed with htId: %s", htId);
+                    String error = messageApiProperties.getMessageWithArgs("validation.profile.isNotExisted", htId);
                     log.error(error);
                     return new DataNotExistingException(error);
                 });
 
         if (basicInfoDataService.existsByHtCode(htCode)) {
-            String error = String.format("Basic info is already existed with %s", htId);
+            String error = messageApiProperties.getMessageWithArgs("validation.basicInfo.isExisted", htId);
             throw new DataConflictingException(error);
         }
 
@@ -48,18 +51,18 @@ public class ProfileBizService {
     public BasicInfo findBasicInfo(String htId) throws DataNotExistingException {
         Optional<Profile> profileOptional = profileDataService.findByHtId(htId);
         if (profileOptional.isEmpty()) {
-            throw new DataNotExistingException(String.format("Profile is not existed with htId: %s", htId));
+            throw new DataNotExistingException(messageApiProperties.getMessageWithArgs("validation.profile.isNotExisted", htId));
         }
 
         return profileOptional
                 .flatMap(profile -> basicInfoDataService.findByHtCode(profile.getHtCode()))
-                .orElseThrow(() -> new DataNotExistingException("Basic Info is not existed."));
+                .orElseThrow(() -> new DataNotExistingException(messageApiProperties.getMessage("validation.basicInfo.isNotExisted")));
     }
 
     public Profile findProfile(String htId) throws DataNotExistingException {
         Optional<Profile> profileOptional = profileDataService.findByHtId(htId);
         if (profileOptional.isEmpty()) {
-            throw new DataNotExistingException(String.format("Profile is not existed with htId: %s", htId));
+            throw new DataNotExistingException(messageApiProperties.getMessageWithArgs("validation.profile.isNotExisted", htId));
         }
         return profileOptional.get();
     }
@@ -74,7 +77,7 @@ public class ProfileBizService {
 
     public Profile create(String htId, String leadSource, String primaryEmail, String primaryPhone, String password) {
         if (profileDataService.existsByHtId(htId)) {
-            throw new DataConflictingException("HtID is already existed with value " + htId);
+            throw new DataConflictingException(messageApiProperties.getMessageWithArgs("validation.htId.isExisted", htId));
         }
         return Optional.of(htId)
                 .map(id -> profileDataService.create(id, leadSource, primaryEmail, primaryPhone, password))
@@ -89,7 +92,7 @@ public class ProfileBizService {
 
     public void deleteProfile(String htId) {
         if (!profileDataService.existsByHtId(htId)) {
-            throw new DataNotExistingException(String.format("Profile is not existed with htId: %s", htId));
+            throw new DataNotExistingException(messageApiProperties.getMessageWithArgs("validation.profile.isNotExisted", htId));
         }
         profileDataService.deleteProfileByHtId(htId);
     }

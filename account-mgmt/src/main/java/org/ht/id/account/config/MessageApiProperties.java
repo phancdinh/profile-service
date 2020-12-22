@@ -1,4 +1,4 @@
-package org.ht.id.profileapi.config;
+package org.ht.id.account.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
@@ -16,7 +16,7 @@ public class MessageApiProperties {
         return message.replace("{0}", param);
     }
 
-    public String getMessage(String message) {
+    public String getMessage(String message){
         return messageSource.getMessage(message, null, Locale.getDefault());
     }
 }

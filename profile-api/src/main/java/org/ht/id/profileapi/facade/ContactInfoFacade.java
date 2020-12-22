@@ -6,6 +6,7 @@ import org.ht.id.profile.bizservice.ContactInfoBizService;
 import org.ht.id.profile.bizservice.ProfileBizService;
 import org.ht.id.profile.data.exception.DataConflictingException;
 import org.ht.id.profile.data.exception.DataNotExistingException;
+import org.ht.id.profileapi.config.MessageApiProperties;
 import org.ht.id.profileapi.dto.request.ContactInfoCreateRequest;
 import org.ht.id.profileapi.dto.response.ContactInfoResponse;
 import org.ht.id.profileapi.dto.response.internal.HierarchyContactResponse;
@@ -24,6 +25,7 @@ public class ContactInfoFacade {
     private final ContactInfoBizService contactInfoBizService;
     private final ProfileInfoConverter profileInfoConverter;
     private final ProfileBizService profileBizService;
+    private final MessageApiProperties messageApiProperties;
 
     public ContactInfoResponse create(String htId, ContactInfoCreateRequest createRequest) {
         try {
@@ -50,7 +52,7 @@ public class ContactInfoFacade {
         try {
             var userProfile = profileBizService.findProfile(htId);
             if (userProfile.isInactivated()) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account has not activated yet");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, messageApiProperties.getMessage("validation.account.isNotActivated"));
             }
 
             var contactEmail = contactInfoBizService.createContactEmail(userProfile.getHtCode(), email);
