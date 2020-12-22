@@ -6,7 +6,7 @@ import org.ht.id.account.data.model.Account;
 import org.ht.id.account.data.service.AccountDataService;
 import org.ht.id.account.exception.AccountRegisterFailureException;
 import org.ht.id.account.exception.DataNotExistingException;
-import org.ht.id.account.config.MessageApiProperties;
+import org.ht.id.account.config.AccountMgtMessageProperties;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -16,7 +16,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AccountBizService {
     private final AccountDataService accountDataService;
-    private final MessageApiProperties messageApiProperties;
+    private final AccountMgtMessageProperties accountMgtMessageProperties;
 
     public Account createOrUpdate(String htId, Account creationAccount) throws AccountRegisterFailureException {
 
@@ -32,7 +32,7 @@ public class AccountBizService {
 
     public Account findAccount(String htId) {
         return accountDataService.findByHtId(htId).orElseThrow(() -> {
-            String error = messageApiProperties.getMessageWithArgs("validation.account.isNotExisted", htId);
+            String error = accountMgtMessageProperties.getMessageWithArgs("validation.account.isNotExisted", htId);
             log.error(error);
             throw new DataNotExistingException(error);
         });

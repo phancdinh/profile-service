@@ -1,6 +1,7 @@
 package org.ht.id.email;
 
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
@@ -8,6 +9,7 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 
+@Service
 public class MailTemplateReader {
     private static final String MAIL_TEMPLATE_BASE_NAME = "mail/MailMessages";
     private static final String MAIL_TEMPLATE_PREFIX = "/templates/";

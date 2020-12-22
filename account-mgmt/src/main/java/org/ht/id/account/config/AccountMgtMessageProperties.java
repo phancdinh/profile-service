@@ -8,7 +8,7 @@ import java.util.Locale;
 
 @Component
 @RequiredArgsConstructor
-public class MessageApiProperties {
+public class AccountMgtMessageProperties {
 
     private final MessageSource messageSource;
 
