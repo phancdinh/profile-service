@@ -2,8 +2,8 @@ package org.ht.id.account.bizservice;
 
 import java.util.Date;
 import java.util.Optional;
-import org.bson.types.ObjectId;
 import org.ht.id.account.config.AccountMgmtProperties;
+import org.ht.id.account.config.AccountMgtMessageProperties;
 import org.ht.id.account.config.BitlyApiProperties;
 import org.ht.id.account.data.model.Invitation;
 import org.ht.id.account.data.service.InvitationDataService;
@@ -24,6 +24,7 @@ public class InvitationBizService {
     private final AccountMgmtProperties accountApiProperties;
     private final ShortenLinkBizService shortenLinkBizService;
     private final BitlyApiProperties bitlyApiProperties;
+    private final AccountMgtMessageProperties accountMgtMessageProperties;
 
     public Invitation create(Invitation invitation) {
         invitation.setCreatedAt(new Date());
@@ -35,9 +36,9 @@ public class InvitationBizService {
         return invitationDataService.update(invitation);
     }
 
-    public Invitation findById(ObjectId id) {
+    public Invitation findById(String id) {
         return invitationDataService.findById(id).orElseThrow(() -> {
-                String error = String.format("Invitation is not existed with id: %s", id);
+                String error = accountMgtMessageProperties.getMessageWithArgs("validate.invitation.not.existed", id);
                 log.error(error);
                 throw new DataNotExistingException(error);
                 });

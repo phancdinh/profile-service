@@ -1,20 +1,12 @@
 package org.ht.id.account.data.model;
 
-import java.util.Date;
-
-import org.bson.types.ObjectId;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -25,7 +17,7 @@ public class Activation {
 
     @Id
     @ToString.Exclude
-    private ObjectId id;
+    private String id;
 
     @Indexed(unique = true)
     private String htId;

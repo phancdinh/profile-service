@@ -1,15 +1,13 @@
 package org.ht.id.account.data.service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-
-import org.bson.types.ObjectId;
+import lombok.RequiredArgsConstructor;
 import org.ht.id.account.data.model.Activation;
 import org.ht.id.account.data.repository.ActivationRepository;
 import org.springframework.stereotype.Service;
 
-import lombok.RequiredArgsConstructor;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +27,7 @@ public class ActivationDataService {
         return activationRepository.findByHtId(htId);
     }
 
-    public Optional<Activation> findById(ObjectId id) {
+    public Optional<Activation> findById(String id) {
         return activationRepository.findById(id);
     }
 

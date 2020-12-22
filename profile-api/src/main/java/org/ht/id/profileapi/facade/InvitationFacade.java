@@ -6,6 +6,7 @@ import org.ht.id.account.bizservice.ActivationBizService;
 import org.ht.id.account.bizservice.InvitationBizService;
 import org.ht.id.common.exception.DataNotExistingException;
 import org.ht.id.profile.bizservice.ContactInfoBizService;
+import org.ht.id.profileapi.config.MessageApiProperties;
 import org.ht.id.profileapi.dto.request.InvitationCreateRequest;
 import org.ht.id.profileapi.dto.request.InvitationUpdateRequest;
 import org.ht.id.profileapi.dto.response.InvitationCreateResponse;
@@ -24,15 +25,16 @@ public class InvitationFacade {
     private final ActivationBizService activationBizService;
     private final InvitationConverter invitationConverter;
     private final ContactInfoBizService contactInfoBizService;
+    private final MessageApiProperties messageApiProperties;
 
     public InvitationCreateResponse createInvitation(InvitationCreateRequest invitationCreateRequest) {
 
         return Optional.of(invitationCreateRequest)
                 .map(invitationConverter::convertToEntity)
-                .filter(not(invitation -> checkEmailHasRegistered(invitation.getMainContact())))
+                .filter(not(invitation -> checkEmailAndHtid(invitation.getMainContact(), invitation.getHtId())))
                 .map(invitationBizService::create)
                 .map(invitation -> invitationConverter.convertToInvitationCreateResponse(invitation, invitationBizService.generateInvitationLink(invitation)))
-                .orElseThrow(() -> new DataNotExistingException(String.format("Invitation is not existed with id: %s", invitationCreateRequest.getHtId())));
+                .orElseThrow(() -> new DataNotExistingException(messageApiProperties.getMessageWithArgs("validation.invitation.not.created", invitationCreateRequest.getHtId())));
     }
 
     public InvitationUpdateResponse updateInvitation(InvitationUpdateRequest invitationUpdateRequest) {
@@ -42,10 +44,19 @@ public class InvitationFacade {
                 .filter(invitation -> !checkEmailHasRegistered(invitation.getMainContact()) && invitationBizService.isMatchValueCheck(invitation, invitationUpdateRequest.getValue()))
                 .map(invitationBizService::update)
                 .map(invitationConverter::convertToInvitationUpdateResponse)
-                .orElseThrow(() -> new DataNotExistingException(String.format("Invitation is not existed with id: %s", invitationUpdateRequest.getId())));
+                .orElseThrow(() -> new DataNotExistingException(messageApiProperties.getMessageWithArgs("validation.activation.not.existed", invitationUpdateRequest.getId())));
     }
 
-    public boolean checkEmailHasRegistered(String email) {
+    private boolean checkEmailAndHtid(String email, String htId) {
+        return !checkEmailHasRegistered(email) && existedHtidWithEmail(htId, email);
+    }
+
+    private boolean existedHtidWithEmail(String htId, String email) {
+        return contactInfoBizService.isEmailExistedWithHtId(htId, email);
+
+    }
+
+    private boolean checkEmailHasRegistered(String email) {
         return contactInfoBizService.existByEmailAndStatusActive(email) || activationBizService.existedActivation(email);
     }
 

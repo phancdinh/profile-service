@@ -7,6 +7,7 @@ import org.ht.id.common.constant.UserStatus;
 import org.ht.id.common.exception.DataNotExistingException;
 import org.ht.id.profile.bizservice.ContactInfoBizService;
 import org.ht.id.profile.bizservice.ProfileBizService;
+import org.ht.id.profileapi.config.MessageApiProperties;
 import org.ht.id.profileapi.dto.request.ActivationCreateRequest;
 import org.ht.id.profileapi.dto.request.ActivationUpdateRequest;
 import org.ht.id.profileapi.dto.response.ActivationCreateResponse;
@@ -25,16 +26,16 @@ public class ActivationFacade {
     private final ActivationConverter activationConverter;
     private final ContactInfoBizService contactInfoBizService;
     private final ProfileBizService profileBizService;
+    private final MessageApiProperties messageApiProperties;
 
     public ActivationCreateResponse createActivation(ActivationCreateRequest activationCreateRequest) {
 
         return Optional.of(activationCreateRequest).map(activationConverter::convertToEntity)
-                .filter(not(activation -> activationBizService.existedActivation(activation.getEmail())
-                        || contactInfoBizService.existByEmailAndStatusActive(activation.getEmail())))
+                .filter(activation -> isValidCreateActivation(activation.getEmail(), activation.getHtId()))
                 .map(activationBizService::create)
                 .map(activation -> activationConverter.convertToActivationCreateResponse(activation,
                         activationBizService.generateActivationLink(activation)))
-                .orElseThrow(() -> new DataNotExistingException(""));
+                .orElseThrow(() -> new DataNotExistingException(messageApiProperties.getMessageWithArgs("validation.activation.not.created", activationCreateRequest.getHtId())));
     }
 
     public ActivationUpdateResponse updateActivation(ActivationUpdateRequest activationUpdateRequest) {
@@ -45,6 +46,15 @@ public class ActivationFacade {
                 .map(activationBizService::update)
                 .filter(not(activation -> profileBizService.updateStatus(activation.getHtId(), UserStatus.ACTIVE).isInactivated()))
                 .map(activationConverter::convertToActivationUpdateResponse)
-                .orElseThrow(() -> new DataNotExistingException(""));
+                .orElseThrow(() -> new DataNotExistingException(messageApiProperties.getMessageWithArgs("validation.activation.not.existed", activationUpdateRequest.getId())));
+    }
+    
+    private boolean isValidCreateActivation(String email, String htId) {
+        if (activationBizService.existedActivation(email)
+                || contactInfoBizService.existByEmailAndStatusActive(email)
+                || !contactInfoBizService.isEmailExistedWithHtId(htId, email)) {
+            return false;
+        }
+        return true;
     }
 }
