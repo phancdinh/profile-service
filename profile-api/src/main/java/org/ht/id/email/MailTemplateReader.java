@@ -13,9 +13,6 @@ public class MailTemplateReader {
     private static final String MAIL_TEMPLATE_PREFIX = "/templates/";
     private static final String MAIL_TEMPLATE_SUFFIX = ".html";
     private static final String UTF_8 = "UTF-8";
-
-    private static final String TEMPLATE_NAME = "activation-template";
-
     private static TemplateEngine templateEngine;
 
     static {
@@ -45,13 +42,13 @@ public class MailTemplateReader {
         return templateResolver;
     }
 
-    public String getTemplate(String firstName, String email, String link) {
+    public String getTemplate(String firstName, String email, String link, EmailTemplateType emailTemplateType) {
         final Context context = new Context();
 
         context.setVariable("first_name", firstName);
         context.setVariable("email", email);
         context.setVariable("link", link);
 
-        return templateEngine.process(TEMPLATE_NAME, context);
+        return templateEngine.process(emailTemplateType.getName(), context);
     }
 }
