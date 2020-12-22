@@ -20,7 +20,6 @@ public class AccountResponse {
     @JsonIgnore
     private String id;
     private String htId;
-    private String email;
     private boolean active;
     private String leadSource;
 

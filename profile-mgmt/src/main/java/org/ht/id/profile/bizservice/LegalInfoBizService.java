@@ -3,7 +3,7 @@ package org.ht.id.profile.bizservice;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
-import org.ht.id.profile.config.MessageApiProperties;
+import org.ht.id.profile.config.ProfileMgtMessageProperties;
 import org.ht.id.profile.data.exception.DataConflictingException;
 import org.ht.id.profile.data.exception.DataNotExistingException;
 import org.ht.id.profile.data.model.LegalInfo;
@@ -24,19 +24,19 @@ public class LegalInfoBizService {
     private final ProfileDataService profileDataService;
     private final LegalInfoDataService legalInfoDataService;
     private final ProfileConverterHelper profileConverterHelper;
-    private final MessageApiProperties messageApiProperties;
+    private final ProfileMgtMessageProperties profileMgtMessageProperties;
 
     public LegalInfo create(String htId, LegalInfo createdInfo) throws DataNotExistingException, DataConflictingException {
         ObjectId htCode = profileDataService.findByHtId(htId)
                 .map(Profile::getHtCode)
                 .orElseThrow(() -> {
-                    String error = messageApiProperties.getMessageWithArgs("validation.profile.isNotExisted", htId);
+                    String error = profileMgtMessageProperties.getMessageWithArgs("validation.profile.isNotExisted", htId);
                     log.error(error);
                     return new DataNotExistingException(error);
                 });
 
         if (legalInfoDataService.existsByHtCode(htCode)) {
-            throw new DataConflictingException(messageApiProperties.getMessageWithArgs("validation.legalInfo.isExisted", htId));
+            throw new DataConflictingException(profileMgtMessageProperties.getMessageWithArgs("validation.legalInfo.isExisted", htId));
         }
         return Optional.of(profileConverterHelper.convert(createdInfo, htCode))
                 .map(legalInfoDataService::create)
@@ -46,11 +46,11 @@ public class LegalInfoBizService {
     public LegalInfo findByHtId(String htId) throws DataNotExistingException {
         Optional<Profile> profileOptional = profileDataService.findByHtId(htId);
         if (profileOptional.isEmpty()) {
-            throw new DataNotExistingException(messageApiProperties.getMessageWithArgs("validation.profile.isNotExisted", htId));
+            throw new DataNotExistingException(profileMgtMessageProperties.getMessageWithArgs("validation.profile.isNotExisted", htId));
         }
 
         return profileOptional
                 .flatMap(existingProfile -> legalInfoDataService.findByHtCode(existingProfile.getHtCode()))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, messageApiProperties.getMessage("validation.legalInfo.isNotExisted")));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, profileMgtMessageProperties.getMessage("validation.legalInfo.isNotExisted")));
     }
 }
