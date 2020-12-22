@@ -43,7 +43,7 @@ public class EmailService {
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
 
         mimeMessageHelper.setSubject(subject);
-        mimeMessageHelper.setFrom(new InternetAddress(environment.getProperty("MAIL_FROM"), environment.getProperty("MAIL_SET_SUBJECT")));
+        mimeMessageHelper.setFrom(new InternetAddress(environment.getProperty("MAIL_USERNAME"), environment.getProperty("MAIL_SET_SUBJECT")));
         mimeMessageHelper.setTo(mailTo);
 
         if (type == EmailSenderType.HTML) {
