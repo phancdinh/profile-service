@@ -5,9 +5,7 @@ import org.bson.types.ObjectId;
 import org.ht.id.profile.data.model.BasicInfo;
 import org.ht.id.profile.data.repository.BasicInfoRepository;
 import org.springframework.stereotype.Service;
-
 import java.util.Optional;
-
 import static java.util.function.Predicate.not;
 
 @Service

@@ -12,8 +12,12 @@ public class GenericResponse extends HashMap<String, Object> {
     }
 
     public void setFailure(HttpStatus status, String message, Object details) {
+        setFailure(status, message);
+        this.put("details", details);
+    }
+
+    public void setFailure(HttpStatus status, String message) {
         this.put("status", status.value());
         this.put("message", message);
-        this.put("details", details);
     }
 }

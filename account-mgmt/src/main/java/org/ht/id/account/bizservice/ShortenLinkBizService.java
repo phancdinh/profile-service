@@ -1,13 +1,10 @@
 package org.ht.id.account.bizservice;
 
 import java.util.Optional;
-
-
 import org.ht.id.account.dto.BitlyShortenLinkCreationResponse;
-import org.ht.id.account.exception.ServiceUnavailableException;
 import org.ht.id.account.external.service.bitly.BitlyLinkService;
+import org.ht.id.common.exception.ServiceUnavailableException;
 import org.springframework.stereotype.Component;
-
 import lombok.extern.slf4j.Slf4j;
 
 @Component

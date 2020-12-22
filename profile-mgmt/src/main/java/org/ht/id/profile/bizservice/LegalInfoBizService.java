@@ -3,18 +3,15 @@ package org.ht.id.profile.bizservice;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
+import org.ht.id.common.exception.DataConflictingException;
+import org.ht.id.common.exception.DataNotExistingException;
 import org.ht.id.profile.config.ProfileMgtMessageProperties;
-import org.ht.id.profile.data.exception.DataConflictingException;
-import org.ht.id.profile.data.exception.DataNotExistingException;
 import org.ht.id.profile.data.model.LegalInfo;
 import org.ht.id.profile.data.model.Profile;
 import org.ht.id.profile.data.service.LegalInfoDataService;
 import org.ht.id.profile.data.service.ProfileDataService;
 import org.ht.id.profile.helper.ProfileConverterHelper;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
-
 import java.util.Optional;
 
 @Component
@@ -51,6 +48,6 @@ public class LegalInfoBizService {
 
         return profileOptional
                 .flatMap(existingProfile -> legalInfoDataService.findByHtCode(existingProfile.getHtCode()))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, profileMgtMessageProperties.getMessage("validation.legalInfo.isNotExisted")));
+                .orElseThrow(() -> new DataNotExistingException(profileMgtMessageProperties.getMessage("validation.legalInfo.isNotExisted")));
     }
 }

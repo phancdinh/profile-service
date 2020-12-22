@@ -8,14 +8,13 @@ import org.ht.id.account.config.AccountMgmtProperties;
 import org.ht.id.account.data.model.Account;
 import org.ht.id.account.data.model.Activation;
 import org.ht.id.common.constant.UserStatus;
+import org.ht.id.common.exception.EmailAlreadyRegisteredException;
 import org.ht.id.email.EmailSenderType;
 import org.ht.id.email.EmailService;
 import org.ht.id.email.EmailTemplateType;
-import org.ht.id.profileapi.facade.converter.AccountConverter;
 import org.ht.id.profile.bizservice.ContactInfoBizService;
 import org.ht.id.profile.bizservice.IdGeneratorBizService;
 import org.ht.id.profile.bizservice.ProfileBizService;
-import org.ht.id.profile.data.exception.DataNotExistingException;
 import org.ht.id.profile.data.model.Profile;
 import org.ht.id.profileapi.config.MessageApiProperties;
 import org.ht.id.profileapi.config.ProfileApiProperties;
@@ -25,16 +24,12 @@ import org.ht.id.profileapi.dto.response.ResetPasswordResponse;
 import org.ht.id.profileapi.facade.converter.AccountConverter;
 import org.ht.id.profileapi.facade.converter.ActivationConverter;
 import org.springframework.data.util.Pair;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import org.springframework.web.server.ResponseStatusException;
-
 import javax.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-
 import static java.util.function.Predicate.not;
 
 @Component
@@ -47,11 +42,8 @@ public class AccountFacade {
     private final ActivationBizService activationBizService;
     private final IdGeneratorBizService idGeneratorBizService;
     private final EmailService emailService;
-
     private final AccountConverter accountConverter;
     private final ActivationConverter activationConverter;
-
-
     private final ProfileApiProperties profileApiProperties;
     private final AccountMgmtProperties accountApiProperties;
     private final MessageApiProperties messageApiProperties;
@@ -80,7 +72,7 @@ public class AccountFacade {
                 .map(request -> activationConverter.convertToEntity(request, htId))
                 .filter(not(a -> activationBizService.existedActivation(a.getEmail())
                         || contactInfoBizService.existByEmailAndStatusActive(a.getEmail())))
-                .map(a -> activationBizService.create(a))
+                .map(activationBizService::create)
                 .orElseThrow();
 
         String activationLink = activationBizService.generateActivationLink(activation);
@@ -96,16 +88,13 @@ public class AccountFacade {
         if (StringUtils.isEmpty(htId)) {
             htId = idGeneratorBizService.generateId();
             profile = profileBizService.create(htId, creationRequest.getLeadSource(), creationRequest.getEmail(), null, creationRequest.getPassword());
-        } else {
-            //htId is existed then we check and link account to htId
-            try {
-                profile = profileBizService.findProfile(htId);
-                contactInfoBizService.updatePrimaryEmail(profile.getHtCode(), creationRequest.getEmail());
-                profileBizService.updateStatus(htId, UserStatus.IN_ACTIVE, creationRequest.getEmail(), null, creationRequest.getPassword());
-            } catch (DataNotExistingException e) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-            }
+            return Pair.of(htId, profile);
         }
+
+        // htId is existed then we check and link account to htId
+        profile = profileBizService.findProfile(htId);
+        contactInfoBizService.updatePrimaryEmail(profile.getHtCode(), creationRequest.getEmail());
+        profileBizService.updateStatus(htId, UserStatus.IN_ACTIVE, creationRequest.getEmail(), null, creationRequest.getPassword());
         return Pair.of(htId, profile);
     }
 
@@ -124,7 +113,7 @@ public class AccountFacade {
     private void validateWhenRegister(AccountCreationRequest creationRequest) {
         String email = creationRequest.getEmail();
         if (checkEmailHasRegistered(email)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, messageApiProperties.getMessage("validation.register.mailRegistered"));
+            throw new EmailAlreadyRegisteredException(messageApiProperties.getMessage("validation.register.mailRegistered"));
         }
     }
 

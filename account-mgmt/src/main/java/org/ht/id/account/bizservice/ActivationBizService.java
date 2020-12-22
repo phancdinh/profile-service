@@ -6,10 +6,9 @@ import org.bson.types.ObjectId;
 import org.ht.id.account.config.AccountMgmtProperties;
 import org.ht.id.account.data.model.Activation;
 import org.ht.id.account.data.service.ActivationDataService;
-import org.ht.id.account.exception.DataNotExistingException;
+import org.ht.id.common.exception.DataNotExistingException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.DigestUtils;
-
 import java.time.Duration;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
@@ -52,9 +51,7 @@ public class ActivationBizService {
 
     public String generateActivationLink(Activation activation) throws DataNotExistingException {
         //generate activation link
-        return Optional.of(activation).map(a -> {
-            return String.format(accountApiProperties.getAccountActivationLink(), a.getId(), getMd5Activation(a));
-        }).orElseThrow();
+        return Optional.of(activation).map(a -> String.format(accountApiProperties.getAccountActivationLink(), a.getId(), getMd5Activation(a))).orElseThrow();
     }
 
     public boolean isValidActivation(Activation activation, String valueCheck) {
