@@ -82,7 +82,7 @@ public class ProfileBizService {
         return Optional.of(htId)
                 .map(id -> profileDataService.create(id, leadSource, primaryEmail, primaryPhone, password))
                 .map(t -> {
-                    if (StringUtils.isEmpty(primaryEmail) && StringUtils.isEmpty(primaryPhone)) {
+                    if (!StringUtils.isEmpty(primaryEmail) || !StringUtils.isEmpty(primaryPhone)) {
                         contactInfoDataService.create(t.getHtCode(), primaryEmail, primaryPhone);
                     }
                     return t;

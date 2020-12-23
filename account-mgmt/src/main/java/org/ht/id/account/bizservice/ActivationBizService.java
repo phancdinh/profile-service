@@ -2,8 +2,8 @@ package org.ht.id.account.bizservice;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.bson.types.ObjectId;
 import org.ht.id.account.config.AccountMgmtProperties;
+import org.ht.id.account.config.AccountMgtMessageProperties;
 import org.ht.id.account.data.model.Activation;
 import org.ht.id.account.data.service.ActivationDataService;
 import org.ht.id.common.exception.DataNotExistingException;
@@ -21,6 +21,7 @@ public class ActivationBizService {
 
     private final ActivationDataService activationDataService;
     private final AccountMgmtProperties accountApiProperties;
+    private final AccountMgtMessageProperties accountMgtMessageProperties;
 
     public Activation create(Activation activation) {
         activation.setCreatedAt(new Date());
@@ -33,9 +34,9 @@ public class ActivationBizService {
         return activationDataService.update(activation);
     }
 
-    public Activation findById(ObjectId id) {
+    public Activation findById(String id) {
         return activationDataService.findById(id).orElseThrow(() -> {
-            String error = String.format("Activation is not existed with id: %s", id);
+            String error = accountMgtMessageProperties.getMessageWithArgs("validate.activation.not.existed", id);
             log.error(error);
             throw new DataNotExistingException(error);
         });

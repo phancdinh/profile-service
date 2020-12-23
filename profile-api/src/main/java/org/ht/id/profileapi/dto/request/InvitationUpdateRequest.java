@@ -18,7 +18,7 @@ import javax.validation.constraints.NotBlank;
 public class InvitationUpdateRequest {
 
     @NotBlank(message = "id is mandatory")
-    private ObjectId id;
+    private String id;
 
     @NotBlank(message = "Value check is mandatory")
     private String value;

@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.bson.types.ObjectId;
 
 import javax.validation.constraints.NotBlank;
 
@@ -18,7 +17,7 @@ import javax.validation.constraints.NotBlank;
 public class ActivationUpdateRequest {
 
     @NotBlank(message = "id is mandatory")
-    private ObjectId id;
+    private String id;
 
     @NotBlank(message = "Value check is mandatory")
     private String value;
