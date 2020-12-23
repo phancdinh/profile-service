@@ -27,13 +27,13 @@ public class LegalInfoBizService {
         ObjectId htCode = profileDataService.findByHtId(htId)
                 .map(Profile::getHtCode)
                 .orElseThrow(() -> {
-                    String error = profileMgtMessageProperties.getMessageWithArgs("validation.profile.isNotExisted", htId);
+                    String error = profileMgtMessageProperties.getMessage("validation.profile.isNotExisted", htId);
                     log.error(error);
                     return new DataNotExistingException(error);
                 });
 
         if (legalInfoDataService.existsByHtCode(htCode)) {
-            throw new DataConflictingException(profileMgtMessageProperties.getMessageWithArgs("validation.legalInfo.isExisted", htId));
+            throw new DataConflictingException(profileMgtMessageProperties.getMessage("validation.legalInfo.isExisted", htId));
         }
         return Optional.of(profileConverterHelper.convert(createdInfo, htCode))
                 .map(legalInfoDataService::create)
@@ -43,7 +43,7 @@ public class LegalInfoBizService {
     public LegalInfo findByHtId(String htId) throws DataNotExistingException {
         Optional<Profile> profileOptional = profileDataService.findByHtId(htId);
         if (profileOptional.isEmpty()) {
-            throw new DataNotExistingException(profileMgtMessageProperties.getMessageWithArgs("validation.profile.isNotExisted", htId));
+            throw new DataNotExistingException(profileMgtMessageProperties.getMessage("validation.profile.isNotExisted", htId));
         }
 
         return profileOptional

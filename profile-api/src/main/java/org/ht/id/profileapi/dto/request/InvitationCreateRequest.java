@@ -16,9 +16,9 @@ import javax.validation.constraints.NotBlank;
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class InvitationCreateRequest {
 
-    @NotBlank(message = "Htid is mandatory")
+    @NotBlank(message = "{validation.htId.required}")
     private String htId;
 
-    @NotBlank(message = "Contact is mandatory")
+    @NotBlank(message = "{validation.contact.required}")
     private String contact;
 }

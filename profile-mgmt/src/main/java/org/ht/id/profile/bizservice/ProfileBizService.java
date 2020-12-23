@@ -32,13 +32,13 @@ public class ProfileBizService {
         ObjectId htCode = profileDataService.findByHtId(htId)
                 .map(Profile::getHtCode)
                 .orElseThrow(() -> {
-                    String error = profileMgtMessageProperties.getMessageWithArgs("validation.profile.isNotExisted", htId);
+                    String error = profileMgtMessageProperties.getMessage("validation.profile.isNotExisted", htId);
                     log.error(error);
                     return new DataNotExistingException(error);
                 });
 
         if (basicInfoDataService.existsByHtCode(htCode)) {
-            String error = profileMgtMessageProperties.getMessageWithArgs("validation.basicInfo.isExisted", htId);
+            String error = profileMgtMessageProperties.getMessage("validation.basicInfo.isExisted", htId);
             throw new DataConflictingException(error);
         }
 
@@ -50,7 +50,7 @@ public class ProfileBizService {
     public BasicInfo findBasicInfo(String htId) throws DataNotExistingException {
         Optional<Profile> profileOptional = profileDataService.findByHtId(htId);
         if (profileOptional.isEmpty()) {
-            throw new DataNotExistingException(profileMgtMessageProperties.getMessageWithArgs("validation.profile.isNotExisted", htId));
+            throw new DataNotExistingException(profileMgtMessageProperties.getMessage("validation.profile.isNotExisted", htId));
         }
 
         return profileOptional
@@ -61,7 +61,7 @@ public class ProfileBizService {
     public Profile findProfile(String htId) throws DataNotExistingException {
         Optional<Profile> profileOptional = profileDataService.findByHtId(htId);
         if (profileOptional.isEmpty()) {
-            throw new DataNotExistingException(profileMgtMessageProperties.getMessageWithArgs("validation.profile.isNotExisted", htId));
+            throw new DataNotExistingException(profileMgtMessageProperties.getMessage("validation.profile.isNotExisted", htId, "Fdsfsdf"));
         }
         return profileOptional.get();
     }
@@ -76,7 +76,7 @@ public class ProfileBizService {
 
     public Profile create(String htId, String leadSource, String primaryEmail, String primaryPhone, String password) {
         if (profileDataService.existsByHtId(htId)) {
-            throw new DataConflictingException(profileMgtMessageProperties.getMessageWithArgs("validation.htId.isExisted", htId));
+            throw new DataConflictingException(profileMgtMessageProperties.getMessage("validation.htId.isExisted", htId));
         }
 
         return Optional.of(htId)
@@ -92,7 +92,7 @@ public class ProfileBizService {
 
     public void deleteProfile(String htId) {
         if (!profileDataService.existsByHtId(htId)) {
-            throw new DataNotExistingException(profileMgtMessageProperties.getMessageWithArgs("validation.profile.isNotExisted", htId));
+            throw new DataNotExistingException(profileMgtMessageProperties.getMessage("validation.profile.isNotExisted", htId));
         }
         profileDataService.deleteProfileByHtId(htId);
     }

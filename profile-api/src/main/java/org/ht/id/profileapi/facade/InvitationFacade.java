@@ -33,7 +33,7 @@ public class InvitationFacade {
                 .filter(invitation -> checkEmailAndHtIdValid(invitation.getMainContact(), invitation.getHtId()))
                 .map(invitationBizService::create)
                 .map(invitation -> invitationConverter.convertToInvitationCreateResponse(invitation, invitationBizService.generateInvitationLink(invitation)))
-                .orElseThrow(() -> new DataNotExistingException(messageApiProperties.getMessageWithArgs("validation.invitation.not.created", invitationCreateRequest.getHtId())));
+                .orElseThrow(() -> new DataNotExistingException(messageApiProperties.getMessage("validation.invitation.not.created", invitationCreateRequest.getHtId())));
     }
 
     public InvitationUpdateResponse updateInvitation(InvitationUpdateRequest invitationUpdateRequest) {
@@ -43,7 +43,7 @@ public class InvitationFacade {
                 .filter(invitation -> !checkEmailHasRegistered(invitation.getMainContact()) && invitationBizService.isMatchValueCheck(invitation, invitationUpdateRequest.getValue()))
                 .map(invitationBizService::update)
                 .map(invitationConverter::convertToInvitationUpdateResponse)
-                .orElseThrow(() -> new DataNotExistingException(messageApiProperties.getMessageWithArgs("validation.activation.not.existed", invitationUpdateRequest.getId())));
+                .orElseThrow(() -> new DataNotExistingException(messageApiProperties.getMessage("validation.activation.not.existed", invitationUpdateRequest.getId())));
     }
 
     private boolean checkEmailAndHtIdValid(String email, String htId) {

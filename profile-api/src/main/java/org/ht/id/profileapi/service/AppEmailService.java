@@ -27,7 +27,7 @@ public class AppEmailService {
                         profileApiProperties.getActivationEmailSubject(), "", profileApiProperties.getMailFrom(),
                         activationLink, EmailSenderType.HTML, EmailTemplateType.ACTIVATION);
             } catch (MessagingException | UnsupportedEncodingException e) {
-                log.error(messageApiProperties.getMessageWithArgs("mail.activation.emailSentFailed", customerEmail));
+                log.error(messageApiProperties.getMessage("mail.activation.emailSentFailed", customerEmail));
             }
         });
     }

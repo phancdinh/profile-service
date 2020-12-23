@@ -18,12 +18,12 @@ import javax.validation.constraints.Pattern;
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class AccountCreationRequest {
-    @NotBlank(message = "Email is mandatory")
-    @Email(message = "Email is invalid")
+    @NotBlank(message = "{validation.account.email.required}")
+    @Email(message = "{validation.account.email.isNotValid}")
     private String email;
 
-    @NotBlank(message = "Password is mandatory")
-    @Pattern(regexp = ValidationPattern.PASSWORD_PATTERN, message = "Password does not meet requirement")
+    @NotBlank(message = "{validation.account.password.required}")
+    @Pattern(regexp = ValidationPattern.PASSWORD_PATTERN, message = "{validation.account.password.isNotMatched}")
     private String password;
 
     private String htId;

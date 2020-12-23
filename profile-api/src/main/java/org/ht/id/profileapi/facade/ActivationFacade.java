@@ -35,7 +35,7 @@ public class ActivationFacade {
                 .map(activationBizService::create)
                 .map(activation -> activationConverter.convertToActivationCreateResponse(activation,
                         activationBizService.generateActivationLink(activation)))
-                .orElseThrow(() -> new DataNotExistingException(messageApiProperties.getMessageWithArgs("validation.activation.not.created", activationCreateRequest.getHtId())));
+                .orElseThrow(() -> new DataNotExistingException(messageApiProperties.getMessage("validation.activation.not.created", activationCreateRequest.getHtId())));
     }
 
     public ActivationUpdateResponse updateActivation(ActivationUpdateRequest activationUpdateRequest) {
@@ -47,9 +47,9 @@ public class ActivationFacade {
                 .map(activationBizService::update)
                 .filter(not(activation -> profileBizService.updateStatus(activation.getHtId(), UserStatus.ACTIVE).isInactivated()))
                 .map(activationConverter::convertToActivationUpdateResponse)
-                .orElseThrow(() -> new DataNotExistingException(messageApiProperties.getMessageWithArgs("validation.activation.not.existed", activationUpdateRequest.getId())));
+                .orElseThrow(() -> new DataNotExistingException(messageApiProperties.getMessage("validation.activation.not.existed", activationUpdateRequest.getId())));
     }
-    
+
     private boolean isValidCreateActivation(String email, String htId) {
         if (activationBizService.anyMatch(email)
                 || contactInfoBizService.existByEmailAndStatusActive(email)
