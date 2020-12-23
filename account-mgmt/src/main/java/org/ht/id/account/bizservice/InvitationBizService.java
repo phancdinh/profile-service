@@ -1,5 +1,7 @@
 package org.ht.id.account.bizservice;
 
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.Optional;
 import org.ht.id.account.config.AccountMgmtProperties;
@@ -8,10 +10,11 @@ import org.ht.id.account.config.BitlyApiProperties;
 import org.ht.id.account.data.model.Invitation;
 import org.ht.id.account.data.service.InvitationDataService;
 import org.ht.id.account.dto.BitlyShortenLinkCreationResponse;
+import org.ht.id.common.EncryptUtil;
 import org.ht.id.common.exception.DataNotExistingException;
+import org.ht.id.common.exception.EncryptFailureException;
 import org.ht.id.common.exception.ServiceUnavailableException;
 import org.springframework.stereotype.Component;
-import org.springframework.util.DigestUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -63,14 +66,10 @@ public class InvitationBizService {
     }
 
     private String getMd5Invitation(Invitation invitation) {
-        return generateMD5(invitation.getId().toString(), invitation.getHtId(), invitation.getCreatedAt().toString());
-    }
-
-    private String generateMD5(String... data) {
-        StringBuilder builder = new StringBuilder();
-        for (String b : data) {
-            builder.append(b);
+        try {
+            return EncryptUtil.md5(invitation.getId().toString(), invitation.getHtId(), invitation.getCreatedAt().toString());
+        } catch (UnsupportedEncodingException | NoSuchAlgorithmException e) {
+            throw new EncryptFailureException("Could not create invitation code");
         }
-        return DigestUtils.md5DigestAsHex(builder.toString().getBytes());
     }
 }

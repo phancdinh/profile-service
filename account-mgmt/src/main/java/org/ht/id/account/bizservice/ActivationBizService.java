@@ -6,9 +6,12 @@ import org.ht.id.account.config.AccountMgmtProperties;
 import org.ht.id.account.config.AccountMgtMessageProperties;
 import org.ht.id.account.data.model.Activation;
 import org.ht.id.account.data.service.ActivationDataService;
+import org.ht.id.common.EncryptUtil;
 import org.ht.id.common.exception.DataNotExistingException;
+import org.ht.id.common.exception.EncryptFailureException;
 import org.springframework.stereotype.Component;
-import org.springframework.util.DigestUtils;
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
@@ -64,20 +67,16 @@ public class ActivationBizService {
     }
 
     private String getMd5Activation(Activation activation) {
-        return generateMD5(activation.getId().toString(), activation.getHtId(), activation.getCreatedAt().toString());
+        try {
+            return EncryptUtil.md5(activation.getId().toString(), activation.getHtId(), activation.getCreatedAt().toString());
+        } catch (UnsupportedEncodingException | NoSuchAlgorithmException e) {
+            throw new EncryptFailureException("Could not create activation code");
+        }
     }
 
     private boolean isActivationExpired(Activation activation) {
         Date currentDate = new Date();
         return currentDate.compareTo(activation.getExpiredAt()) > 0;
-    }
-
-    private String generateMD5(String... data) {
-        StringBuilder builder = new StringBuilder();
-        for (String b : data) {
-            builder.append(b);
-        }
-        return DigestUtils.md5DigestAsHex(builder.toString().getBytes());
     }
 
     // Get the expiry time in seconds

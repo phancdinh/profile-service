@@ -30,4 +30,7 @@ public class ProfileApiProperties {
 
     @Value("${profile.default-lead-source}")
     private String defaultLeadSource;
+
+    @Value("${profile.verification-email.default-link}")
+    private String emailVerificationUrlPattern;
 }
