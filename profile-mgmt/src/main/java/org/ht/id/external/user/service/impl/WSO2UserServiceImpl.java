@@ -25,16 +25,16 @@ public class WSO2UserServiceImpl implements ExternalUserService {
         userCreation.setUserName(username);
         userCreation.setPassword(password);
         userCreation.setEmails(Collections.singletonList(email));
-        userCreation.setExtensions(Map.of(WSO2Params.VERIFY_EMAIL, true));
+        userCreation.setExtensions(Map.of(WSO2Params.USER_NEED_VERIFY, true));
         return userIdentityClient.createUser(userCreation);
     }
 
     @Override
-    public void updateAccountLock(String id, boolean accountLock) {
+    public void activateAccount(String id) {
         UserAccountUnlockRequest unlockRequest = new UserAccountUnlockRequest();
         PatchUpdateData patchUpdateData = new PatchUpdateData();
         patchUpdateData.setOp(WSO2Params.OP_REPLACE);
-        patchUpdateData.setValue(Map.of(WSO2Params.EXTENSIONS, Map.of(WSO2Params.ACCOUNT_LOCKED, accountLock)));
+        patchUpdateData.setValue(Map.of(WSO2Params.EXTENSIONS, Map.of(WSO2Params.USER_NEED_VERIFY, false)));
         unlockRequest.setOperations(Collections.singletonList(patchUpdateData));
         userIdentityClient.updateAccountLocked(id, unlockRequest);
     }
