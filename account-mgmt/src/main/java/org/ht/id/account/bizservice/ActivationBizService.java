@@ -45,7 +45,7 @@ public class ActivationBizService {
         });
     }
 
-    public boolean existedActivation(String email) {
+    public boolean anyMatch(String email) {
         return activationDataService.findByEmail(email).stream()
                 .anyMatch(a -> {
                     Date currentDate = new Date();

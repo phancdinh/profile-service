@@ -65,7 +65,7 @@ public class AccountFacade {
         //3.Generate activation and send activation link to email
         Activation activation = Optional.of(creationRequest)
                 .map(request -> activationConverter.convertToEntity(request, htId))
-                .filter(not(a -> activationBizService.existedActivation(a.getEmail())
+                .filter(not(a -> activationBizService.anyMatch(a.getEmail())
                         || contactInfoBizService.existByEmailAndStatusActive(a.getEmail())))
                 .map(activationBizService::create)
                 .orElseThrow();
@@ -101,7 +101,7 @@ public class AccountFacade {
     }
 
     public boolean checkEmailHasRegistered(String email) {
-        return contactInfoBizService.existByEmailAndStatusActive(email) || activationBizService.existedActivation(email);
+        return contactInfoBizService.existByEmailAndStatusActive(email) || activationBizService.anyMatch(email);
     }
 
     public ResetPasswordResponse resetPassword(String customerEmail) {

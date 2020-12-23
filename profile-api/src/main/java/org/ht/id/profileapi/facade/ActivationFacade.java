@@ -43,6 +43,7 @@ public class ActivationFacade {
         return Optional.of(activationUpdateRequest)
                 .map(activationRequest -> activationBizService.findById(activationRequest.getId()))
                 .filter(activation -> activationBizService.isValidActivation(activation, activationUpdateRequest.getValue()))
+                .filter(not (activation -> contactInfoBizService.existByEmailAndStatusActive(activation.getEmail())))
                 .map(activationBizService::update)
                 .filter(not(activation -> profileBizService.updateStatus(activation.getHtId(), UserStatus.ACTIVE).isInactivated()))
                 .map(activationConverter::convertToActivationUpdateResponse)
@@ -50,9 +51,9 @@ public class ActivationFacade {
     }
     
     private boolean isValidCreateActivation(String email, String htId) {
-        if (activationBizService.existedActivation(email)
+        if (activationBizService.anyMatch(email)
                 || contactInfoBizService.existByEmailAndStatusActive(email)
-                || !contactInfoBizService.isEmailExistedWithHtId(htId, email)) {
+                || !contactInfoBizService.anyEmailWithHtId(htId, email)) {
             return false;
         }
         return true;
