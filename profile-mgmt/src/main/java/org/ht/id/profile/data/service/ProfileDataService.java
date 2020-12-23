@@ -68,7 +68,7 @@ public class ProfileDataService {
                 p.setScimId(user.getId());
             }
             if (UserStatus.IN_ACTIVE.equals(p.getStatus()) && UserStatus.ACTIVE.equals(status)) {
-                externalUserService.updateAccountLock(p.getScimId(), false);
+                externalUserService.activateAccount(p.getScimId());
             }
             p.setStatus(status);
             return profileRepository.save(p);
