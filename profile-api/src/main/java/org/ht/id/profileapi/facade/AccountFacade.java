@@ -9,9 +9,6 @@ import org.ht.id.account.data.model.Account;
 import org.ht.id.account.data.model.Activation;
 import org.ht.id.common.constant.UserStatus;
 import org.ht.id.common.exception.EmailAlreadyRegisteredException;
-import org.ht.id.email.EmailSenderType;
-import org.ht.id.email.EmailService;
-import org.ht.id.email.EmailTemplateType;
 import org.ht.id.profile.bizservice.ContactInfoBizService;
 import org.ht.id.profile.bizservice.IdGeneratorBizService;
 import org.ht.id.profile.bizservice.ProfileBizService;
@@ -23,13 +20,11 @@ import org.ht.id.profileapi.dto.response.AccountResponse;
 import org.ht.id.profileapi.dto.response.ResetPasswordResponse;
 import org.ht.id.profileapi.facade.converter.AccountConverter;
 import org.ht.id.profileapi.facade.converter.ActivationConverter;
+import org.ht.id.profileapi.service.AppEmailService;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import javax.mail.MessagingException;
-import java.io.UnsupportedEncodingException;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import static java.util.function.Predicate.not;
 
 @Component
@@ -41,12 +36,12 @@ public class AccountFacade {
     private final ContactInfoBizService contactInfoBizService;
     private final ActivationBizService activationBizService;
     private final IdGeneratorBizService idGeneratorBizService;
-    private final EmailService emailService;
     private final AccountConverter accountConverter;
     private final ActivationConverter activationConverter;
     private final ProfileApiProperties profileApiProperties;
     private final AccountMgmtProperties accountApiProperties;
     private final MessageApiProperties messageApiProperties;
+    private final AppEmailService appEmailService;
 
     public AccountResponse create(AccountCreationRequest creationRequest) {
         validateWhenRegister(creationRequest);
@@ -76,7 +71,7 @@ public class AccountFacade {
                 .orElseThrow();
 
         String activationLink = activationBizService.generateActivationLink(activation);
-        sendActivationEmail(activationLink, creationRequest.getEmail());
+        appEmailService.sendActivationEmail(activationLink, creationRequest.getEmail());
 
         accountResponse.setLeadSource(profile.getLeadSource());
         return accountResponse;
@@ -98,18 +93,6 @@ public class AccountFacade {
         return Pair.of(htId, profile);
     }
 
-    private void sendActivationEmail(String activationLink, String customerEmail) {
-        CompletableFuture.runAsync(() -> {
-            try {
-                emailService.send(customerEmail,
-                        profileApiProperties.getActivationEmailSubject(), "", profileApiProperties.getMailFrom(),
-                        activationLink, EmailSenderType.HTML, EmailTemplateType.ACTIVATION);
-            } catch (MessagingException | UnsupportedEncodingException e) {
-                log.error(messageApiProperties.getMessageWithArgs("mail.activation.emailSentFailed", customerEmail));
-            }
-        });
-    }
-
     private void validateWhenRegister(AccountCreationRequest creationRequest) {
         String email = creationRequest.getEmail();
         if (checkEmailHasRegistered(email)) {
@@ -124,24 +107,12 @@ public class AccountFacade {
     public ResetPasswordResponse resetPassword(String customerEmail) {
         boolean isValidEmail = validEmailForResetPassword(customerEmail);
         if (isValidEmail) {
-            sendResetPasswordEmail(customerEmail);
+            appEmailService.sendResetPasswordEmail(customerEmail, accountApiProperties.getResetPasswordLink());
         }
         return new ResetPasswordResponse(isValidEmail);
     }
 
     private boolean validEmailForResetPassword(String customerEmail) {
         return contactInfoBizService.existByEmailAndStatusActive(customerEmail);
-    }
-
-    private void sendResetPasswordEmail(String email) {
-        CompletableFuture.runAsync(() -> {
-            try {
-                emailService.send(email,
-                        messageApiProperties.getMessage("mail.resetPassword.emailSubject"), "",
-                        profileApiProperties.getMailFrom(), accountApiProperties.getResetPasswordLink(), EmailSenderType.HTML, EmailTemplateType.RESET_PASSWORD);
-            } catch (MessagingException | UnsupportedEncodingException e) {
-                log.error(String.format(messageApiProperties.getMessage("mail.resetPassword.emailSentFailed"), e.getMessage()));
-            }
-        });
     }
 }

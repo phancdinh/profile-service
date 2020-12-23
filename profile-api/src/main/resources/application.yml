@@ -42,3 +42,5 @@ profile:
     password: ${MAIL_PASSWORD}
     from: "Customer"
   default-lead-source: "Hung Thinh Mobile App"
+  verification-email:
+    default-link: "%s/email/verify?id=%s&value=%s&code=%s"
