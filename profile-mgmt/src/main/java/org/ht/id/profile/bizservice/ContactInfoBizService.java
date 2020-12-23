@@ -77,18 +77,18 @@ public class ContactInfoBizService {
 
     public HierarchyContact createContactEmail(ObjectId htCode, String email) {
 
-        if (!isEmailExistedWithHtCode(htCode, email)) {
+        if (anyEmailWithHtCode(htCode, email)) {
             log.error(profileMgtMessageProperties.getMessageWithArgs("validation.contact.existed", htCode.toString()));
             throw new DataConflictingException(profileMgtMessageProperties.getMessage("validation.contact.emailRegistered"));
         }
         return contactInfoDataService.createContactEmail(htCode, email).orElseThrow();
     }
 
-    private boolean isEmailExistedWithHtCode(ObjectId htCode, String email) {
+    private boolean anyEmailWithHtCode(ObjectId htCode, String email) {
         return Optional.of(findByHtCode(htCode)).filter(c -> c.getEmails().stream().anyMatch(e -> e.getValue().equalsIgnoreCase(email))).isPresent();
     }
 
-    public boolean isEmailExistedWithHtId(String htId, String email) {
+    public boolean anyEmailWithHtId(String htId, String email) {
         return Optional.of(findByHtId(htId)).filter(c -> c.getEmails().stream().anyMatch(e -> e.getValue().equalsIgnoreCase(email))).isPresent();
     }
 

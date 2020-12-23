@@ -14,7 +14,6 @@ import org.ht.id.profileapi.dto.response.InvitationUpdateResponse;
 import org.ht.id.profileapi.facade.converter.InvitationConverter;
 import org.springframework.stereotype.Component;
 import java.util.Optional;
-import static java.util.function.Predicate.not;
 
 @Component
 @Slf4j
@@ -31,7 +30,7 @@ public class InvitationFacade {
 
         return Optional.of(invitationCreateRequest)
                 .map(invitationConverter::convertToEntity)
-                .filter(not(invitation -> checkEmailAndHtid(invitation.getMainContact(), invitation.getHtId())))
+                .filter(invitation -> checkEmailAndHtIdValid(invitation.getMainContact(), invitation.getHtId()))
                 .map(invitationBizService::create)
                 .map(invitation -> invitationConverter.convertToInvitationCreateResponse(invitation, invitationBizService.generateInvitationLink(invitation)))
                 .orElseThrow(() -> new DataNotExistingException(messageApiProperties.getMessageWithArgs("validation.invitation.not.created", invitationCreateRequest.getHtId())));
@@ -47,17 +46,14 @@ public class InvitationFacade {
                 .orElseThrow(() -> new DataNotExistingException(messageApiProperties.getMessageWithArgs("validation.activation.not.existed", invitationUpdateRequest.getId())));
     }
 
-    private boolean checkEmailAndHtid(String email, String htId) {
-        return !checkEmailHasRegistered(email) && existedHtidWithEmail(htId, email);
-    }
-
-    private boolean existedHtidWithEmail(String htId, String email) {
-        return contactInfoBizService.isEmailExistedWithHtId(htId, email);
-
+    private boolean checkEmailAndHtIdValid(String email, String htId) {
+        return !checkEmailHasRegistered(email) && contactInfoBizService.anyEmailWithHtId(htId, email);
     }
 
     private boolean checkEmailHasRegistered(String email) {
-        return contactInfoBizService.existByEmailAndStatusActive(email) || activationBizService.existedActivation(email);
+        // Check the email whether or not register in the system
+        // And the action duration is still valid
+        return contactInfoBizService.existByEmailAndStatusActive(email) || activationBizService.anyMatch(email);
     }
 
 }

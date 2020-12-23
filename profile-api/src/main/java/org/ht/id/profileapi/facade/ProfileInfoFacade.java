@@ -79,7 +79,7 @@ public class ProfileInfoFacade {
                         .orElse(null);
         if (primaryEmail != null) {
             String email = primaryEmail.getValue();
-            if (contactInfoBizService.existByEmailAndStatusActive(email) || activationBizService.existedActivation(email)) {
+            if (contactInfoBizService.existByEmailAndStatusActive(email) || activationBizService.anyMatch(email)) {
                 throw new EmailAlreadyRegisteredException(messageApiProperties.getMessage("validation.register.mailRegistered"));
             }
         }
