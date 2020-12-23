@@ -19,15 +19,12 @@ import java.util.List;
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class ContactInfoCreateRequest {
-    @UniquePrimaryContact(message = "{validation.contact.address.primary.unique}")
     private List<AddressContactRequest> postalAddresses;
 
 
-    @UniquePrimaryContact(message = "{validation.contact.email.primary.unique}")
     @UniqueContactValue(message = "{validation.contact.email.unique}")
     private List<HierarchyContactRequest> emails;
 
     @UniqueContactValue(message = "{validation.contact.phone.unique}")
-    @UniquePrimaryContact(message = "{validation.contact.phone.primary.unique}")
     private List<HierarchyContactRequest> phoneNumbers;
 }
